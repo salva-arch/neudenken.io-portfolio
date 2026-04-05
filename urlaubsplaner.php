@@ -20,7 +20,7 @@ if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
 // 1. CONFIG
 // ============================================================================
 define('RB_DB_KEY', 'rb_urlaubsplaner_show'); // SHOW DB
-define('RB_ADMIN_EMAIL', 'salva.docimo@gmail.com');
+define('RB_ADMIN_EMAIL', 'admin@example.com');
 define('RB_YEAR', 2026);
 define('RB_BUNDESLAND', 'BW');
 define('MAX_ABSENT', 3);

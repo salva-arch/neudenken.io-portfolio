@@ -1,6 +1,6 @@
 # 🏖️ Retail Vacation Planner
 
-> Ein intelligentes System zur Personal- & Urlaubsplanung für den filialisierten Einzelhandel – Komplett ohne Excel, mit Kollisionserkennung, Wartelisten und automatisierten Auswertungen.
+> An intelligent staff scheduling and vacation planning system for retail branches – completely without Excel. Featuring concurrency checks, waitlist logic, and automated reporting.
 
 ![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php)
 ![WordPress](https://img.shields.io/badge/WordPress-21759B?logo=wordpress&logoColor=white)
@@ -8,91 +8,91 @@
 ![Status](https://img.shields.io/badge/status-production-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**🔗 Live-Einsatz:** Entwickelt für und im Einsatz bei einem ~20-köpfigen Einzelhandels-Team.  
-**🖥️ Demo-Datei:** Im Projekt liegt die `wordpress-theme/page-urlaubsplaner-show.php` als voll funktionsfähiges Mockup mit Dummy-Daten bereit.
+**🔗 Production Use:** Developed for and actively used by a ~20-person retail team.  
+**🖥️ Demo/Showcase:** The `urlaubsplaner.php` contained in this repository is a fully functional mockup equipped with dummy data.
 
 ---
 
-## 🎯 Das Problem (Warum nicht einfach Excel?)
-Die Planung von Urlauben in einer Filiale mit ca. 20 Personen war traditionell ein administrativer Albtraum:
-- **Zettel- & Excel-Chaos:** Keine eindeutige "Single Source of Truth".
-- **Kollisionen:** Mehrere Mitarbeiter beantragen zeitgleich die Brückentage.
-- **Gesetzliche & Interne Vorgaben:** Minijobber, Azubis (Jugendarbeitsschutz) und Feiertags-Anrechnungen mussten alle manuell im Kopf gerechnet werden.
-- **Führungs-Deckung:** Häufig fiel erst hinterher auf, dass die komplette Marktleitung im Urlaub war.
+## 🎯 The Problem (Why not just use Excel?)
+Planning vacations in a retail store with about 20 employees was traditionally an administrative nightmare:
+- **Paper & Excel Chaos:** No clear "Single Source of Truth".
+- **Collisions:** Multiple staff members requesting the same popular bridge days simultaneously.
+- **Legal & Internal Compliance:** Calculating limits for minijobs, trainees (Youth Labor Protection Act), and deducting public holidays had to be done manually.
+- **Management Coverage:** Gaps in leadership often went unnoticed until the schedule was already finalized.
 
-## 💡 Die Lösung
-Eine **Single-Page-Anwendung (Vanilla JS & PHP)**, die sich nativ als WordPress-Seitentemplate einfügt und als "Gatekeeper" fungiert. Das System blockt Konflikte bereits **während der Beantragung**, verwaltet Wartelisten für "beliebte Zeiträume" und entlastet das Management durch iCal/Outlook-Schnittstellen und automatische Reports.
+## 💡 The Solution
+A **Single-Page Application (Vanilla JS & PHP)** that embeds natively as a WordPress page template, acting as an automated "Gatekeeper". The system actively blocks conflicts **during the request process**, manages waitlists for popular periods, and drastically reduces management overhead through iCal/Outlook integrations and automated weekly reports.
 
 ---
 
-## ✨ Die Features im Detail
+## ✨ Core Features in Detail
 
-### 📅 1. Smartes Buchungssystem & Kollisionserkennung
-Das Herzstück der Anwendung ist die Echtzeit-Engine:
-- **Echtzeit-Kapazitätsprüfung (`MAX_ABSENT`):** Sobald ein Limit (z.B. max. 3 Personen im Urlaub) erreicht ist, wird rot gewarnt.
-- **Mindestbesetzung Management (`MIN_MANAGERS`):** Die KI im Code stellt sicher, dass pro Werktag immer mindestens 2 Personen aus dem Führungskreis anwesend sind.
-- **Automatischer "Wartelisten-Modus":** Überschreiten Anträge die Regeln, werden sie nicht abgelehnt, sondern auf eine "Warteliste" gebucht. Das Management entscheidet dann per Ausnahmeregelung (z.B. Krankheitsfälle).
-- **Rollenbasiertes Blockieren:** Mitarbeiter sehen in ihrem Account nur, **dass** Tage belegt sind ("Belegt"), aber unkenntlich, **von wem** (Datenschutz).
+### 📅 1. Smart Booking System & Collision Detection
+The core of the application is a real-time rule engine:
+- **Maximum Absence Check (`MAX_ABSENT`):** Instantly alerts the user and prevents booking if a defined threshold (e.g., max 3 people on vacation) is reached.
+- **Minimum Management Coverage (`MIN_MANAGERS`):** AI-assisted logic ensures that at least 2 people from the leadership team are present on any given workday.
+- **Dynamic Waitlist Mode:** If a request violates a rule, it isn't completely rejected. The system suggests placing it on a "Waitlist," allowing the store manager to visually review the conflict and potentially grant an exception (e.g., in medical/emergency cases).
+- **Role-Based Masking:** For data protection reasons, regular employees only see grey "Occupied" tiles rather than the names of colleagues who are on leave.
 
-### 👥 2. Smarte Vertrags- & Rollenlogik
-Nicht jeder Mitarbeiter ist gleich. Die App versteht die Vertragsarten und passt die Regeln dynamisch an:
-- **Feiertags-Rechner (Gauss):** Das System erkennt automatisiert bundesweite und landesspezifische (BW) Feiertage und bucht hierfür keine Urlaubstage ab.
-- **Samstags-Regelung für Minijobs:** Die App limitiert automatisch freie Samstage für Aushilfen (z.B. max. 1 freier Samstag pro Monat), mit speziellen Anpassungen für Minderjährige (z.B. max. 2 Samstage).
-- **Fixe freie Tage (`fix_off`):** Erkennt vertragliche "Frei-Tage" am Freitag oder Montag und rechnet diese beim Urlaubsantrag heraus.
+### 👥 2. Smart Contract & Role Logic
+Not every employee has the same contract. The app dynamically adjusts its rules:
+- **Public Holiday Calculator (Gauss Algorithm):** The system automatically calculates nationwide and state-specific (e.g., Baden-Württemberg) public holidays and deducts them from the requested vacation days.
+- **Saturday Rule for Minijobs:** Automatically limits free Saturdays for part-time/minijob staff (e.g., max 1 free Saturday per month), with special compliance for minors (e.g., max 2 free Saturdays).
+- **Fixed Days Off (`fix_off`):** Recognizes contractually guaranteed days off (e.g., every Monday) and prevents the system from deducting a vacation day for them.
 
-### ✉️ 3. Automatisierter E-Mail- & Genehmigungs-Workflow
-Kein Login mehr für Manager nötig, um schnelle Anträge zu bedienen:
-- **E-Mail Tokens:** Manager erhalten eine HTML-Mail bei neuen Anträgen. Über verschlüsselte Links (`RB_ACTION_TOKEN`) kann ein Antrag mit einem Klick in der E-Mail **Genehmigt** oder **Abgelehnt** werden.
-- **Wartelisten-Feedback:** Das System empfiehlt aktiv eine rote Markierung ("System-Empfehlung: ABLEHNEN"), wenn der Antrag Regeln bricht.
-- **Automatischer Wochenreport:** Ein Cronjob (`wp_schedule_event`) schickt dem Store Manager jeden Montagmorgen ein CSV-Backup der Datenbank sowie einen Bericht über ungelöste Anträge per E-Mail.
+### ✉️ 3. Automated Email & Approval Workflow
+Fast, login-free approvals for branch managers:
+- **1-Click HTML Emails:** Managers receive a modern HTML email for every new request. Utilizing secure cryptographic tokens (`RB_ACTION_TOKEN`), the request can be **Approved** or **Rejected** directly from the email client (e.g., Outlook) without having to log into WordPress.
+- **Waitlist Feedback:** The system actively highlights conflict recommendations in the email (e.g., "System Recommendation: REJECT" for rule violations).
+- **Automated Weekly Report:** A scheduled cron job (`wp_schedule_event`) sends the store manager a CSV database backup and a briefing of unresolved requests every Monday morning.
 
 ### 📆 4. iCal / Outlook REST API Sync
-Direkte Integration in die Business-Welt:
-- Filial-PCs (Office 365) binden die `/api=1&action=ical`-Schnittstelle ein.
-- Urlaube von Mitarbeitern erscheinen live und "schreibgeschützt" im Outlook-Filial-Kalender als "Außer Haus".
-- Pending (in Bearbeitung) Einträge werden mit einem `[?]` markiert und erhalten in Outlook den Status "Unter Vorbehalt".
+Seamless integration into corporate environments:
+- Store PCs (Office 365) can subscribe to the secure `/api=1&action=ical` endpoint.
+- Employee vacations appear live and mathematically protected directly in the branch's Microsoft Exchange calendar as "Out of Office".
+- "Pending" requests are marked with a `[?]` and synchronized to Outlook with "Tentative" status.
 
-### 💓 5. Team-Pulse (Betriebsklima-Dashboard)
-- Ein kleines, aber massiv beliebtes UI-Widget. Pingt automatisch im Dashboard die **Top 5 Geburtstage und Betriebsjubiläen** der nächsten 30 Tage. 
-- Das bewahrt das Management davor, Jubiläen (z.B. 10 Jahre Firmenzugehörigkeit) oder Azubi-Geburtstage zu übersehen.
+### 💓 5. Team Pulse (Work Climate Dashboard)
+- A highly appreciated UI widget: It actively monitors the dashboard and highlights the **Top 5 birthdays and company anniversaries** occurring within the next 30 days.
+- Prevents management from accidentally overlooking major milestones (like a 10-year anniversary) or the birthdays of trainees.
 
 ---
 
-## 🛠 Tech-Stack & Architektur
+## 🛠 Tech Stack & Architecture
 
-| Komponente | Technologie / Methode |
+| Component | Technology / Method |
 |------------|-------------|
-| Backend | Modernes **PHP 8.x** |
-| CMS-Hosting | Eingebettet als **WordPress Template** (ohne externe Plugins) |
-| Frontend | React-freie **Vanilla Single Page Application** (JavaScript + CSS3) |
-| User Interface | Custom Dark- & Lightmode-CSS im Neumorphism-Style |
-| Data-Storage | Native `wp_options` als flaches JSON-Array (High-Speed Access, extrem robust, keine DB-Migrationen bei Updates) |
-| Security | Session-Bindung, CSRF/Clickjacking via Headers, Rate-Limiting eingebaut |
+| Backend | Modern **PHP 8.x** |
+| CMS Hosting | Embedded as a **WordPress Template** (Requires zero external plugins) |
+| Frontend | React-free **Vanilla Single Page Application** (JavaScript + CSS3) |
+| User Interface | Custom Dark- & Light-mode CSS styled with Neumorphism |
+| Data Storage | Native `wp_options` as a flat JSON array (High-Speed Access, extremely robust, zero DB-migrations required upon updates) |
+| Security | Session-binding, CSRF/Clickjacking via Headers, built-in brute-force rate limit protection |
 
-Das Projekt beweist: Man benötigt kein massives Framework (React/Vue/Laravel), um hoch performante, asynchrone Interaktiv-Systeme zu bauen. Die AJAX-Calls dauern durch den flachen JSON-Store im Schnitt unter `40ms`.
+This project demonstrates: You don't need a massive framework (React/Vue/Laravel) to build highly performant, asynchronous interactive systems. Because of the flat JSON store approach, AJAX calls round-trip in `< 40ms` on average.
 
 ---
 
-## 🚀 Quick Start für die DEMO-Version (`page-urlaubsplaner-show.php`)
+## 🚀 Quick Start (Demo Version)
 
-Die beigelegte `wordpress-theme/page-urlaubsplaner-show.php` ist eine Sandbox! Sie enthält ausgedachte Testangestellte (Mustermann, Schmidt, etc.) und eine Dummy-Datenbank.
+The included `urlaubsplaner.php` in this repository is a safe Sandbox! It includes fictional employees (Max, Lisa, etc.) and uses an isolated dummy database key.
 
-1. Lade die Datei in dein WordPress Theme hoch (`wp-content/themes/dein-theme/`)
-2. Erstelle im WP-Backend eine neue Seite.
-3. Wähle rechts unter "Template" den Eintrag **"Urlaubsplaner (Show / Demo)"**.
-4. Logge dich im Frontend mit einer der Dummy-Personal-IDs ein:
+1. Upload the file into your WordPress Theme directory (`wp-content/themes/your-theme/`)
+2. Create a new Page in your WP-Backend.
+3. On the right-side panel under "Template", select **"Urlaubsplaner (Show / Demo)"**.
+4. Log into the frontend using one of the dummy Personnel IDs:
 
-### 🎭 Logins für die Show-Version
-| ID | Name | Vertragsrolle | Rechte |
+### 🎭 Logins for the Showcase Edition
+| ID | Name | Contract Role | Permissions |
 |---|------|---------------|--------|
-| `1001` | Max Mustermann | Manager (Führung/Vollzeit) | Alles sichtbar, Genehmigungen, Exporte |
-| `1002` | Lisa Schmidt | Deputy (Stellvertr. Leitung) | Genehmigungen |
-| `3001` | Julia Weber | Staff (Mitarbeiter/Teilzeit) | Eingeschränkt, sieht Kollegen nur "belegt" |
-| `4001` | Mia Richter | Azubi (Minderjährig) | Erweiterte Jugendarbeitsschutz-Beschränkungen (Samstage) |
-| `5001` | Emma Scholz | Minijob (Aushilfe) | Max. 1 freier Samstag pro Kalendermonat |
+| `1001` | Max Mustermann | Manager (Leadership/Full-Time) | Full visibility, Approvals, CSV Exports |
+| `1002` | Lisa Schmidt | Deputy (Vice-Manager) | Approvals |
+| `3001` | Julia Weber | Staff (Part-Time) | Restricted scope, sees colleagues only as "Occupied" |
+| `4001` | Mia Richter | Trainee (Minor) | Extended youth labor law restrictions (Saturdays) |
+| `5001` | Emma Scholz | Minijob | Max 1 free Saturday per calendar month |
 
 ---
 
-## 📄 Lizenz & Autor
-Entwickelt von **Salvatore Docimo** für den Live-Einsatz in der Praxis.
-MIT-Referenz – siehe GitHub Code History.
+## 📄 License & Author
+Engineered for real-world production by **[Salvatore Docimo](https://github.com/salva-arch)**.  
+MIT Reference – see GitHub code history.
