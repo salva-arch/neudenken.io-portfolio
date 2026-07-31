@@ -1,0 +1,27 @@
+# Configuration & Databases
+urlaubsplaner-config.php
+wordpress-theme/urlaubsplaner-config.php
+urlaubsplaner.db
+*.log
+*.sqlite
+
+# Dependencies & Build Tooling
+node_modules/
+.npm/
+
+# IDE & System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Agent & Brain Storage
+.gemini/
+.agent/
+_personal/
+_archive/
+
+# Temporary Data
+*.csv
+*.mp4

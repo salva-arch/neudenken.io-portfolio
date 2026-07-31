@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salvatore Docimo — neudenken.io</title>
+  <meta name="description" content="TÜV geprüfter AI Automation Manager. 20+ Jahre Retail-Expertise trifft modernste KI-Technologie.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CORPORATE DESIGN MANUAL v3.0 — DESIGN TOKENS
+       ========================================================================== */
+    :root {
+      /* Surfaces (HSL ohne hsl() Wrapper) */
+      --bg-paper: 41 23% 92%;         /* #EFECE6 - Grundfläche */
+      --bg-panel: 42 29% 87%;         /* #E7E2D4 - Panels & Karten */
+      --bg-inverse: 30 13% 11%;       /* #201C18 - Dark Panels & Konsolen */
+
+      /* Ink / Text */
+      --text-primary: 30 8% 9%;       /* #191715 - Headlines & Kanten */
+      --text-secondary: 40 6% 27%;    /* #494641 - Fließtext */
+      --text-muted: 39 6% 38%;        /* #67635B - Labels & Quellen */
+
+      /* Inverse / Terminal Text */
+      --inverse-text-primary: #F2EEE5;
+      --inverse-text-secondary: #CBD5E1;
+      --inverse-text-muted: #9A958C;
+
+      /* Accents (Role-based) */
+      --accent-primary: 15 60% 40%;     /* #A34729 - Primärakzent Sienna */
+      --accent-secondary: 17 66% 29%;   /* #7B3519 - Sekundärakzent Rost */
+      --accent-live: 127 26% 33%;       /* #3E6A43 - Live-Status Moos */
+      --accent-warn: 28 62% 36%;        /* #955823 - Warnung Ocker */
+
+      /* RGB Tokens */
+      --ink-rgb: 25, 23, 21;
+      --accent-primary-rgb: 163, 71, 41;
+      --accent-secondary-rgb: 123, 53, 25;
+      --accent-live-rgb: 62, 106, 67;
+      --accent-warn-rgb: 149, 88, 35;
+
+      /* Borders */
+      --border-hairline: 30 8% 9% / 8%;
+      --border-hairline-active: 15 60% 40% / 35%;
+      --border-structural: 30 8% 9% / 15%;
+
+      /* Fonts */
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+      /* Transitions & Easing */
+      --transition-smooth: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+      /* Radii */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-pill: 100px;
+    }
+
+    /* Reset & Base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      background-color: hsl(var(--bg-paper));
+      color: hsl(var(--text-primary));
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body {
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+      background-color: hsl(var(--bg-paper));
+    }
+
+    /* 5.1 Papierkorn */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+      opacity: 0.75;
+    }
+
+    /* 5.2 Glow Engine */
+    .glow-engine {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+    .glow-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.06;
+      mix-blend-mode: multiply;
+    }
+    .blob-primary {
+      top: -10%; left: 15%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, hsl(var(--accent-primary)) 0%, transparent 70%);
+      animation: float-blob-1 30s infinite alternate ease-in-out;
+    }
+    .blob-secondary {
+      bottom: -10%; right: 10%; width: 60vw; height: 60vw;
+      background: radial-gradient(circle, hsl(var(--accent-secondary)) 0%, transparent 70%);
+      animation: float-blob-2 35s infinite alternate ease-in-out;
+    }
+    @keyframes float-blob-1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(8%, 12%) scale(1.15); } }
+    @keyframes float-blob-2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-12%, -8%) scale(0.9); } }
+
+    /* 5.3 Gitternetz mit Spotlight-Maske */
+    .grid-backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      background-image:
+        linear-gradient(rgba(var(--ink-rgb), 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--ink-rgb), 0.015) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle 800px at var(--mouse-x, 50%) var(--mouse-y, 400px), black 30%, transparent 90%);
+    }
+
+    /* 5.4 Partikelfeld */
+    .antigravity-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* 8.1 Navbar (Pill) */
+    .header-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: var(--transition-smooth);
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: hsl(var(--bg-panel) / 80%);
+      backdrop-filter: blur(20px) saturate(120%);
+      -webkit-backdrop-filter: blur(20px) saturate(120%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-pill);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-symbol {
+      width: 28px;
+      height: 28px;
+      border: 2px solid hsl(var(--accent-primary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+      color: hsl(var(--accent-primary));
+    }
+    .logo-text {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.02em;
+      color: hsl(var(--text-primary));
+    }
+    .logo-text em {
+      font-style: italic;
+      color: hsl(var(--accent-primary));
+      font-weight: 500;
+    }
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-secondary));
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: hsl(var(--accent-live));
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(var(--accent-live-rgb), 0.6);
+      animation: pulse-active 2s infinite ease-in-out;
+    }
+    @keyframes pulse-active {
+      0% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0.3; transform: scale(0.9); }
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      list-style: none;
+    }
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: hsl(var(--text-secondary));
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: var(--transition-smooth);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+    }
+    .nav-link:hover {
+      color: hsl(var(--text-primary));
+      background: rgba(var(--ink-rgb), 0.04);
+    }
+    .nav-link.accented {
+      color: hsl(var(--accent-primary));
+      border: 1px dashed hsl(var(--accent-primary) / 30%);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 100px 0 80px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 48px;
+      height: 1px;
+      background-color: hsl(var(--accent-primary));
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(52px, 7.5vw, 110px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      margin-bottom: 36px;
+      color: hsl(var(--text-primary));
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: hsl(var(--accent-primary));
+    }
+    .hero-subtitle {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: hsl(var(--text-secondary));
+      margin-bottom: 36px;
+      max-width: 580px;
+    }
+    .hero-subtitle em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: hsl(var(--text-primary));
+    }
+
+    /* 8.3 Kennzahlen-Grid */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1.5px solid hsl(var(--text-primary));
+      border-left: 1px solid hsl(var(--border-hairline));
+      margin-bottom: 36px;
+    }
+    .hero-stat {
+      padding: 24px 16px;
+      border-right: 1px solid hsl(var(--border-hairline));
+      border-bottom: 1px solid hsl(var(--border-hairline));
+      background: hsl(var(--bg-paper) / 50%);
+    }
+    .hero-stat-number {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      color: hsl(var(--text-primary));
+    }
+    .hero-stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: hsl(var(--text-muted));
+      margin-top: 8px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+    .btn-primary {
+      background-color: hsl(var(--accent-primary));
+      color: hsl(var(--text-primary));
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: hsl(var(--accent-secondary));
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid hsl(var(--text-primary));
+      color: hsl(var(--text-primary));
+    }
+    .btn-secondary:hover {
+      background: rgba(var(--ink-rgb), 0.05);
+    }
+
+    /* Hero Quote Card */
+    .hero-visual-card {
+      background: hsl(var(--bg-panel) / 75%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-xl);
+      padding: 32px;
+    }
+    .card-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 17px;
+      color: hsl(var(--text-secondary));
+      line-height: 1.6;
+      padding-left: 20px;
+      border-left: 2px solid hsl(var(--accent-primary));
+      margin-bottom: 20px;
+    }
+    .card-quote-author {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--accent-primary));
+    }
+    .card-certifications {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px dashed hsl(var(--border-hairline));
+    }
+    .card-cert-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--text-muted));
+      margin-bottom: 12px;
+    }
+    .card-cert-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card-cert-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      color: hsl(var(--accent-primary));
+      border: 1px dashed hsl(var(--accent-primary) / 30%);
+      background: hsl(var(--accent-primary) / 4%);
+    }
+
+    /* Section & Head */
+    section.chapter {
+      padding: 120px 0;
+      border-bottom: 1px solid hsl(var(--border-hairline));
+      position: relative;
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 60px;
+      margin-bottom: 80px;
+      align-items: start;
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-primary));
+      padding-top: 14px;
+      border-top: 2px solid hsl(var(--accent-primary));
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(38px, 5.5vw, 76px);
+      line-height: 0.98;
+      letter-spacing: -0.035em;
+      color: hsl(var(--text-primary));
+    }
+    .section-title em {
+      font-style: italic;
+      color: hsl(var(--accent-primary));
+      font-weight: 400;
+    }
+    .section-desc {
+      font-family: var(--font-sans);
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: hsl(var(--text-secondary));
+      margin-top: 16px;
+      max-width: 600px;
+    }
+
+    /* Competencies Cards (6. Glasmorphismus) */
+    .competencies-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .comp-card {
+      background: hsl(var(--bg-panel) / 65%);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+      position: relative;
+    }
+    .comp-card:hover {
+      transform: translateY(-2px);
+      border-color: hsl(var(--border-hairline-active));
+      box-shadow: 0 12px 30px rgba(var(--ink-rgb), 0.04);
+    }
+    .comp-level {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+    }
+    .level-exceeded, .level-fulfilled { color: hsl(var(--accent-live)); }
+    .level-progress { color: hsl(var(--accent-primary)); }
+
+    .comp-title {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      color: hsl(var(--text-primary));
+      margin-bottom: 8px;
+    }
+    .comp-subtitle {
+      font-size: 15px;
+      line-height: 1.6;
+      color: hsl(var(--text-secondary));
+      margin-bottom: 20px;
+    }
+    .comp-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .comp-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-muted));
+      background: rgba(var(--ink-rgb), 0.03);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Toolbox Items */
+    .tools-category-group { margin-bottom: 40px; }
+    .tools-category-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 16px;
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .tool-item {
+      background: hsl(var(--bg-panel) / 60%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      color: inherit;
+    }
+    .tool-item:hover {
+      border-color: hsl(var(--border-hairline-active));
+      transform: translateY(-2px);
+      background: hsl(var(--bg-panel));
+    }
+    .tool-name {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 14.5px;
+      color: hsl(var(--text-primary));
+    }
+    .tool-category {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-muted));
+    }
+
+    /* Live Demo Component */
+    .demo-wrap {
+      background: hsl(var(--bg-panel) / 60%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 40px;
+    }
+    .demo-tabs {
+      display: flex;
+      border-bottom: 1px solid hsl(var(--border-hairline));
+      background: hsl(var(--bg-paper));
+    }
+    .demo-tab {
+      flex: 1;
+      padding: 16px 20px;
+      background: transparent;
+      border: none;
+      border-right: 1px solid hsl(var(--border-hairline));
+      color: hsl(var(--text-muted));
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .demo-tab.active {
+      color: hsl(var(--accent-primary));
+      background: hsl(var(--bg-panel));
+      border-bottom: 2px solid hsl(var(--accent-primary));
+    }
+    .demo-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 520px;
+    }
+    .demo-input-col {
+      padding: 32px;
+      border-right: 1px solid hsl(var(--border-hairline));
+      background: hsl(var(--bg-paper));
+    }
+    .demo-output-col {
+      padding: 32px;
+      background: hsl(var(--bg-panel) / 60%);
+      color: hsl(var(--text-primary)); border-left: 1px solid hsl(var(--border-hairline));
+    }
+    .demo-panel { display: none; }
+    .demo-panel.active { display: block; }
+
+    .demo-textarea {
+      width: 100%;
+      padding: 14px;
+      background: hsl(var(--bg-panel));
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-sm);
+      color: hsl(var(--text-primary));
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      min-height: 90px;
+      resize: vertical;
+    }
+    .example-chips { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .chip {
+      background: hsl(var(--bg-panel) / 60%);
+      border: 1px solid hsl(var(--border-hairline));
+      padding: 12px 14px;
+      color: hsl(var(--text-secondary));
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: var(--transition-smooth);
+      text-align: left;
+    }
+    .chip:hover {
+      border-color: hsl(var(--border-hairline-active));
+      color: hsl(var(--text-primary));
+    }
+
+    /* Terminal output format inside demo */
+    .invoice {
+      background: hsl(var(--bg-paper)); border: 1px solid hsl(var(--border-hairline));
+      color: #191715;
+      padding: 24px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .wa-in {
+      background: hsl(var(--bg-panel)); border: 1px solid hsl(var(--border-hairline));
+      color: hsl(var(--text-primary));
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .wa-out {
+      background: hsl(var(--accent-primary) / 10%); border: 1px solid hsl(var(--accent-primary) / 30%);
+      color: hsl(var(--text-primary));
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    /* Werdegang / Timeline (8.9 Gegenüberstellung) */
+    .timeline {
+      margin-top: 40px;
+      border-left: 2px solid hsl(var(--accent-primary));
+      padding-left: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .tl-item {
+      position: relative;
+    }
+    .tl-marker {
+      position: absolute;
+      left: -39px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: hsl(var(--accent-primary));
+    }
+    .tl-date {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 6px;
+    }
+    .tl-title {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+      color: hsl(var(--text-primary));
+      margin-bottom: 4px;
+    }
+    .tl-org {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-muted));
+      margin-bottom: 12px;
+    }
+    .tl-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: hsl(var(--text-secondary));
+      max-width: 680px;
+      margin-bottom: 12px;
+    }
+
+    /* Contact Section */
+    .contact { padding: 140px 0 100px; }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+    .contact-left .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 16px;
+    }
+    .contact-left h2 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(52px, 8vw, 110px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+    .contact-left h2 em {
+      font-style: italic;
+      color: hsl(var(--accent-primary));
+    }
+    .contact-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: center;
+    }
+    .line-row {
+      font-family: var(--font-serif);
+      font-size: clamp(19px, 2.2vw, 24px);
+      line-height: 1.6;
+      color: hsl(var(--text-secondary));
+    }
+    .line-row a {
+      color: hsl(var(--accent-primary));
+      text-decoration: none;
+      border-bottom: 1.5px solid hsl(var(--accent-primary));
+      padding-bottom: 2px;
+      transition: var(--transition-smooth);
+    }
+    .line-row a:hover {
+      color: hsl(var(--accent-secondary));
+      border-color: hsl(var(--accent-secondary));
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid hsl(var(--border-structural));
+      padding: 36px 0;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-muted));
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(25, 23, 21, 0.75);
+      backdrop-filter: blur(12px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: hsl(var(--bg-paper));
+      border: 1px solid hsl(var(--border-hairline-active));
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(var(--ink-rgb), 0.05);
+      border: 1px solid hsl(var(--border-hairline));
+      color: hsl(var(--text-primary));
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    /* 7. Scroll Reveal */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 9. Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .hero-grid, .section-head, .contact-grid, .competencies-grid, .demo-body {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      section.chapter { padding: 80px 0; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-radius: 24px;
+        gap: 12px;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        overflow-x: auto;
+      }
+      .nav-link { font-size: 11px; padding: 6px 8px; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .glow-blob { display: none; }
+    }
+
+    /* 9. Reduced Motion Block */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .scroll-reveal { opacity: 1 !important; transform: none !important; }
+      .glow-engine, .antigravity-canvas { display: none !important; }
+    }
+
+    :focus-visible {
+      outline: 2px solid hsl(var(--accent-primary));
+      outline-offset: 3px;
+    }
+  
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+    }
+    .tool-logo {
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tool-item:hover .tool-logo {
+      transform: translateY(-2px) scale(1.1);
+    }
+
+  
+    /* TOOLBOX NO OVERFLOW & PERFECT LAYOUT */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+      gap: 16px !important;
+    }
+    .tool-item {
+      background: hsl(var(--bg-panel) / 60%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-md);
+      padding: 12px 14px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      color: inherit;
+      min-width: 0 !important;
+      overflow: hidden !important;
+    }
+    .tool-item:hover {
+      border-color: hsl(var(--border-hairline-active));
+      transform: translateY(-2px);
+      background: hsl(var(--bg-panel));
+    }
+    .tool-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .tool-logo {
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tool-item:hover .tool-logo {
+      transform: translateY(-2px) scale(1.1);
+    }
+    .tool-name {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 13.5px !important;
+      color: hsl(var(--text-primary));
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tool-category {
+      font-family: var(--font-mono);
+      font-size: 9px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.06em !important;
+      color: hsl(var(--text-muted));
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+  
+    /* PERFECT PITCH-BLACK TECH TERMINAL CONSOLE */
+    .pf-flagship-console, .demo-output-col, .terminal-box {
+      background: #141210 !important;
+      color: #CBD5E1 !important;
+      border-radius: 8px !important;
+      padding: 24px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 11.5px !important;
+      line-height: 1.8 !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7) !important;
+    }
+    .pf-flagship-console span, .demo-output-col span {
+      display: block;
+    }
+    .c-system { color: #64748B !important; }
+    .c-ok { color: #81C784 !important; font-weight: 600 !important; }
+    .c-accent { color: #FFB74D !important; }
+    .c-action { color: #4FC3F7 !important; font-weight: 600 !important; }
+    .c-sec { color: #F59E0B !important; font-weight: 600 !important; }
+    .c-metric { color: #FFB74D !important; }
+
+
+    /* WARM PAPER DEMO OUTPUT BOX FOR HUB & LANDING PAGE */
+    .demo-output-col {
+      background: hsl(var(--bg-panel) / 60%) !important;
+      color: hsl(var(--text-primary)) !important;
+      border: 1px solid hsl(var(--border-hairline)) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 20px 24px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 13px !important;
+      line-height: 1.6 !important;
+      box-shadow: none !important;
+    }
+
+</style>
+</head>
+<body>
+
+  <!-- 5. HINTERGRUND-ENGINES -->
+  <canvas class="antigravity-canvas" id="antigravityCanvas"></canvas>
+
+  <div class="glow-engine">
+    <div class="glow-blob blob-primary"></div>
+    <div class="glow-blob blob-secondary"></div>
+  </div>
+
+  <div class="grid-backdrop"></div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+
+    <!-- 8.1 NAVBAR -->
+    <div class="header-wrap">
+      <header class="navbar">
+        <a href="https://neudenken.io" class="nav-left">
+          <div class="logo-symbol">S</div>
+          <span class="logo-text">Salvatore<em>.io</em></span>
+        </a>
+        
+        <div class="nav-status">
+          <span class="status-dot"></span>
+          <span>TÜV AI Automation Manager</span>
+        </div>
+
+        <nav class="nav-links">
+          <a href="#home" class="nav-link">Home</a>
+          <a href="#kompetenzen" class="nav-link">Kompetenzen</a>
+          <a href="#toolbox" class="nav-link">Toolbox</a>
+          <a href="#demo" class="nav-link">Live-Demo</a>
+          <a href="#werdegang" class="nav-link">Werdegang</a>
+          <a href="#kontakt" class="nav-link accented">Kontakt</a>
+        </nav>
+      </header>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <div class="hero-eyebrow">TÜV GEPRÜFTER AI AUTOMATION MANAGER</div>
+          <h1>Salvatore<br><em class="accent">Docimo.</em></h1>
+          <div class="hero-subtitle">
+            Verbindet 20+ Jahre Retail- &amp; Operations-Expertise mit modernster KI-Technologie — spezialisiert auf die Transformation traditioneller Geschäftsprozesse durch <em>pragmatische Automatisierung</em>.
+          </div>
+
+          <!-- KENNZAHLEN GRID -->
+          <div class="hero-stats scroll-reveal">
+            <div class="hero-stat">
+              <span class="hero-stat-number">20+</span>
+              <span class="hero-stat-label">Jahre Einzelhandel</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-number">10+</span>
+              <span class="hero-stat-label">Jahre Führung</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-number">17</span>
+              <span class="hero-stat-label">Mitarbeitende</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <a href="#kompetenzen" class="btn btn-primary">Kompetenzen entdecken &rarr;</a>
+            <a href="#kontakt" class="btn btn-secondary">Kontakt aufnehmen</a>
+          </div>
+        </div>
+
+        <!-- HERO RIGHT -->
+        <div class="hero-visual scroll-reveal">
+          <div class="hero-visual-card">
+            <div class="card-quote">
+              „KI-Kompetenz entwickelt sich in vier Stufen: Zuerst beobachtest du. Dann interagierst du. Irgendwann automatisierst du. Und am Ende veränderst du ganze Prozesse. Transformation beginnt nicht mit Tools — sondern mit Haltung."
+            </div>
+            <div class="card-quote-author">— Christoph Magnussen</div>
+
+            <div class="card-certifications">
+              <div class="card-cert-label">Zertifizierungen &amp; Qualifikation</div>
+                            <div class="card-cert-items">
+                <span class="card-cert-tag">TÜV AI Automation Manager</span>
+                <span class="card-cert-tag">Google AI Professional</span>
+                <span class="card-cert-tag">Claude Code in Action</span>
+                <span class="card-cert-tag">AWS Cloud Practitioner</span>
+                <span class="card-cert-tag">IHK Wirtschaftsfachwirt</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 01: KOMPETENZEN -->
+    <section class="chapter" id="kompetenzen">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">01 — Profil<strong>Struktur</strong></div>
+        <h2 class="section-title">Drei Stufen der <em>KI-Kompetenz</em>.</h2>
+      </div>
+
+      <div class="competencies-grid">
+        <!-- Capable -->
+        <div class="comp-card scroll-reveal" onclick="openModal('capable')">
+          <div class="comp-level level-exceeded">Übertroffen</div>
+          <h3 class="comp-title">Capable</h3>
+          <p class="comp-subtitle">Prompt Engineering für reale Use Cases — strukturierte Prompts, GPT-Rollen und Kontextverläufe.</p>
+          <div class="comp-details">
+            <span class="comp-tag">Prompt Design</span>
+            <span class="comp-tag">GPT-Rollen</span>
+            <span class="comp-tag">Kontextmanagement</span>
+            <span class="comp-tag">2.200+ Sessions</span>
+          </div>
+        </div>
+
+        <!-- Adoptive -->
+        <div class="comp-card scroll-reveal" onclick="openModal('adoptive')">
+          <div class="comp-level level-fulfilled">Erfüllt</div>
+          <h3 class="comp-title">Adoptive</h3>
+          <p class="comp-subtitle">KI-Workflow-Automatisierung — Integration von GPTs mit n8n, Make, Notion und Obsidian.</p>
+          <div class="comp-details">
+            <span class="comp-tag">n8n</span>
+            <span class="comp-tag">Make.com</span>
+            <span class="comp-tag">Agenten-Systeme</span>
+            <span class="comp-tag">Workflow-Design</span>
+          </div>
+        </div>
+
+        <!-- Transformative -->
+        <div class="comp-card scroll-reveal" onclick="openModal('transformative')">
+          <div class="comp-level level-fulfilled">Erfüllt</div>
+          <h3 class="comp-title">Transformative</h3>
+          <p class="comp-subtitle">KI-Systemarchitekt — GPTs, Agenten-Logik, Prozessfluss und langfristige Denkstruktur.</p>
+          <div class="comp-details">
+            <span class="comp-tag">Architektur</span>
+            <span class="comp-tag">Orchestrierung</span>
+            <span class="comp-tag">Obsidian</span>
+            <span class="comp-tag">LinkedIn-Strategie</span>
+          </div>
+        </div>
+      </div>
+    </section>
+        <!-- KAPITEL 02: TOOLBOX -->
+    <section class="chapter" id="toolbox">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">02 — Werkzeuge<strong>Technologie</strong></div>
+        <h2 class="section-title">Die operative <em>KI-Toolbox</em>.</h2>
+      </div>
+
+      <!-- Group 1: KI-Modelle & Open Source (6 Tools) -->
+      <div class="tools-category-group scroll-reveal">
+        <div class="tools-category-label">KI-Modelle &amp; Open Source</div>
+        <div class="tools-grid">
+          
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24"><g fill="none" stroke="#10A37F" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11.217 19.384A3.501 3.501 0 0 0 18 18.167V13l-6-3.35"/><path d="M5.214 15.014A3.501 3.501 0 0 0 9.66 20.28L14 17.746V10.8"/><path d="M6 7.63c-1.391-.236-2.787.395-3.534 1.689a3.474 3.474 0 0 0 1.271 4.745L8 16.578l6-3.348"/><path d="M12.783 4.616A3.501 3.501 0 0 0 6 5.833V10.9l6 3.45"/><path d="M18.786 8.986A3.501 3.501 0 0 0 14.34 3.72L10 6.254V13.2"/><path d="M18 16.302c1.391.236 2.787-.395 3.534-1.689a3.474 3.474 0 0 0-1.271-4.745l-4.308-2.514L10 10.774"/></g></svg>
+              <div class="tool-name">ChatGPT</div>
+            </div>
+            <div class="tool-category">LLM</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#D97A5B"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg>
+              <div class="tool-name">Claude</div>
+            </div>
+            <div class="tool-category">LLM</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24"><defs><linearGradient id="gemGradToolMaster" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4285F4"/><stop offset="100%" stop-color="#D96570"/></linearGradient></defs><path fill="url(#gemGradToolMaster)" d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
+              <div class="tool-name">Gemini</div>
+            </div>
+            <div class="tool-category">LLM</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#22B8CD"><path d="M22.3977 7.0896h-2.3106V.0676l-7.5094 6.3542V.1577h-1.1554v6.1966L4.4904 0v7.0896H1.6023v10.3976h2.8882V24l6.932-6.3591v6.2005h1.1554v-6.0469l6.9318 6.1807v-6.4879h2.8882V7.0896zm-3.4657-4.531v4.531h-5.355l5.355-4.531zm-13.2862.0676 4.8691 4.4634H5.6458V2.6262zM2.7576 16.332V8.245h7.8476l-6.1149 6.1147v1.9723H2.7576zm2.8882 5.0404v-3.8852h.0001v-2.6488l5.7763-5.7764v7.0111l-5.7764 5.2993zm12.7086.0248-5.7766-5.1509V9.0618l5.7766 5.7766v6.5588zm2.8882-5.0652h-1.733v-1.9723L13.3948 8.245h7.8478v8.087z"/></svg>
+              <div class="tool-name">Perplexity</div>
+            </div>
+            <div class="tool-category">Search</div>
+          </div>
+
+          <!-- HERMES ANIME PROFILE WITH HEADPHONES LOGO -->
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 100 100" width="24" height="24">
+                <path fill="#191715" d="M50 5C25 5 10 25 10 50c0 22 12 40 35 45v-5c-15-5-25-18-25-35 0-18 12-32 30-38 18-6 35 2 40 18 5 16 0 32-12 40v5c15-10 22-30 17-48C90 18 72 5 50 5z"/>
+                <path fill="#191715" d="M20 35c10-10 25-15 40-10-8 5-15 15-18 25C35 42 28 38 20 35z"/>
+                <path fill="#FAF8F2" d="M30 42c5 8 10 12 18 14-2 3-5 5-8 5-6 0-10-4-10-10 0-4 0-6 0-9z"/>
+                <ellipse cx="38" cy="48" rx="4" ry="6" fill="#191715"/>
+                <circle cx="39" cy="46" r="1.5" fill="#FAF8F2"/>
+                <path d="M45 15 C35 15, 25 25, 25 40" fill="none" stroke="#FAF8F2" stroke-width="4" stroke-linecap="round"/>
+                <rect x="58" y="38" width="12" height="22" rx="6" fill="#191715" stroke="#FAF8F2" stroke-width="2"/>
+                <path d="M64 60 C64 70, 50 78, 40 78" fill="none" stroke="#191715" stroke-width="3"/>
+              </svg>
+              <div class="tool-name">Hermes</div>
+            </div>
+            <div class="tool-category">OS Model</div>
+          </div>
+
+          <!-- OPENCLAW OFFICIAL LOBSTER CHARACTER LOGO -->
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 100 100" width="24" height="24">
+                <path d="M 38 22 C 30 10, 20 8, 22 18" fill="none" stroke="#B34242" stroke-width="5" stroke-linecap="round"/>
+                <path d="M 62 22 C 70 10, 80 8, 78 18" fill="none" stroke="#B34242" stroke-width="5" stroke-linecap="round"/>
+                <rect x="40" y="80" width="7" height="15" fill="#8B2E2E" rx="2"/>
+                <rect x="53" y="80" width="7" height="15" fill="#8B2E2E" rx="2"/>
+                <ellipse cx="50" cy="52" rx="38" ry="34" fill="#B34242"/>
+                <ellipse cx="12" cy="54" rx="11" ry="8" transform="rotate(20, 12, 54)" fill="#B34242"/>
+                <ellipse cx="88" cy="54" rx="11" ry="8" transform="rotate(-20, 88, 54)" fill="#B34242"/>
+                <circle cx="37" cy="42" r="6.5" fill="#051412"/>
+                <circle cx="38" cy="41" r="2.5" fill="#50E3C2"/>
+                <circle cx="63" cy="42" r="6.5" fill="#051412"/>
+                <circle cx="64" cy="41" r="2.5" fill="#50E3C2"/>
+              </svg>
+              <div class="tool-name">OpenClaw</div>
+            </div>
+            <div class="tool-category">Scraper</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Group 2: AI Coding & Agents (5 Tools) -->
+      <div class="tools-category-group scroll-reveal">
+        <div class="tools-category-label">AI Coding &amp; Agents</div>
+        <div class="tools-grid">
+          
+          <!-- OFFICIAL GOOGLE ANTIGRAVITY WAVE GRADIENT TILE LOGO -->
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24">
+                <rect x="2" y="2" width="20" height="20" rx="5" fill="#FAF8F2" stroke="rgba(25, 23, 21, 0.15)" stroke-width="1"/>
+                <defs><linearGradient id="antiWaveGradMaster" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#4285F4"/><stop offset="50%" stop-color="#34A853"/><stop offset="75%" stop-color="#FBBC05"/><stop offset="100%" stop-color="#EA4335"/></linearGradient></defs>
+                <path fill="url(#antiWaveGradMaster)" d="M12 5C8.5 5 6.5 8.5 6.5 13.5c0 1.8.9 3.2 2.2 3.2 1.2 0 1.8-1.4 1.8-3.2 0-2 1-3.5 1.5-3.5s1.5 1.5 1.5 3.5c0 1.8.6 3.2 1.8 3.2 1.3 0 2.2-1.4 2.2-3.2C17.5 8.5 15.5 5 12 5z"/>
+              </svg>
+              <div class="tool-name">Antigravity</div>
+            </div>
+            <div class="tool-category">Agentic AI</div>
+          </div>
+
+          <!-- OFFICIAL ANTHROPIC CLAUDE CODE TERRACOTTA ASTERISK LOGO -->
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#A34729"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg>
+              <div class="tool-name">Claude Code</div>
+            </div>
+            <div class="tool-category">Agentic CLI</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#494641" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              <div class="tool-name">Paperclip</div>
+            </div>
+            <div class="tool-category">Coding Agent</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4285F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5v14"/><path d="M22 10v4"/><path d="M7 5v14"/><path d="M2 10v4"/></svg>
+              <div class="tool-name">Wispr Flow</div>
+            </div>
+            <div class="tool-category">Voice Agent</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#191715"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              <div class="tool-name">GitHub</div>
+            </div>
+            <div class="tool-category">Code Repo</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Group 3: Infrastruktur & Workflow (7 Tools) -->
+      <div class="tools-category-group scroll-reveal">
+        <div class="tools-category-label">Infrastruktur &amp; Workflow</div>
+        <div class="tools-grid">
+          
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#FF9900"><path d="M7.64 10.38c0 .25.02.45.07.62c.05.12.12.28.21.46c.04.04.05.1.05.15c0 .07-.04.13-.13.2l-.42.28c-.06.04-.12.06-.17.06c-.07 0-.13-.04-.2-.1c-.09-.1-.17-.2-.24-.31c-.06-.11-.13-.24-.2-.39c-.52.61-1.17.92-1.96.92c-.56 0-1-.16-1.33-.48c-.32-.32-.49-.75-.49-1.29c0-.55.2-1 .6-1.36c.41-.34.95-.52 1.63-.52c.23 0 .44.02.71.06c.23.03.5.08.76.14v-.48c0-.51-.1-.84-.31-1.07c-.22-.21-.57-.3-1.08-.3c-.24 0-.48.03-.72.08c-.25.06-.49.13-.72.23c-.11.04-.2.07-.23.08c-.05.02-.08.02-.11.02c-.09 0-.14-.06-.14-.2v-.33c0-.1.01-.18.05-.23q.045-.075.18-.12c.24-.14.51-.24.84-.32a4 4 0 0 1 1.04-.13q1.185 0 1.74.54c.37.36.55.91.55 1.64v2.15zm-2.7 1.02c.22 0 .44-.04.68-.12s.45-.23.63-.43c.11-.13.19-.27.25-.43c0-.16.05-.35.05-.58v-.27c-.2-.07-.4-.07-.62-.12a7 7 0 0 0-.62-.04c-.45 0-.77.09-.99.27s-.32.43-.32.76c0 .32.07.56.24.71c.16.17.39.25.7.25m5.34.71a.6.6 0 0 1-.28-.06c-.03-.05-.08-.14-.12-.26L8.32 6.65c-.04-.15-.06-.22-.06-.27c0-.11.05-.17.16-.17h.65c.13 0 .22.02.26.07c.06.04.1.13.14.26l1.11 4.4l1.04-4.4c.03-.13.07-.22.13-.26c.05-.04.14-.07.25-.07h.55c.12 0 .21.02.26.07c.05.04.1.13.13.26L14 11l1.14-4.46c.04-.13.09-.22.13-.26c.06-.04.14-.07.26-.07h.62c.11 0 .17.06.17.17c0 .03-.01.07-.02.12c0 0-.02.08-.04.15l-1.61 5.14c-.04.14-.08.21-.15.26c-.04.04-.13.07-.24.07h-.57c-.13 0-.19-.02-.27-.07a.45.45 0 0 1-.12-.26L12.27 7.5l-1.03 4.28q-.045.195-.12.27a.5.5 0 0 1-.27.06zm8.55.18c-.33 0-.7-.04-1.03-.12s-.59-.17-.76-.26a.5.5 0 0 1-.21-.19a.4.4 0 0 1-.04-.18v-.34c0-.14.05-.2.15-.2h.12c.04 0 .1.05.17.08c.22.1.47.18.73.23c.27.05.54.08.79.08c.42 0 .75-.07.97-.22c.23-.17.35-.36.35-.63c0-.19-.07-.34-.18-.47c-.12-.12-.35-.24-.67-.34l-.97-.3c-.48-.16-.84-.38-1.06-.68a1.58 1.58 0 0 1-.33-.97c0-.28.06-.52.18-.73c.12-.22.28-.4.46-.55c.22-.15.44-.26.71-.34q.39-.12.84-.12q.21 0 .45.03c.14.02.28.05.42.07c.14.04.26.07.38.11s.2.08.28.12c.09.05.16.1.2.16s.06.13.06.22v.32q0 .21-.15.21c-.05 0-.14-.03-.26-.08c-.37-.17-.8-.26-1.27-.26c-.38 0-.66.06-.89.19c-.2.12-.31.32-.31.59c0 .19.07.35.2.47c.13.13.38.25.73.37l.95.3c.48.14.82.36 1.03.64q.3.405.3.93c0 .28-.06.54-.17.77c-.12.22-.28.42-.5.58c-.19.17-.44.29-.72.38s-.62.13-.95.13m1.25 3.24C17.89 17.14 14.71 18 12 18c-3.85 0-7.3-1.42-9.91-3.77c-.21-.19-.02-.44.23-.29c2.82 1.63 6.29 2.62 9.89 2.62c2.43 0 5.1-.5 7.55-1.56c.37-.15.68.26.32.53M21 14.5c-.29-.37-1.86-.18-2.57-.1c-.21.03-.24-.16-.05-.3c1.25-.87 3.31-.6 3.54-.33c.24.3-.06 2.36-1.23 3.34c-.19.15-.36.07-.28-.11c.27-.68.86-2.16.59-2.5"/></svg>
+              <div class="tool-name">AWS</div>
+            </div>
+            <div class="tool-category">Cloud</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#4285F4"><path d="M12.19 2.38a9.344 9.344 0 0 0-9.234 6.893c.053-.02-.055.013 0 0-3.875 2.551-3.922 8.11-.247 10.941l.006-.007-.007.03a6.717 6.717 0 0 0 4.077 1.356h5.173l.03.03h5.192c6.687.053 9.376-8.605 3.835-12.35a9.365 9.365 0 0 0-2.821-4.552l-.043.043.006-.05A9.344 9.344 0 0 0 12.19 2.38zm-.358 4.146c1.244-.04 2.518.368 3.486 1.15a5.186 5.186 0 0 1 1.862 4.078v.518c3.53-.07 3.53 5.262 0 5.193h-5.193l-.008.009v-.04H6.785a2.59 2.59 0 0 1-1.067-.23h.001a2.597 2.597 0 1 1 3.437-3.437l3.013-3.012A6.747 6.747 0 0 0 8.11 8.24c.018-.01.04-.026.054-.023a5.186 5.186 0 0 1 3.67-1.69z"/></svg>
+              <div class="tool-name">Google Cloud</div>
+            </div>
+            <div class="tool-category">Cloud</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#D50C2D"><path d="M0 0v24h24V0H0zm4.602 4.025h2.244c.509 0 .716.215.716.717v5.64h8.883v-5.64c0-.509.215-.717.717-.717h2.229c.5 0 .71.23.724.717v14.516c0 .509-.215.717-.717.717h-2.23c-.51 0-.717-.215-.717-.717v-5.735H7.562v5.735c0 .516-.215.717-.716.717H4.602c-.51 0-.717-.208-.717-.717V4.742c0-.509.207-.717.717-.717z"/></svg>
+              <div class="tool-name">Hetzner</div>
+            </div>
+            <div class="tool-category">Server</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#EA4B71"><path d="M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"/></svg>
+              <div class="tool-name">n8n.io</div>
+            </div>
+            <div class="tool-category">Automation</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#21759B"><path d="M21.469 6.825c.84 1.537 1.318 3.3 1.318 5.175 0 3.979-2.156 7.456-5.363 9.325l3.295-9.527c.615-1.54.82-2.771.82-3.864 0-.405-.026-.78-.07-1.11m-7.981.105c.647-.03 1.232-.105 1.232-.105.582-.075.514-.93-.067-.899 0 0-1.755.135-2.88.135-1.064 0-2.85-.15-2.85-.15-.585-.03-.661.855-.075.885 0 0 .54.061 1.125.09l1.68 4.605-2.37 7.08L5.354 6.9c.649-.03 1.234-.1 1.234-.1.585-.075.516-.93-.065-.896 0 0-1.746.138-2.874.138-.2 0-.438-.008-.69-.015C4.911 3.15 8.235 1.215 12 1.215c2.809 0 5.365 1.072 7.286 2.833-.046-.003-.091-.009-.141-.009-1.06 0-1.812.923-1.812 1.914 0 .89.513 1.643 1.06 2.531.411.72.89 1.643.89 2.977 0 .915-.354 1.994-.821 3.479l-1.075 3.585-3.9-11.61.001.014zM12 22.784c-1.059 0-2.081-.153-3.048-.437l3.237-9.406 3.315 9.087c.024.053.05.101.078.149-1.12.393-2.325.609-3.582.609M1.211 12c0-1.564.336-3.05.935-4.39L7.29 21.709C3.694 19.96 1.212 16.271 1.211 12M12 0C5.385 0 0 5.385 0 12s5.385 12 12 12 12-5.385 12-12S18.615 0 12 0"/></svg>
+              <div class="tool-name">WordPress</div>
+            </div>
+            <div class="tool-category">CMS</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#7c3aed"><path d="M19.355 18.538a68.967 68.959 0 0 0 1.858-2.954.81.81 0 0 0-.062-.9c-.516-.685-1.504-2.075-2.042-3.362-.553-1.321-.636-3.375-.64-4.377a1.707 1.707 0 0 0-.358-1.05l-3.198-4.064a3.744 3.744 0 0 1-.076.543c-.106.503-.307 1.004-.536 1.5-.134.29-.29.6-.446.914l-.31.626c-.516 1.068-.997 2.227-1.132 3.59-.124 1.26.046 2.73.815 4.481.128.011.257.025.386.044a6.363 6.363 0 0 1 3.326 1.505c.916.79 1.744 1.922 2.415 3.5zM8.199 22.569c.073.012.146.02.22.02.78.024 2.095.092 3.16.29.87.16 2.593.64 4.01 1.055 1.083.316 2.198-.548 2.355-1.664.114-.814.33-1.735.725-2.58l-.01.005c-.67-1.87-1.522-3.078-2.416-3.849a5.295 5.295 0 0 0-2.778-1.257c-1.54-.216-2.952.19-3.84.45.532 2.218.368 4.829-1.425 7.531zM5.533 9.938c-.023.1-.056.197-.098.29L2.82 16.059a1.602 1.602 0 0 0 .313 1.772l4.116 4.24c2.103-3.101 1.796-6.02.836-8.3-.728-1.73-1.832-3.081-2.55-3.831zM9.32 14.01c.615-.183 1.606-.465 2.745-.534-.683-1.725-.848-3.233-.716-4.577.154-1.552.7-2.847 1.235-3.95.113-.235.223-.454.328-.664.149-.297.288-.577.419-.86.217-.47.379-.885.46-1.27.08-.38.08-.72-.014-1.043-.095-.325-.297-.675-.68-1.06a1.6 1.6 0 0 0-1.475.36l-4.95 4.452a1.602 1.602 0 0 0-.513.952l-.427 2.83c.672.59 2.328 2.316 3.335 4.711.09.21.175.43.253.653z"/></svg>
+              <div class="tool-name">Obsidian</div>
+            </div>
+            <div class="tool-category">PKM</div>
+          </div>
+
+          <div class="tool-item">
+            <div class="tool-info">
+              <svg class="tool-logo" viewBox="0 0 24 24" width="24" height="24" fill="#191715"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.968c-.42-.326-.981-.7-2.055-.607L3.01 2.295c-.466.046-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.167V6.354c0-.606-.233-.933-.748-.887l-15.177.887c-.56.047-.747.327-.747.933zm14.337.745c.093.42 0 .84-.42.888l-.7.14v10.264c-.608.327-1.168.514-1.635.514-.748 0-.935-.234-1.495-.933l-4.577-7.186v6.952L12.21 19s0 .84-1.168.84l-3.222.186c-.093-.186 0-.653.327-.746l.84-.233V9.854L7.822 9.76c-.094-.42.14-1.026.793-1.073l3.456-.233 4.764 7.279v-6.44l-1.215-.139c-.093-.514.28-.887.747-.933zM1.936 1.035l13.31-.98c1.634-.14 2.055-.047 3.082.7l4.249 2.986c.7.513.934.653.934 1.213v16.378c0 1.026-.373 1.634-1.68 1.726l-15.458.934c-.98.047-1.448-.093-1.962-.747l-3.129-4.06c-.56-.747-.793-1.306-.793-1.96V2.667c0-.839.374-1.54 1.447-1.632z"/></svg>
+              <div class="tool-name">Notion</div>
+            </div>
+            <div class="tool-category">WORKSPACE</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 03: LIVE DEMO -->
+    <section class="chapter" id="demo">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">03 — Interaktion<strong>Live-Demo</strong></div>
+        <h2 class="section-title">KI-Werkzeuge. <em>Jetzt ausprobieren</em>.</h2>
+      </div>
+
+      <div class="demo-wrap scroll-reveal">
+        <div class="demo-tabs">
+          <button class="demo-tab active" data-tab="voice"><span class="tab-num">01</span>Stimme &rarr; Rechnung</button>
+          <button class="demo-tab" data-tab="whatsapp"><span class="tab-num">02</span>WhatsApp &rarr; Antwort</button>
+          <button class="demo-tab" data-tab="diagnose"><span class="tab-num">03</span>Schaden &rarr; Diagnose</button>
+        </div>
+
+        <div class="demo-body">
+          <div class="demo-panel active" data-panel="voice">
+            <div class="demo-input-col">
+              <div class="sec-num" style="border:none; padding:0; margin-bottom:12px;">SCHRITT 1 — SPRACHBESCHREIBUNG</div>
+              <h3 style="font-family:var(--font-serif); font-weight:400; font-size:22px; margin-bottom:8px;">Nach dem Auftrag reinsprechen.</h3>
+              <p style="font-size:14.5px; color:hsl(var(--text-secondary)); margin-bottom:16px;">Wählen Sie ein Beispiel oder tippen Sie einen Text.</p>
+              
+              <div class="example-chips">
+                <button class="chip" data-example="voice-1">▶ Zwei Wasserhähne in der Küche von Familie Müller gewechselt, neuen Durchlauferhitzer installiert, 3 Stunden Arbeit.</button>
+                <button class="chip" data-example="voice-2">▶ Bei Herrn Schmidt Küchenbeleuchtung erneuert, 4 LED-Spots und Dimmer installiert, 2.5 Std vor Ort.</button>
+              </div>
+
+              <textarea class="demo-textarea" id="voice-input" placeholder="…oder eigene Beschreibung eintippen"></textarea>
+              
+              <div style="margin-top:16px; display:flex; gap:12px;">
+                <button class="btn btn-primary" id="voice-process">Rechnung erstellen &rarr;</button>
+                <button class="btn btn-secondary" id="voice-reset">Reset</button>
+              </div>
+            </div>
+
+            <div class="demo-output-col" id="voice-output">
+              <div style="height:100%; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--inverse-text-muted);">
+                <p>Hier erscheint Ihre automatisch erstellte Rechnung im Terminal-Output.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-panel" data-panel="whatsapp">
+            <div class="demo-input-col">
+              <div class="sec-num" style="border:none; padding:0; margin-bottom:12px;">SCHRITT 1 — KUNDENANFRAGE</div>
+              <h3 style="font-family:var(--font-serif); font-weight:400; font-size:22px; margin-bottom:8px;">Aus Chaos wird Profi-Sprache.</h3>
+              
+              <div class="example-chips">
+                <button class="chip" data-example="wa-1">💬 Hallo! Mein Wasserhahn in der Küche tropft seit gestern stark. Können Sie kurzfristig kommen?</button>
+              </div>
+
+              <textarea class="demo-textarea" id="wa-input" placeholder="…oder Kundenanfrage eintippen"></textarea>
+              
+              <div style="margin-top:16px; display:flex; gap:12px;">
+                <button class="btn btn-primary" id="wa-process">Antwort generieren &rarr;</button>
+                <button class="btn btn-secondary" id="wa-reset">Reset</button>
+              </div>
+            </div>
+
+            <div class="demo-output-col" id="wa-output">
+              <div style="height:100%; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--inverse-text-muted);">
+                <p>Hier erscheint die qualifizierte WhatsApp-Antwort.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-panel" data-panel="diagnose">
+            <div class="demo-input-col">
+              <div class="sec-num" style="border:none; padding:0; margin-bottom:12px;">SCHRITT 1 — FEHLERBILD</div>
+              <h3 style="font-family:var(--font-serif); font-weight:400; font-size:22px; margin-bottom:8px;">Problem beschreiben.</h3>
+              
+              <div class="example-chips">
+                <button class="chip" data-example="diag-1">🔎 Alter Grohe-Einhandmischer unter der Spüle undicht an der Basis. Wasser tropft in den Schrank.</button>
+              </div>
+
+              <textarea class="demo-textarea" id="diag-input" placeholder="…oder Fehler beschreiben"></textarea>
+              
+              <div style="margin-top:16px; display:flex; gap:12px;">
+                <button class="btn btn-primary" id="diag-process">Diagnose erstellen &rarr;</button>
+                <button class="btn btn-secondary" id="diag-reset">Reset</button>
+              </div>
+            </div>
+
+            <div class="demo-output-col" id="diag-output">
+              <div style="height:100%; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--inverse-text-muted);">
+                <p>Hier erscheint die automatisierte Material- und Diagnose-Analyse.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 04: WERDEGANG -->
+    <section class="chapter" id="werdegang">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">04 — Erfahrung<strong>Werdegang</strong></div>
+        <h2 class="section-title">20 Jahre Retail <em>trifft KI-Transformation</em>.</h2>
+      </div>
+
+      <div class="timeline scroll-reveal">
+                <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-date">2026</div>
+          <div class="tl-title">Google AI Professional &amp; Anthropic Claude Code in Action</div>
+          <div class="tl-org">Google / Coursera &amp; Anthropic &middot; Agentic AI &amp; Professional Certification</div>
+          <p class="tl-desc">Erfolgreicher Abschluss des 7-teiligen Google AI Professional Certificates sowie der offiziellen Anthropic Zertifizierung für Claude Code Agentic Workflows.</p>
+        </div>
+
+<div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-date">2025 — HEUTE</div>
+          <div class="tl-title">TÜV geprüfter AI Automation Manager</div>
+          <div class="tl-org">neudenken.io &middot; KI-Beratung &amp; Automatisierung</div>
+          <p class="tl-desc">Entwicklung und Implementierung von KI-gestützten Automatisierungslösungen für KMUs. Fokus auf Retail-Optimierung und Prozessdigitalisierung.</p>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-date">2017 — HEUTE</div>
+          <div class="tl-title">Filialleiter</div>
+          <div class="tl-org">ALDI SÜD &middot; Führung &amp; Operations</div>
+          <p class="tl-desc">Verantwortung für 17 Mitarbeitende, Umsatzoptimierung und operative Exzellenz. Durchführung strategischer Projekte und Prozessverbesserungen.</p>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-date">FEB — APR 2018</div>
+          <div class="tl-title">Expat Specialist</div>
+          <div class="tl-org">ALDI Italia &middot; Internationale Expansion</div>
+          <p class="tl-desc">Strategischer Einsatz in Italien zur Unterstützung der internationalen Expansion. Aufbau und Optimierung von Geschäftsprozessen im italienischen Markt.</p>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-date">2011</div>
+          <div class="tl-title">Geprüfter Wirtschaftsfachwirt IHK</div>
+          <div class="tl-org">IHK Weingarten &middot; Betriebswirtschaftliche Qualifikation</div>
+          <p class="tl-desc">Umfassende betriebswirtschaftliche Weiterbildung mit Fokus auf Unternehmensführung, Personalmanagement und strategische Planung.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact scroll-reveal" id="kontakt">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <div class="kicker">Ein Gespräch, kein Fragebogen</div>
+          <h2>Reden wir.<br><em class="accent">Ernsthaft.</em></h2>
+        </div>
+
+        <div class="contact-lines">
+          <div class="line-row">E-Mail &middot; <a href="mailto:salva@neudenken.io">salva@neudenken.io</a></div>
+          <div class="line-row">LinkedIn &middot; <a href="https://www.linkedin.com/in/salvatore-docimo-15bb47200" target="_blank">linkedin.com/in/salvatore-docimo</a></div>
+          <div class="line-row">Region &middot; Bisingen, Baden-Württemberg</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>&copy; 2026 neudenken.io &middot; Salvatore Docimo &middot; Alle Rechte vorbehalten</div>
+      <div>
+        <button onclick="openModal('impressum')" style="background:none; border:none; color:inherit; font-family:inherit; cursor:pointer;">Impressum</button>
+        &middot; CD Manual v3.0 &middot; Bisingen
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="modal-capable">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('capable')">&times;</button>
+      <h2 style="font-family:var(--font-serif); font-weight:300; margin-bottom:8px;">Capable — Prompt Engineering</h2>
+      <p style="font-size:14.5px; color:hsl(var(--text-secondary)); margin-bottom:20px;">Fortgeschrittene Fähigkeiten in der Entwicklung und Anwendung von KI-Prompts für reale Geschäftsanforderungen.</p>
+      <div class="sec-num" style="border:none; padding:0; margin-bottom:12px;">NACHWEISE</div>
+      <ul style="padding-left:20px; line-height:1.8; font-size:14.5px; color:hsl(var(--text-secondary));">
+        <li>Über 2 Jahre Erfahrung in der Entwicklung strukturierter Prompts</li>
+        <li>Fortgeschrittene Nutzung von Sprachsteuerung und GPT-Rollen</li>
+        <li>Effektive Verwaltung von Kontextverläufen in komplexen Szenarien</li>
+        <li>Erstellung eigener GPTs für spezialisierte Anwendungsfälle</li>
+        <li>Über 2.200 tiefgehende Chat-Sessions</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-adoptive">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('adoptive')">&times;</button>
+      <h2 style="font-family:var(--font-serif); font-weight:300; margin-bottom:8px;">Adoptive — Workflow-Automatisierung</h2>
+      <p style="font-size:14.5px; color:hsl(var(--text-secondary)); margin-bottom:20px;">Integration von KI-Tools in bestehende Workflows für automatisierte, agentenartige Lösungen.</p>
+      <div class="sec-num" style="border:none; padding:0; margin-bottom:12px;">INTEGRATIONEN</div>
+      <ul style="padding-left:20px; line-height:1.8; font-size:14.5px; color:hsl(var(--text-secondary));">
+        <li>GPTs mit Tools wie n8n, Make, Notion und Obsidian verbunden</li>
+        <li>Chat-Analyse und automatisierte Projektstrukturierung</li>
+        <li>Intelligente Wissensablage und -verwaltung</li>
+        <li>Entwicklung agentenartiger Systeme</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-transformative">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('transformative')">&times;</button>
+      <h2 style="font-family:var(--font-serif); font-weight:300; margin-bottom:8px;">Transformative — Systemarchitektur</h2>
+      <p style="font-size:14.5px; color:hsl(var(--text-secondary)); margin-bottom:20px;">Entwicklung umfassender KI-Systemarchitekturen für transformative Geschäftsprozesse.</p>
+      <div class="sec-num" style="border:none; padding:0; margin-bottom:12px;">KOMPONENTEN</div>
+      <ul style="padding-left:20px; line-height:1.8; font-size:14.5px; color:hsl(var(--text-secondary));">
+        <li>GPTs und Agenten-Logik für komplexe Entscheidungsprozesse</li>
+        <li>Prozessfluss-Management für Workflow-Orchestrierung</li>
+        <li>Langfristige Denkstruktur durch Obsidian-Integration</li>
+        <li>Content-Strategie mit LinkedIn-Automatisierung</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-impressum">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('impressum')">&times;</button>
+      <h2 style="font-family:var(--font-serif); font-weight:300; margin-bottom:16px;">Impressum</h2>
+      <p style="font-size:14px; line-height:1.7; color:hsl(var(--text-secondary));">
+        <strong>Salvatore Docimo</strong><br>
+        Untere Klingen 15<br>
+        72406 Bisingen<br><br>
+        E-Mail: salva@neudenken.io<br><br>
+        <strong>Verantwortlich nach § 55 Abs. 2 RStV:</strong><br>
+        Salvatore Docimo, Untere Klingen 15, 72406 Bisingen
+      </p>
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    // Canvas & Touch Repulsion
+    const canvas = document.getElementById('antigravityCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouse = { x: null, y: null, targetX: null, targetY: null, radius: window.matchMedia('(pointer: coarse)').matches ? 190 : 150 };
+
+    function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.8;
+        this.baseX = this.x; this.baseY = this.y;
+        this.density = (Math.random() * 30) + 12;
+        this.speedX = (Math.random() * 0.2) - 0.1;
+        this.speedY = (Math.random() * 0.1) - 0.05;
+        this.opacity = Math.random() * 0.4 + 0.25;
+      }
+      draw() {
+        ctx.fillStyle = `rgba(163, 71, 41, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+      update() {
+        this.baseX += this.speedX; this.baseY += this.speedY;
+        if (this.baseX < 0) this.baseX = canvas.width;
+        if (this.baseX > canvas.width) this.baseX = 0;
+        if (this.baseY < 0) this.baseY = canvas.height;
+        if (this.baseY > canvas.height) this.baseY = 0;
+
+        if (mouse.x !== null && mouse.y !== null) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < mouse.radius) {
+            let forceDirectionX = dx / distance;
+            let forceDirectionY = dy / distance;
+            let force = (mouse.radius - distance) / mouse.radius;
+            this.x -= forceDirectionX * force * this.density;
+            this.y -= forceDirectionY * force * this.density;
+            this.opacity = Math.min(0.8, this.opacity + 0.02);
+          } else {
+            if (this.x !== this.baseX) this.x -= (this.x - this.baseX) / 20;
+            if (this.y !== this.baseY) this.y -= (this.y - this.baseY) / 20;
+            if (this.opacity > 0.3) this.opacity -= 0.005;
+          }
+        } else {
+          if (this.x !== this.baseX) this.x -= (this.x - this.baseX) / 20;
+          if (this.y !== this.baseY) this.y -= (this.y - this.baseY) / 20;
+        }
+      }
+    }
+
+    function createParticles() {
+      particles = [];
+      const quantity = Math.floor((canvas.width * canvas.height) / 18000);
+      for (let i = 0; i < quantity; i++) particles.push(new Particle());
+    }
+    createParticles();
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (mouse.targetX !== null && mouse.targetY !== null) {
+        if (mouse.x === null) { mouse.x = mouse.targetX; mouse.y = mouse.targetY; }
+        else { mouse.x += (mouse.targetX - mouse.x) * 0.12; mouse.y += (mouse.targetY - mouse.y) * 0.12; }
+        document.documentElement.style.setProperty('--mouse-x', mouse.x + 'px');
+        document.documentElement.style.setProperty('--mouse-y', mouse.y + 'px');
+      }
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    const updatePointer = (clientX, clientY) => { mouse.targetX = clientX; mouse.targetY = clientY; };
+    window.addEventListener('mousemove', e => updatePointer(e.clientX, e.clientY));
+    window.addEventListener('touchstart', e => { if (e.touches && e.touches.length > 0) updatePointer(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    window.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 0) updatePointer(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    const resetPointer = () => { mouse.targetX = null; mouse.targetY = null; mouse.x = null; mouse.y = null; };
+    window.addEventListener('mouseleave', resetPointer);
+    window.addEventListener('touchend', resetPointer);
+    window.addEventListener('touchcancel', resetPointer);
+
+    // Demos Tabs Logic
+    const tabs = document.querySelectorAll('.demo-tab');
+    const panels = document.querySelectorAll('.demo-panel');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelector(`.demo-panel[data-panel="${tab.dataset.tab}"]`).classList.add('active');
+      });
+    });
+
+    // Example Chips
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const text = chip.textContent.replace('▶', '').replace('💬', '').replace('🔎', '').trim();
+        const textarea = chip.closest('.demo-panel').querySelector('textarea');
+        textarea.value = text;
+      });
+    });
+
+    // Voice Process Demo
+    document.getElementById('voice-process')?.addEventListener('click', () => {
+      const out = document.getElementById('voice-output');
+      out.innerHTML = `<div class="invoice">
+        <div class="hd">
+          <div class="company">Elektro &amp; Sanitär Meisterbetrieb<small>SALVATORE DOCIMO &middot; BISINGEN</small></div>
+          <div class="doc-type">RECHNUNG</div>
+        </div>
+        <div class="meta">
+          <div><div class="field">Rechnungs-Nr.</div><strong>RE-2026-0481</strong></div>
+          <div><div class="field">Datum</div><strong>31.07.2026</strong></div>
+        </div>
+        <table>
+          <thead><tr><th>Pos &middot; Leistung</th><th>Std</th><th>Betrag</th></tr></thead>
+          <tbody>
+            <tr><td>Armaturenwechsel Küche</td><td>2.0</td><td>160.00 €</td></tr>
+            <tr><td>Durchlauferhitzer Montage</td><td>1.0</td><td>85.00 €</td></tr>
+            <tr><td>Material: Durchlauferhitzer 21kW</td><td>1.0</td><td>320.00 €</td></tr>
+          </tbody>
+        </table>
+        <div class="totals">
+          <div class="row"><span>Zwischensumme</span><span>565.00 €</span></div>
+          <div class="row"><span>19% MwSt.</span><span>107.35 €</span></div>
+          <div class="row final"><span>Gesamtbetrag</span><span>672.35 €</span></div>
+        </div>
+      </div>`;
+    });
+    document.getElementById('voice-reset')?.addEventListener('click', () => {
+      document.getElementById('voice-input').value = '';
+      document.getElementById('voice-output').innerHTML = `<div style="height:100%; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--inverse-text-muted);"><p>Hier erscheint Ihre automatisch erstellte Rechnung im Terminal-Output.</p></div>`;
+    });
+
+    // WhatsApp Process Demo
+    document.getElementById('wa-process')?.addEventListener('click', () => {
+      const input = document.getElementById('wa-input').value || "Hallo! Mein Wasserhahn tropft.";
+      const out = document.getElementById('wa-output');
+      out.innerHTML = `<div class="wa-in"><span class="wa-label">Kunde</span>${input}</div>
+      <div class="wa-out"><span class="wa-label">KI-Antwort (Entwurf)</span>Guten Tag! Vielen Dank für Ihre Nachricht. Gerne unterstützen wir Sie schnellstmöglich. Ein Fachmonteur kann morgen früh zwischen 08:00 und 10:00 Uhr bei Ihnen sein. Passt Ihnen dieses Zeitfenster?</div>`;
+    });
+    document.getElementById('wa-reset')?.addEventListener('click', () => {
+      document.getElementById('wa-input').value = '';
+      document.getElementById('wa-output').innerHTML = `<div style="height:100%; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--inverse-text-muted);"><p>Hier erscheint die qualifizierte WhatsApp-Antwort.</p></div>`;
+    });
+
+    // Diagnose Process Demo
+    document.getElementById('diag-process')?.addEventListener('click', () => {
+      const out = document.getElementById('diag-output');
+      out.innerHTML = `<div class="invoice">
+        <div class="hd"><div class="company">KI-Diagnosebericht<small>AUTOMATISCHE ANALYSE</small></div></div>
+        <div class="meta"><div><div class="field">Diagnose</div><strong>Kartuschendefekt / Dichtungsverschleiß</strong></div></div>
+        <p style="font-size:13px; color:#494641; margin-bottom:12px;"><strong>Empfohlene Maßnahme:</strong> Austausch der Steuerkartusche 35mm sowie Erneuerung der O-Ring-Dichtungen an der Mischbatterie.</p>
+        <div style="font-size:11px; font-family:var(--font-mono); color:#A34729; text-transform:uppercase; margin-bottom:6px;">Benötigtes Material:</div>
+        <ul style="font-size:12px; color:#494641; padding-left:16px; line-height:1.6;">
+          <li>Grohe Ersatzkartusche 35mm (Art. 46374000)</li>
+          <li>Dichtungssatz Spültischarmatur</li>
+          <li>Armaturenfett (Trinkwassergeeignet)</li>
+        </ul>
+      </div>`;
+    });
+    document.getElementById('diag-reset')?.addEventListener('click', () => {
+      document.getElementById('diag-input').value = '';
+      document.getElementById('diag-output').innerHTML = `<div style="height:100%; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--inverse-text-muted);"><p>Hier erscheint die automatisierte Material- und Diagnose-Analyse.</p></div>`;
+    });
+
+    // Modals
+    function openModal(id) {
+      document.getElementById('modal-' + id)?.classList.add('open');
+    }
+    function closeModal(id) {
+      document.getElementById('modal-' + id)?.classList.remove('open');
+    }
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+    });
+
+    // Scroll Reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.scroll-reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salvatore Docimo — Operator. Builder. Übersetzer.</title>
+  <meta name="description" content="Karriere-Portfolio von Salvatore Docimo. 20 Jahre Operations-Erfahrung trifft auf modernes Software- & AI-Engineering. Baden-Württemberg.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & BRAND TOKENS (Antigravity-Inspired Warm HSL Palette)
+       ========================================================================== */
+    :root {
+      /* Organic Warm Paper Scheme */
+      --bg-dark: 41 23% 92%;            /* #F2EEE5 - Warm Editorial Paper */
+      --bg-card: 42 29% 87%;            /* #E7E1D3 - Deep Paper for Panels */
+      --bg-terminal: 30 13% 7%;        /* #221E1A - Contrast Charcoal wood/ink for Tech Panels */
+      
+      --text-primary: 30 8% 9%;         /* #1A1816 - Solid Ink Dark Charcoal */
+      --text-secondary: 40 6% 27%;      /* #4A4741 - Medium Soft Ink */
+      --text-dim: 39 6% 45%;            /* #7A756C - Faint Warm Grey Ink */
+      
+      /* Tech Terminal contrast specific text colors */
+      --term-text-primary: #F2EEE5;     /* Warm light text inside dark panels */
+      --term-text-secondary: #CBD5E1;   /* Soft warm text inside dark panels */
+      --term-text-dim: #7A756C;         /* Faint text inside dark panels */
+      
+      /* Neon/Editorial Accents (Warm Palette) */
+      --accent-green: 127 22% 39%;      /* #4E7A53 - Muted Moss/Sage Green for live statuses */
+      --accent-green-rgb: 78, 122, 83;
+      --accent-cyan: 15 60% 43%;        /* #B04D2C - Sienna Clay Orange / Kupferton */
+      --accent-cyan-rgb: 176, 77, 44;
+      --accent-purple: 17 66% 29%;      /* #7A3519 - Deep Rust Secondary Accent */
+      --accent-purple-rgb: 122, 53, 25;
+      --accent-orange: 28 56% 50%;      /* #C87A38 - Warm Ochre Amber warnings */
+      --accent-orange-rgb: 200, 122, 56;
+      
+      --border-glow: 30 8% 9% / 8%;     /* Elegant subtle ink line */
+      --border-glow-active: 15 60% 43% / 35%; /* Sienna glow border */
+      
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      
+      --transition-smooth: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* ==========================================================================
+       RESET & BASE LAYOUT
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: hsl(var(--bg-dark));
+      color: hsl(var(--text-primary));
+      font-family: var(--font-sans);
+      font-weight: 400;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+      background-color: hsl(var(--bg-dark));
+    }
+
+    /* Subtle Paper Grain Texturing Overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+      opacity: 0.75;
+    }
+
+    /* ==========================================================================
+       ZERO-GRAVITY BACKGROUND ENGINE
+       ========================================================================== */
+    .antigravity-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .glow-engine {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+    .glow-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.06;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+    .blob-purple {
+      top: -10%;
+      left: 15%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, hsl(var(--accent-cyan)) 0%, transparent 70%);
+      animation: float-blob-1 30s infinite alternate ease-in-out;
+    }
+    .blob-cyan {
+      bottom: -10%;
+      right: 10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, hsl(var(--accent-purple)) 0%, transparent 70%);
+      animation: float-blob-2 35s infinite alternate ease-in-out;
+    }
+    @keyframes float-blob-1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8%, 12%) scale(1.15); }
+    }
+    @keyframes float-blob-2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-12%, -8%) scale(0.9); }
+    }
+
+    /* Infinite tech Grid backdrop */
+    .grid-backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      background-image: 
+        linear-gradient(rgba(26, 24, 22, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26, 24, 22, 0.015) 1px, transparent 1px);
+      background-size: 50px 50px;
+      background-position: center;
+      mask-image: radial-gradient(circle 800px at var(--mouse-x, 50%) var(--mouse-y, 400px), black 30%, transparent 90%);
+      -webkit-mask-image: radial-gradient(circle 800px at var(--mouse-x, 50%) var(--mouse-y, 400px), black 30%, transparent 90%);
+    }
+
+    ::selection {
+      background: rgba(var(--accent-cyan-rgb), 0.15);
+      color: hsl(var(--text-primary));
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ==========================================================================
+       GLASSMORPHISM PANEL SYSTEM
+       ========================================================================== */
+    .glass-card {
+      background: hsl(var(--bg-card) / 65%);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border: 1px solid hsl(var(--border-glow));
+      border-radius: 12px;
+      transition: var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(800px circle at var(--card-mouse-x, 0px) var(--card-mouse-y, 0px), rgba(176, 77, 44, 0.03), transparent 40%);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .glass-card:hover::before {
+      opacity: 1;
+    }
+    .glass-card:hover {
+      transform: translateY(-2px);
+      border-color: hsl(var(--border-glow-active));
+      box-shadow: 0 12px 30px rgba(26, 24, 22, 0.04);
+    }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION
+       ========================================================================== */
+    .header-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: var(--transition-smooth);
+    }
+    .header-scrolled {
+      padding: 10px 0;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: hsl(var(--bg-card) / 80%);
+      backdrop-filter: blur(20px) saturate(120%);
+      -webkit-backdrop-filter: blur(20px) saturate(120%);
+      border: 1px solid hsl(var(--border-glow));
+      border-radius: 100px;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-symbol {
+      width: 28px;
+      height: 28px;
+      border: 2px solid hsl(var(--accent-cyan));
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+      color: hsl(var(--accent-cyan));
+    }
+    .logo-text {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.02em;
+      color: hsl(var(--text-primary));
+    }
+    .logo-text em {
+      font-style: italic;
+      color: hsl(var(--accent-cyan));
+      font-weight: 500;
+    }
+    
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-secondary));
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: hsl(var(--accent-cyan));
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(176, 77, 44, 0.6);
+      animation: pulse-active 2s infinite ease-in-out;
+    }
+    @keyframes pulse-active {
+      0% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0.3; transform: scale(0.9); }
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: hsl(var(--text-secondary));
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: var(--transition-smooth);
+      padding: 6px 12px;
+      border-radius: 100px;
+    }
+    .nav-link:hover {
+      color: hsl(var(--text-primary));
+      background: rgba(26, 24, 22, 0.04);
+    }
+    .nav-link.accented {
+      color: hsl(var(--accent-cyan));
+      border: 1px dashed hsl(var(--accent-cyan) / 30%);
+    }
+    .nav-link.accented:hover {
+      background: hsl(var(--accent-cyan) / 5%);
+      border-color: hsl(var(--accent-cyan));
+    }
+
+    /* ==========================================================================
+       HERO SECTION
+       ========================================================================== */
+    .hero {
+      padding: 100px 0 80px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-left {
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: hsl(var(--accent-cyan));
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 48px;
+      height: 1px;
+      background-color: hsl(var(--accent-cyan));
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(52px, 7.5vw, 110px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      margin-bottom: 36px;
+      color: hsl(var(--text-primary));
+    }
+    .hero h1 .line {
+      display: block;
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: hsl(var(--accent-cyan));
+    }
+    .hero h1 .dot {
+      color: hsl(var(--accent-cyan));
+      font-style: normal;
+    }
+    .hero-manifesto {
+      max-width: 680px;
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(20px, 2.2vw, 26px);
+      line-height: 1.4;
+      letter-spacing: -0.015em;
+      color: hsl(var(--text-secondary));
+      padding-left: 32px;
+      border-left: 2px solid hsl(var(--accent-cyan));
+    }
+    .hero-manifesto strong {
+      font-weight: 600;
+      color: hsl(var(--text-primary));
+    }
+    .hero-manifesto em {
+      font-style: italic;
+      color: hsl(var(--accent-purple));
+      font-weight: 500;
+    }
+
+    /* Hero Right Candidate badge */
+    .hero-badge-card {
+      padding: 32px;
+      background: hsl(var(--bg-card) / 75%);
+      border: 1px solid hsl(var(--border-glow));
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(26, 24, 22, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .badge-header { display: none !important; 
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-cyan));
+      padding-bottom: 12px;
+      border-bottom: 1px dashed hsl(var(--border-glow));
+      display: flex;
+      justify-content: space-between;
+    }
+    .badge-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .badge-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: hsl(var(--text-dim));
+    }
+    .badge-val {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 17px;
+      color: hsl(var(--text-primary));
+    }
+    .badge-val em {
+      font-style: italic;
+      font-weight: 400;
+      color: hsl(var(--accent-cyan));
+    }
+    .badge-status-box {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: rgba(var(--accent-green-rgb), 0.08);
+      border: 1px solid rgba(var(--accent-green-rgb), 0.15);
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: hsl(var(--accent-green));
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: hsl(var(--accent-green));
+      animation: pulse-active 1.5s infinite;
+    }
+
+    /* ==========================================================================
+       CHAPTER SCAFFOLD
+       ========================================================================== */
+    section.chapter {
+      padding: 120px 0;
+      border-bottom: 1px solid hsl(var(--border-glow));
+      position: relative;
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 60px;
+      margin-bottom: 80px;
+      align-items: start;
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-cyan));
+      padding-top: 14px;
+      border-top: 2px solid hsl(var(--accent-cyan));
+      text-transform: uppercase;
+      line-height: 1.8;
+    }
+    .section-num strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 14px;
+      color: hsl(var(--text-secondary));
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 4px;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(38px, 5.5vw, 76px);
+      line-height: 0.98;
+      letter-spacing: -0.035em;
+      color: hsl(var(--text-primary));
+    }
+    .section-title em {
+      font-style: italic;
+      color: hsl(var(--accent-cyan));
+      font-weight: 400;
+    }
+
+    /* ==========================================================================
+       KAPITEL 01: DIE ZAHLEN (EVIDENCE)
+       ========================================================================== */
+    .data-intro {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(20px, 2.4vw, 27px);
+      line-height: 1.45;
+      letter-spacing: -0.01em;
+      color: hsl(var(--text-secondary));
+      max-width: 880px;
+      margin-bottom: 60px;
+    }
+    .data-intro strong {
+      color: hsl(var(--text-primary));
+      font-weight: 500;
+      font-style: italic;
+    }
+    
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1.5px solid hsl(var(--text-primary));
+      border-left: 1px solid hsl(var(--border-glow));
+    }
+    .data-cell {
+      padding: 40px 32px;
+      border-right: 1px solid hsl(var(--border-glow));
+      border-bottom: 1px solid hsl(var(--border-glow));
+      background: hsl(var(--bg-dark) / 50%);
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+    .data-cell:hover {
+      background: hsl(var(--bg-card) / 45%);
+    }
+    .data-cell .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-cyan));
+      margin-bottom: 24px;
+    }
+    .data-cell .value {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(54px, 7vw, 92px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      color: hsl(var(--text-primary));
+      margin-bottom: 16px;
+      display: flex;
+      align-items: baseline;
+    }
+    .data-cell .value .unit {
+      font-size: 0.35em;
+      color: hsl(var(--accent-cyan));
+      margin-left: 6px;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .data-cell .value .plus {
+      color: hsl(var(--accent-cyan));
+      font-style: italic;
+      font-weight: 400;
+      margin-right: -4px;
+    }
+    .data-cell .desc {
+      font-size: 14.5px;
+      color: hsl(var(--text-secondary));
+      line-height: 1.55;
+    }
+    .data-cell .desc em {
+      font-style: italic;
+      font-family: var(--font-serif);
+      color: hsl(var(--text-primary));
+    }
+    .data-cell .source {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-dim));
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px dashed hsl(var(--border-glow));
+    }
+
+    /* ==========================================================================
+       KAPITEL 02: DIE THESE (THE CASE)
+       ========================================================================== */
+    .thesis-grid {
+      display: grid;
+      grid-template-columns: 3.5fr 8.5fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .thesis-sidebar {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: hsl(var(--text-dim));
+      line-height: 2.2;
+      padding-top: 14px;
+      border-top: 1px solid hsl(var(--border-glow));
+    }
+    .thesis-sidebar span {
+      display: block;
+      padding-left: 14px;
+      border-left: 1px solid hsl(var(--border-glow));
+      transition: var(--transition-smooth);
+    }
+    .thesis-sidebar span.active {
+      color: hsl(var(--text-primary));
+      border-left: 2px solid hsl(var(--accent-cyan));
+    }
+    .thesis-body p {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(20px, 2.3vw, 28px);
+      line-height: 1.45;
+      letter-spacing: -0.015em;
+      margin-bottom: 28px;
+      color: hsl(var(--text-secondary));
+    }
+    .thesis-body p strong {
+      color: hsl(var(--text-primary));
+      font-weight: 600;
+    }
+    .thesis-body .pull {
+      font-weight: 500;
+      font-style: italic;
+      color: hsl(var(--accent-purple));
+      font-size: 1.08em;
+    }
+    .thesis-body .mark {
+      background: linear-gradient(180deg, transparent 65%, rgba(176, 77, 44, 0.15) 65%);
+      padding: 0 4px;
+    }
+    .thesis-body .crossed {
+      text-decoration: line-through;
+      text-decoration-color: hsl(var(--accent-cyan));
+      text-decoration-thickness: 2px;
+      color: hsl(var(--text-dim));
+    }
+
+    /* ==========================================================================
+       KAPITEL 03: WERDEGANG (JOURNEY)
+       ========================================================================== */
+    .journey-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid hsl(var(--text-primary));
+      background: hsl(var(--bg-dark) / 50%);
+    }
+    .journey-side {
+      padding: 48px 40px;
+      position: relative;
+    }
+    .journey-side:first-child {
+      border-right: 1.5px solid hsl(var(--text-primary));
+      background: hsl(var(--bg-card) / 40%);
+    }
+    .journey-side h4 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-cyan));
+      margin-bottom: 32px;
+    }
+    .journey-side h4 .arrow {
+      float: right;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 14px;
+      color: hsl(var(--text-dim));
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .journey-side h3 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(26px, 3.2vw, 38px);
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      margin-bottom: 24px;
+      color: hsl(var(--text-primary));
+    }
+    .journey-side h3 em {
+      font-style: italic;
+      color: hsl(var(--accent-cyan));
+      font-weight: 400;
+    }
+    .journey-side p {
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: hsl(var(--text-secondary));
+      margin-bottom: 16px;
+    }
+    .journey-side p strong {
+      color: hsl(var(--text-primary));
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       KAPITEL 04: PORTFOLIO & WORKSPACE CONSOLE
+       ========================================================================== */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .pf-card {
+      padding: 36px 32px;
+      background: hsl(var(--bg-card) / 50%);
+      border: 1px solid hsl(var(--border-glow));
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .pf-card.span-12 {
+      grid-column: span 2;
+      background: hsl(var(--bg-card) / 60%);
+      border: 2px solid hsl(var(--text-primary));
+    }
+    .pf-card.span-8 { grid-column: span 2; }
+    .pf-card.span-6 { grid-column: span 1; }
+    .pf-card.span-4 { grid-column: span 1; }
+    
+    .pf-head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-cyan));
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .pf-status-badge {
+      color: hsl(var(--text-dim));
+      font-weight: 600;
+    }
+    .pf-status-badge.live {
+      color: hsl(var(--accent-green));
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pf-status-badge.live::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: hsl(var(--accent-green));
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse-active 1.5s infinite;
+    }
+    
+    .pf-card h4 {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: clamp(22px, 2.4vw, 32px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: hsl(var(--text-primary));
+    }
+    .pf-card h4 em {
+      font-style: italic;
+      color: hsl(var(--accent-cyan));
+      font-weight: 400;
+    }
+    
+    .pf-flagship-wrapper {
+      display: grid;
+      grid-template-columns: 5.5fr 6.5fr;
+      gap: 40px;
+      align-items: stretch;
+      margin-bottom: 24px;
+    }
+    
+    .pf-body-content p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: hsl(var(--text-secondary));
+      margin-bottom: 14px;
+    }
+    .pf-body-content p strong {
+      color: hsl(var(--text-primary));
+      font-weight: 600;
+    }
+    
+    /* Flagship active logs console style */
+    .pf-flagship-console {
+      background: hsl(var(--bg-terminal));
+      border-radius: 8px;
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.8;
+      color: var(--term-text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      height: 230px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .pf-flagship-console span {
+      display: block;
+    }
+    .c-system { color: var(--term-text-dim); }
+    .c-ok { color: #81C784; }
+    .c-accent { color: #FFB74D; }
+    .c-action { color: #64B5F6; }
+    
+    .pf-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      padding-top: 20px;
+      border-top: 1px solid hsl(var(--border-glow));
+    }
+    .stack-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-dim));
+      background: rgba(26, 24, 22, 0.03);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .stack-badge.accented {
+      color: hsl(var(--accent-cyan));
+      border: 1px dashed hsl(var(--accent-cyan) / 20%);
+      background: hsl(var(--accent-cyan) / 2%);
+    }
+
+    /* ==========================================================================
+       KAPITEL 05: DENKBELEGE (THINKING EVIDENCE)
+       ========================================================================== */
+    .thinking-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+    .think-item {
+      display: grid;
+      grid-template-columns: 80px 3.5fr 8.5fr;
+      gap: 40px;
+      padding: 40px 0;
+      border-top: 1px solid hsl(var(--border-glow));
+      align-items: start;
+      transition: var(--transition-smooth);
+    }
+    .think-item:last-child {
+      border-bottom: 1px solid hsl(var(--border-glow));
+    }
+    .think-item:hover {
+      padding-left: 16px;
+    }
+    .think-item .num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: hsl(var(--accent-cyan));
+      letter-spacing: 0.12em;
+      padding-top: 6px;
+    }
+    .think-item h3 {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: clamp(22px, 2.5vw, 30px);
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      color: hsl(var(--text-primary));
+    }
+    .think-item h3 em {
+      font-style: italic;
+      font-weight: 400;
+      color: hsl(var(--text-dim));
+      display: block;
+      font-size: 0.55em;
+      margin-top: 6px;
+      letter-spacing: 0;
+    }
+    .think-item .evidence {
+      font-size: 15.5px;
+      line-height: 1.7;
+      color: hsl(var(--text-secondary));
+    }
+    .think-item .evidence strong {
+      color: hsl(var(--text-primary));
+      font-weight: 600;
+    }
+    .think-item .evidence em {
+      font-style: italic;
+      font-family: var(--font-serif);
+    }
+    .think-item .citation {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--accent-cyan));
+      padding: 3px 8px;
+      border: 1px dashed hsl(var(--accent-cyan) / 40%);
+      border-radius: 4px;
+      margin-left: 8px;
+      vertical-align: 2px;
+      background: hsl(var(--accent-cyan) / 2%);
+    }
+
+    /* ==========================================================================
+       KAPITEL 06: WER ICH NICHT BIN (ABGRENZUNG)
+       ========================================================================== */
+    .negative-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: hsl(var(--text-primary) / 15%);
+      border: 1px solid hsl(var(--text-primary) / 15%);
+    }
+    .neg-cell {
+      background: hsl(var(--bg-dark));
+      padding: 44px 32px;
+      transition: var(--transition-smooth);
+    }
+    .neg-cell:hover {
+      background: hsl(var(--bg-card) / 30%);
+    }
+    .neg-cell .cross-sign {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 44px;
+      color: hsl(var(--accent-cyan));
+      line-height: 1;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .neg-cell h4 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: hsl(var(--text-primary));
+    }
+    .neg-cell p {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: hsl(var(--text-secondary));
+    }
+
+    /* ==========================================================================
+       KAPITEL 07: DER PLAN (KONKRETION)
+       ========================================================================== */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 60px;
+    }
+    .plan-col h5 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: hsl(var(--accent-cyan));
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid hsl(var(--accent-cyan));
+    }
+    .plan-col ul.roles {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .plan-col ul.roles li {
+      font-family: var(--font-serif);
+      font-size: clamp(24px, 3.2vw, 36px);
+      font-weight: 300;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      padding: 12px 0;
+      border-bottom: 1px solid hsl(var(--border-glow));
+      color: hsl(var(--text-primary));
+    }
+    .plan-col ul.roles li em {
+      font-style: italic;
+      color: hsl(var(--accent-cyan));
+      font-weight: 400;
+    }
+    .plan-col ul.roles li:last-child {
+      border-bottom: none;
+    }
+    
+    .plan-col p {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(18px, 2.2vw, 22px);
+      line-height: 1.5;
+      color: hsl(var(--text-secondary));
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+    .plan-col p strong {
+      color: hsl(var(--text-primary));
+      font-weight: 600;
+      font-style: italic;
+    }
+    
+    .companies-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+    }
+    .company-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 8px 16px;
+      background: hsl(var(--bg-dark));
+      border: 1px solid hsl(var(--text-primary));
+      color: hsl(var(--text-primary));
+      border-radius: 4px;
+      transition: var(--transition-smooth);
+    }
+    .company-tag:hover {
+      background: hsl(var(--text-primary));
+      color: hsl(var(--bg-dark));
+    }
+
+    /* ==========================================================================
+       CONTACT & TELEMETRY
+       ========================================================================== */
+    .contact {
+      padding: 140px 0 100px;
+      position: relative;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: flex-end;
+    }
+    .contact-left h2 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(52px, 8vw, 110px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: hsl(var(--text-primary));
+    }
+    .contact-left h2 em {
+      font-style: italic;
+      color: hsl(var(--accent-cyan));
+      font-weight: 400;
+    }
+    .contact-left .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: hsl(var(--accent-cyan));
+      margin-bottom: 36px;
+    }
+    
+    .contact-lines {
+      font-family: var(--font-serif);
+      font-size: clamp(19px, 2.2vw, 24px);
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      color: hsl(var(--text-secondary));
+    }
+    .contact-lines a {
+      display: inline-block;
+      color: hsl(var(--accent-cyan));
+      text-decoration: none;
+      border-bottom: 1.5px solid hsl(var(--accent-cyan));
+      padding-bottom: 2px;
+      transition: var(--transition-smooth);
+    }
+    .contact-lines a:hover {
+      color: hsl(var(--accent-purple));
+      border-color: hsl(var(--accent-purple));
+    }
+    .contact-lines .line-row {
+      margin-bottom: 16px;
+    }
+    .contact-lines .meta {
+      font-size: 13.5px;
+      color: hsl(var(--text-dim));
+      font-family: var(--font-mono);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid hsl(var(--border-glow));
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .footer {
+      border-top: 1px solid hsl(var(--text-primary) / 15%);
+      padding: 36px 0;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-dim));
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ==========================================================================
+       ANIMATIONS & SCROLL REVEALS
+       ========================================================================== */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .reveal-fup {
+      animation: fadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .d1 { animation-delay: 0.15s; }
+    .d2 { animation-delay: 0.3s; }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       RESPONSIVE ADAPTATIONS
+       ========================================================================== */
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+      .section-head { grid-template-columns: 1fr; gap: 20px; margin-bottom: 50px; }
+      .data-grid { grid-template-columns: repeat(2, 1fr); }
+      .thesis-grid { grid-template-columns: 1fr; gap: 32px; }
+      .thesis-sidebar { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 0; border-top: none; }
+      .thesis-sidebar span { padding: 4px 12px; border-left: 2px solid hsl(var(--border-glow)); }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .pf-card.span-12, .pf-card.span-8, .pf-card.span-6, .pf-card.span-4 { grid-column: span 1; }
+      .journey-grid { grid-template-columns: 1fr; }
+      .journey-side:first-child { border-right: none; border-bottom: 1.5px solid hsl(var(--text-primary)); }
+      .pf-flagship-wrapper { grid-template-columns: 1fr; gap: 24px; }
+      .think-item { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
+      .negative-grid { grid-template-columns: 1fr; }
+      .plan-grid { grid-template-columns: 1fr; gap: 40px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      section.chapter { padding: 80px 0; }
+    }
+    
+    @media (max-width: 580px) {
+      .data-grid { grid-template-columns: 1fr; }
+      .pf-card.span-6, .pf-card.span-8, .pf-card.span-4 { grid-column: span 12; }
+      .navbar { padding: 10px 16px; }
+      .nav-status { display: none; }
+    }
+  
+    /* Mobile Navigation & Portfolio Layout Fixes */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 14px 18px !important;
+        border-radius: 24px !important;
+        gap: 12px !important;
+      }
+      .nav-left {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+      }
+      .nav-links {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+      }
+      .nav-link {
+        font-size: 11px !important;
+        padding: 6px 10px !important;
+        white-space: nowrap !important;
+      }
+      .nav-link.accented {
+        align-self: flex-start !important;
+        margin-top: 4px !important;
+      }
+      .portfolio-grid, .glass-card, .pf-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        overflow-x: hidden !important;
+      }
+    }
+  
+    /* MOBILE RESPONSIVE FIXES FOR WERKBANK & CANVAS */
+    @media (max-width: 768px) {
+      .container {
+        padding-left: 14px !important;
+        padding-right: 14px !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+      }
+      .portfolio-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        width: 100% !important;
+      }
+      .pf-card, .pf-card.span-12, .pf-card.span-8, .pf-card.span-6, .pf-card.span-4 {
+        grid-column: span 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 20px 16px !important;
+        box-sizing: border-box !important;
+      }
+      .pf-flagship-wrapper {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        width: 100% !important;
+      }
+      .pf-flagship-console {
+        width: 100% !important;
+        max-height: 240px !important;
+        font-size: 10.5px !important;
+        padding: 14px !important;
+        box-sizing: border-box !important;
+      }
+      .section-head {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        margin-bottom: 40px !important;
+      }
+      .data-grid, .journey-grid, .plan-grid, .contact-grid {
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+      }
+    }
+  
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+    }
+    .tool-logo {
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tool-item:hover .tool-logo {
+      transform: translateY(-2px) scale(1.1);
+    }
+
+  
+    /* TOOLBOX NO OVERFLOW & PERFECT LAYOUT */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+      gap: 16px !important;
+    }
+    .tool-item {
+      background: hsl(var(--bg-panel) / 60%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-md);
+      padding: 12px 14px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      color: inherit;
+      min-width: 0 !important;
+      overflow: hidden !important;
+    }
+    .tool-item:hover {
+      border-color: hsl(var(--border-hairline-active));
+      transform: translateY(-2px);
+      background: hsl(var(--bg-panel));
+    }
+    .tool-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .tool-logo {
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tool-item:hover .tool-logo {
+      transform: translateY(-2px) scale(1.1);
+    }
+    .tool-name {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 13.5px !important;
+      color: hsl(var(--text-primary));
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tool-category {
+      font-family: var(--font-mono);
+      font-size: 9px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.06em !important;
+      color: hsl(var(--text-muted));
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+  
+    /* PERFECT PITCH-BLACK TECH TERMINAL CONSOLE */
+    .pf-flagship-console, .demo-output-col, .terminal-box {
+      background: #141210 !important;
+      color: #CBD5E1 !important;
+      border-radius: 8px !important;
+      padding: 24px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 11.5px !important;
+      line-height: 1.8 !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7) !important;
+    }
+    .pf-flagship-console span, .demo-output-col span {
+      display: block;
+    }
+    .c-system { color: #64748B !important; }
+    .c-ok { color: #81C784 !important; font-weight: 600 !important; }
+    .c-accent { color: #FFB74D !important; }
+    .c-action { color: #4FC3F7 !important; font-weight: 600 !important; }
+    .c-sec { color: #F59E0B !important; font-weight: 600 !important; }
+    .c-metric { color: #FFB74D !important; }
+
+</style>
+
+
+</head>
+<body>
+
+  <!-- BACKGROUND ENGINES -->
+  <canvas class="antigravity-canvas" id="antigravityCanvas"></canvas>
+  <div class="glow-engine">
+    <div class="glow-blob blob-purple"></div>
+    <div class="glow-blob blob-cyan"></div>
+  </div>
+  <div class="grid-backdrop"></div>
+
+  <!-- CONTAINER -->
+  <div class="container">
+
+    <!-- HEADER / NAVIGATION -->
+    <div class="header-wrap">
+      <header class="navbar">
+        <a href="https://salva.neudenken.io" class="nav-left">
+          <div class="logo-symbol">S</div>
+          <span class="logo-text">Salvatore<em>.io</em></span>
+        </a>
+        <div class="nav-status">
+          <span class="status-dot"></span>
+          <span>sondierend</span>
+        </div>
+        <nav class="nav-links">
+          <a href="https://neudenken.io" class="nav-link">Beratung</a>
+          <a href="https://salva.neudenken.io" class="nav-link">Hub &amp; Blog</a>
+          <a href="#kontakt" class="nav-link accented">Gespräch</a>
+        </nav>
+      </header>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <div class="hero-eyebrow reveal-fup">Ein Kandidat mit Profil</div>
+          <h1 class="reveal-fup d1">
+            <span class="line">Operator<span class="dot">.</span></span>
+            <span class="line"><em>Builder</em><span class="dot">.</span></span>
+            <span class="line">Übersetzer<span class="dot">.</span></span>
+          </h1>
+          <div class="hero-manifesto reveal-fup d2">
+            Digitalisierung scheitert selten an der Technologie. Sie scheitert daran, dass zwischen Vorstand und Verkaufsfläche, zwischen Product Backlog und der Frühschicht um 6 Uhr morgens <strong>niemand beide Sprachen fließend spricht</strong>. <em>Ich spreche beide — seit zwanzig Jahren. Und ich baue Lösungen selbst.</em>
+          </div>
+        </div>
+        
+        <div class="hero-right reveal-fup d2">
+          <div class="hero-badge-card">
+            <div class="badge-row">
+              <span class="badge-label">Standort</span>
+              <span class="badge-val">Baden-Württemberg</span>
+            </div>
+            <div class="badge-row">
+              <span class="badge-label">Erfahrung</span>
+              <span class="badge-val">20 Jahre <em>Operations</em> &middot; 2 Jahre <em>Code</em></span>
+            </div>
+            <div class="badge-row">
+              <span class="badge-label">Fokus</span>
+              <span class="badge-val">Transformation, Product &amp; AI</span>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 01: DIE ZAHLEN -->
+    <section class="chapter" id="daten">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">01 — Evidenz<strong>Hintergrund</strong></div>
+        <h2 class="section-title">Was ich <em>tatsächlich</em> mitbringe.</h2>
+      </div>
+
+      <p class="data-intro scroll-reveal">
+        Diese Zahlen stehen in keinem Standard-Lebenslauf. Sie sind das greifbare Ergebnis von <strong>zwanzig Jahren operativer Führungsverantwortung</strong> gepaart mit einer konsequenten, tiefen Auseinandersetzung mit dem technologischen Wandel.
+      </p>
+
+      <div class="data-grid scroll-reveal">
+        <div class="data-cell">
+          <div class="tag">Führungstenure</div>
+          <div class="value">20<span class="unit">J</span></div>
+          <div class="desc">Retail Operations bei einem der <em>weltweit führenden Lebensmitteleinzelhändler</em> — durchgängig mit Ergebnis- und Personalverantwortung.</div>
+          <div class="source">Direkter Hintergrund</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">Direktes Team</div>
+          <div class="value">17</div>
+          <div class="desc">Mitarbeiter:innen am <em>Standort Rottenburg</em>. Schichtsteuerung, HR-Ownership, Performance Coaching und Teamführung.</div>
+          <div class="source">Operativer Scope</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">Führungsspanne</div>
+          <div class="value"><span class="plus">+</span>60<span class="unit">%</span></div>
+          <div class="desc">Steigerung der Flächen-Führungsspanne in den letzten <em>18 Monaten</em> durch Restrukturierung und Prozess-Konsolidierung.</div>
+          <div class="source">Marktbeobachtung 2026</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">Prozess-Konsolidierung</div>
+          <div class="value">25,2<span class="unit">%</span></div>
+          <div class="desc">Konsolidierungsquote der Flächenverantwortung auf regionaler Ebene zur Steigerung der operativen Rentabilität.</div>
+          <div class="source">Eigene Analyse 2026</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">Performance</div>
+          <div class="value">4×</div>
+          <div class="desc">Einstufung <em>„Übertroffen"</em> in digitalisierungs- und change-relevanten Führungs-Kompetenzen im offiziellen Feedbacksystem.</div>
+          <div class="source">SAP SuccessFactors</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">Workforce-Systeme</div>
+          <div class="value">11<span class="unit">J</span></div>
+          <div class="desc"><em>Produktive, wöchentliche</em> Workforce-Management-Expertise (z.B. ATOSS) — weder Theorie noch Pilotprojekt, sondern raue Praxis.</div>
+          <div class="source">Flächensteuerung</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">Eigene Software</div>
+          <div class="value">2</div>
+          <div class="desc">Zwei vollständig selbst entwickelte, <em>produktiv genutzte Tools</em>: Workforce-Planer &amp; Berichtsheft-Analyzer.</div>
+          <div class="source">Workforce-Planer &amp; Analyzer</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">Zertifikate</div>
+          <div class="value">4</div>
+          <div class="desc">TÜV AI Automation Manager, AWS Cloud Practitioner, Google AI Professional, Anthropic Claude Code in Action.</div>
+          <div class="source">Externe Validierung</div>
+        </div>
+        
+        <div class="data-cell">
+          <div class="tag">KI-Schnittmenge</div>
+          <div class="value">~50<span class="unit">%</span></div>
+          <div class="desc">der admin. Aufgaben durch moderne LLMs automatisierbar — ich kenne das Disruptionsrisiko und steuere mich aktiv dagegen.</div>
+          <div class="source">Selbst-Auditierung</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 02: DIE THESE -->
+    <section class="chapter" id="these">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">02 — These<strong>Positionierung</strong></div>
+        <h2 class="section-title">Digitalisierung scheitert selten an der <em>Technologie</em>.</h2>
+      </div>
+
+      <div class="thesis-grid scroll-reveal">
+        <div class="thesis-sidebar">
+          <span class="active" id="th-nav-1">Übersetzung</span>
+          <span id="th-nav-2" style="margin-top:10px;">Fokus</span>
+          <span id="th-nav-3" style="margin-top:10px;">Evidenz</span>
+        </div>
+        <div class="thesis-body">
+          <p>
+            Sie scheitert daran, dass zwischen den Schichten — strategisch, organisatorisch, räumlich — <span class="mark">niemand beide Sprachen fließend spricht</span>.
+          </p>
+          <p class="pull">
+            Ich spreche beide. Seit zwanzig Jahren.
+          </p>
+          <p>
+            Was mich qualifiziert, ist die Kombination: zwei Jahrzehnte auf der rauen Verkaufsfläche mit voller operativer Personal- und Budgetverantwortung <strong>und</strong> die konsequente, strukturierte Aneignung moderner Software- und KI-Kompetenzen. Nicht als Hype-Reiterei, sondern als <em>strategischer Ausbau</em> meiner Fähigkeiten.
+          </p>
+          <p>
+            Ich bin kein Quereinsteiger, der nach einem 12-Wochen-Bootcamp glaubt, er könne komplexe Unternehmensprozesse steuern. Und ich bin kein Filialleiter auf dem Status quo. Ich bin der seltene Hybrid: jemand, der mit Software-Entwicklern, Product Ownern, Betriebsräten und der Geschäftsführung im selben Satz sprechen kann — weil er weiß, <em>warum</em> perfekt durchdachte Systeme in der Realität morgens um 6 Uhr scheitern.
+          </p>
+          <p>
+            Das ist belegt: Durch ein produktiv betriebenes System im echten Store, durch eine quantitative Strukturanalyse meines Unternehmens, durch exzellente Change-Bewertungen — und durch die Tatsache, dass mein Bereichsleiter meine Lösungen zur Demonstration in der <span class="mark">Unternehmenszentrale</span> präsentiert hat.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 03: WERDEGANG -->
+    <section class="chapter" id="werdegang">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">03 — Journey<strong>Historie</strong></div>
+        <h2 class="section-title">Vom Operator zum <em>Builder</em>.</h2>
+      </div>
+
+      <div class="journey-grid scroll-reveal">
+        <div class="journey-side">
+          <h4>Phase 1 — Operator <span class="arrow">2005 → Heute</span></h4>
+          <h3>Zwanzig Jahre <em>echte</em> Verantwortung.</h3>
+          <p>
+            Vom operativen Einstieg bis zur Führung großer Standorte: Durchgängig <strong>Ergebnis-, Personal- und Prozessverantwortung</strong>. Keine reine Schreibtisch-Karriere, keine theoretischen Stabsrollen, kein „leading from slides". Umsatz, Rekrutierung, Schichtplanung, Warenfluss und harte logistische Realität an vorderster Front.
+          </p>
+          <p>
+            Elf Jahre produktive ATOSS-Erfahrung zur Personaleinsatzplanung. Ich weiß, wie man Arbeitszeitgesetze, Tarifverträge, Mitarbeiterwünsche und betriebliche Kennzahlen in Einklang bringt — und warum starre Software oft am Menschen scheitert.
+          </p>
+        </div>
+        
+        <div class="journey-side">
+          <h4>Phase 2 — Builder <span class="arrow">2024 → Zukunft</span></h4>
+          <h3>Zwei Jahre gezielte <em>Aneignung</em>.</h3>
+          <p>
+            <strong>TÜV-zertifizierter AI Automation Manager. AWS Cloud Practitioner. Google AI Professional. Anthropic Claude Code in Action.</strong> Eigenhändige Entwicklung von über 10 funktionalen Software-Projekten.
+          </p>
+          <p>
+            Das ist kein unstrukturiertes Hobby. Das ist ein systematischer, dokumentierter und über zwei Jahre konsequent verfolgter <em>Kompetenzausbau mit klarem Ziel</em>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 04: PORTFOLIO -->
+    <section class="chapter" id="portfolio">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">04 — Werkbank<strong>Auslieferung</strong></div>
+        <h2 class="section-title">Was ich tatsächlich <em>gebaut</em> habe.</h2>
+      </div>
+
+            <div class="portfolio-grid">
+        
+        <!-- PROJEKT 01: FLAGSHIP CASE -->
+        <div class="glass-card pf-card span-12 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 01 // Flagship Software</span>
+              <span class="pf-status-badge live">Live im Betrieb</span>
+            </div>
+            
+            <div class="pf-flagship-wrapper">
+              <div>
+                <h4>Workforce-Planer <em>v7.9.4</em></h4>
+                <div class="pf-body-content">
+                  <p>
+                    Ein vollfunktionales, datenbankgestütztes Schicht- und Urlaubsplanungstool für ein Team mit 17 Mitarbeitenden. Beseitigt manuellen Excel-Frust und automatisiert die Schichtplanung.
+                  </p>
+                  <p>
+                    <strong>Security &amp; Qualität:</strong> Multi-LLM-Workflow (Entwicklung in Gemini, Security- &amp; Code-Review in Claude). CSRF-Schutz, Session-Management mit Timeout, server-seitige Validierung, iCal-Schnittstelle.
+                  </p>
+                  <p>
+                    <strong>Der Durchbruch:</strong> Das Tool stieg vom lokalen Experiment zum Vorzeigeprojekt auf und wurde offiziell zur Demonstration bei der Unternehmenszentrale eingeladen.
+                  </p>
+                </div>
+              </div>
+              
+              <!-- Dynamic Log Terminal -->
+              <div class="pf-flagship-console" id="workforceLog">
+                <span class="c-system">[DAEMON] Starting Workforce-Planer Engine v7.9.4...</span>
+                <span class="c-ok">[OK] DB Connection pool initialized (local sqlite)</span>
+                <span class="c-system">[DAEMON] 17 active local user profiles mapped.</span>
+                <span class="c-ok">[SEC] CSRF validation active. Tokens-per-request verified.</span>
+                <span class="c-action">[SYNC] Auto iCal export buffer: OK</span>
+                <span class="c-system">[METRIC] Current active session timeout: 15 minutes.</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pf-stack">
+            <span class="stack-badge accented">PHP / SQL</span>
+            <span class="stack-badge">Multi-LLM Workflow</span>
+            <span class="stack-badge">CSRF-Hardened</span>
+            <span class="stack-badge accented">100% Cloud-Independent</span>
+            <span class="stack-badge">iCal Sync</span>
+            <span class="stack-badge">v7.9.4</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 02: BERICHTSHEFT-ANALYZER -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 02 // EdTech &amp; AI Audit</span>
+              <span class="pf-status-badge live font-mono">Aktiv</span>
+            </div>
+            <h4>Berichtsheft-<em>Analyzer</em></h4>
+            <div class="pf-body-content">
+              <p>
+                Intelligentes Tool zur automatisierten Auswertung und Qualitätsprüfung digitaler Ausbildungsnachweise. Nutzt OCR-Parsing und LLM-gestützte Abgleiche gegen Ausbildungsrahmenpläne zur Entlastung von Ausbildern und Prüfungsausschüssen.
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge accented">Python / LLM</span>
+            <span class="stack-badge">OCR Parsing</span>
+            <span class="stack-badge">Automated Audit</span>
+            <span class="stack-badge">EdTech</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 03: DELIVERY DASHBOARD V4 -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 03 // Analytics</span>
+              <span class="pf-status-badge live font-mono">Operativ</span>
+            </div>
+            <h4>Delivery Dashboard <em>V4</em></h4>
+            <div class="pf-body-content">
+              <p>
+                Gehärtetes, lokales Analyse-Dashboard mit PDF-Parsing (PDF.js) und intelligentem Datenimport. Bewusst so konzipiert, dass es ohne Cloud-Zwang läuft — ideal für restriktive IT-Richtlinien deutscher Großkonzerne. Drag-and-Drop-Datenpflege, localStorage-Persistenz und reaktive Diagramme (Chart.js).
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge accented">HTML5 / JS</span>
+            <span class="stack-badge">PDF.js</span>
+            <span class="stack-badge">Chart.js</span>
+            <span class="stack-badge">Zero-Cloud Option</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 04: YOUTUBE TO OBSIDIAN -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 04 // Productivity</span>
+              <span class="pf-status-badge">Aktiv</span>
+            </div>
+            <h4>YouTube → <em>Obsidian</em></h4>
+            <div class="pf-body-content">
+              <p>
+                Eine native Browser-Erweiterung, die YouTube-Videos auf Knopfdruck präzise auf Deutsch zusammenfasst und das strukturierte Ergebnis über ein API-Interface direkt in das persönliche Obsidian-Vault schreibt.
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge">Chrome Ext</span>
+            <span class="stack-badge accented">Obsidian API</span>
+            <span class="stack-badge">LLM Parser</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 05: DRIVE PARA SORTER -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 05 // Automation</span>
+              <span class="pf-status-badge">Aktiv</span>
+            </div>
+            <h4>Drive <em>PARA</em> Sorter</h4>
+            <div class="pf-body-content">
+              <p>
+                Google Apps Script-Automatisierung mit Claude Haiku im Hintergrund. Analysiert eintreffende Dokumente in der Google Drive-Inbox in Echtzeit und sortiert sie präzise nach dem bekannten PARA-Strukturprinzip.
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge">Apps Script</span>
+            <span class="stack-badge accented">Claude API</span>
+            <span class="stack-badge">PARA Pattern</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- KAPITEL 05: DENKBELEGE -->
+    <section class="chapter" id="denkbelege">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">05 — Denkbelege<strong>Durchdringung</strong></div>
+        <h2 class="section-title">Wie ich Probleme <em>strukturell</em> durchdringe.</h2>
+      </div>
+
+      <div class="thinking-wrap">
+        <div class="think-item scroll-reveal">
+          <div class="num">01</div>
+          <h3>Rationalisierungs-Forecast der Führungsrolle<em>Quantitative Analyse</em></h3>
+          <div class="evidence">
+            Die klassische Filialleiter-Rolle steht vor tiefen Umbrüchen durch <strong>SB-Kassen, RFID-Erfassung und algorithmisches Scheduling</strong>. Die Führungsspanne der übergeordneten Regionalleiter vergrößert sich dramatisch. Ich verstehe diese Disruptionen nicht als Gefahr, sondern positioniere mich aktiv als treibender Gestalter dieser Welle. <span class="citation">Forecast Analyse</span>
+          </div>
+        </div>
+
+        <div class="think-item scroll-reveal">
+          <div class="num">02</div>
+          <h3>Schnittstellen-Audit: KI &amp; Arbeitsalltag<em>Selbstauditierung</em></h3>
+          <div class="evidence">
+            Ich habe mein <strong>spezifisches operatives Aufgabenspektrum</strong> (37 Kernaufgaben) gegen die Fähigkeiten moderner Sprachmodelle gespiegelt. Das Ergebnis: Etwa 50% der rein administrativen Aufgaben sind heute bereits teil- oder vollautomatisierbar. Ich kenne meine persönliche Digitalisierungs-Roadmap genau. <span class="citation">Schnittstelle 50%</span>
+          </div>
+        </div>
+
+        <div class="think-item scroll-reveal">
+          <div class="num">03</div>
+          <h3>Operative Systemintegration &amp; Prozessautomatisierung<em>Architektur-Prinzip</em></h3>
+          <div class="evidence">
+            Software-Systeme entfalten ihren echten Hebel erst auf der Fläche, wenn <strong>Feedbackschleifen zwischen ERP, Filialalltag und KI-Agenten</strong> lückenlos greifen. Ohne operative Feedbackkanäle bleiben Automatisierungen isolierte Insellösungen. Meine Modelle schließen diese Lücke praxiserprobt. <span class="citation">Systemintegration</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 06: WER ICH NICHT BIN -->
+    <section class="chapter" id="abgrenzung">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">06 — Abgrenzung<strong>Ehrlichkeit</strong></div>
+        <h2 class="section-title">Wer ich <em>nicht</em> bin.</h2>
+      </div>
+
+      <div class="negative-grid scroll-reveal">
+        <div class="neg-cell">
+          <span class="cross-sign">—</span>
+          <h4>Der klassische Bootcamp-Quereinsteiger.</h4>
+          <p>Ich spiele nicht vor, seit zehn Jahren agil zu entwickeln. Ich habe zwanzig Jahre Führungs- und Budgetverantwortung auf der Fläche. Das ist für Brückenbauer-Rollen unersetzlich.</p>
+        </div>
+        
+        <div class="neg-cell">
+          <span class="cross-sign">—</span>
+          <h4>Der reine Folienschieber &amp; Berater.</h4>
+          <p>Ich präsentiere keine leeren Konzepte, die ich nicht selbst bis zum Code durchdacht habe. Wenn ich sage, eine Software läuft stabil auf Corporate-Infrastruktur, habe ich sie gebaut und getestet.</p>
+        </div>
+        
+        <div class="neg-cell">
+          <span class="cross-sign">—</span>
+          <h4>Der Filialleiter, der verweilen will.</h4>
+          <p>Ich suche keine leichtfüßige Teilzeitaufgabe oder Alibi-Transformationen. Ich habe zwei Jahre intensives Training investiert, um einen echten, signifikanten Wertbeitrag an der Schnittstelle zu leisten.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPITEL 07: DER PLAN -->
+    <section class="chapter" id="plan">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">07 — Konkretion<strong>Perspektive</strong></div>
+        <h2 class="section-title">Drei Rollen. Eine Region. Ein Anspruch.</h2>
+      </div>
+
+      <div class="plan-grid scroll-reveal">
+        <div class="plan-col">
+          <h5>Zielrollen im Fokus</h5>
+          <ul class="roles">
+            <li><em>—</em> Product Owner <em>Workforce / Operations</em></li>
+            <li><em>—</em> Digital Transformation Lead</li>
+            <li><em>—</em> Interface Translator / Change Manager</li>
+          </ul>
+        </div>
+        
+        <div class="plan-col">
+          <h5>Kontext &amp; Zielunternehmen</h5>
+          <p>
+            Vom industriellen Mittelstand und Konzern bis hin zu wachstumsorientierten KMU und modernen Handwerksbetrieben in <strong>Baden-Württemberg</strong>. Überall dort, wo anspruchsvolle Operations, Logistik und IT aufeinander treffen — und die digitale Transformation auf der echten Arbeitsfläche ankommen muss.
+          </p>
+          
+          
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact scroll-reveal" id="kontakt">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <div class="kicker">Ein Gespräch, kein Fragebogen</div>
+          <h2>Reden wir.<br><em>Ernsthaft.</em></h2>
+        </div>
+        
+        <div class="contact-lines">
+          <div class="line-row">E-Mail &middot; <a href="mailto:salva@neudenken.io">salva@neudenken.io</a></div>
+          <div class="line-row">LinkedIn &middot; <a href="https://www.linkedin.com/in/salvatore-docimo-15bb47200" target="_blank">linkedin.com/in/salvatore-docimo</a></div>
+          <div class="line-row">Region &middot; Bisingen, Baden-Württemberg</div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>&copy; 2026 Salvatore Docimo &middot; Alle Rechte vorbehalten</div>
+      <div>Karriereportfolio &middot; v2.8 &middot; Bisingen</div>
+    </footer>
+
+  </div>
+
+  <!-- INTERACTIVE LOGIC ENGINE -->
+  <script>
+    /* --------------------------------------------------------------------------
+       1. ZERO-GRAVITY INTERACTIVE PARTICLE PHYSICS ENGINE
+       -------------------------------------------------------------------------- */
+    const canvas = document.getElementById('antigravityCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    let mouse = { x: null, y: null, targetX: null, targetY: null, radius: 150 };
+
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.8;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 30) + 12;
+        this.speedX = (Math.random() * 0.2) - 0.1;
+        this.speedY = (Math.random() * 0.1) - 0.05;
+        this.opacity = Math.random() * 0.4 + 0.25;
+      }
+      draw() {
+        ctx.fillStyle = `rgba(176, 77, 44, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+      update() {
+        // Continuous slow drift
+        this.baseX += this.speedX;
+        this.baseY += this.speedY;
+        
+        // Wrap around boundaries
+        if (this.baseX < 0) this.baseX = canvas.width;
+        if (this.baseX > canvas.width) this.baseX = 0;
+        if (this.baseY < 0) this.baseY = canvas.height;
+        if (this.baseY > canvas.height) this.baseY = 0;
+
+        // Interaction with mouse pointer
+        if (mouse.x !== null && mouse.y !== null) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          let forceDirectionX = dx / distance;
+          let forceDirectionY = dy / distance;
+          let maxDistance = mouse.radius;
+          let force = (maxDistance - distance) / maxDistance;
+          let directionX = forceDirectionX * force * this.density;
+          let directionY = forceDirectionY * force * this.density;
+
+          if (distance < mouse.radius) {
+            this.x -= directionX;
+            this.y -= directionY;
+            this.opacity = Math.min(0.8, this.opacity + 0.02);
+          } else {
+            if (this.x !== this.baseX) {
+              let dxBase = this.x - this.baseX;
+              this.x -= dxBase / 20;
+            }
+            if (this.y !== this.baseY) {
+              let dyBase = this.y - this.baseY;
+              this.y -= dyBase / 20;
+            }
+            if (this.opacity > 0.3) {
+              this.opacity -= 0.005;
+            }
+          }
+        } else {
+          if (this.x !== this.baseX) {
+            let dxBase = this.x - this.baseX;
+            this.x -= dxBase / 20;
+          }
+          if (this.y !== this.baseY) {
+            let dyBase = this.y - this.baseY;
+            this.y -= dyBase / 20;
+          }
+        }
+      }
+    }
+
+    function createParticles() {
+      particles = [];
+      const quantity = Math.floor((canvas.width * canvas.height) / 18000);
+      for (let i = 0; i < quantity; i++) {
+        particles.push(new Particle());
+      }
+    }
+    createParticles();
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Smooth mouse tracking interpolation
+      if (mouse.targetX !== null && mouse.targetY !== null) {
+        if (mouse.x === null) {
+          mouse.x = mouse.targetX;
+          mouse.y = mouse.targetY;
+        } else {
+          mouse.x += (mouse.targetX - mouse.x) * 0.12;
+          mouse.y += (mouse.targetY - mouse.y) * 0.12;
+        }
+        
+        // Push mouse coords to CSS for Spotlight-Grids
+        document.documentElement.style.setProperty('--mouse-x', mouse.x + 'px');
+        document.documentElement.style.setProperty('--mouse-y', mouse.y + 'px');
+      }
+
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    const updatePointer = (clientX, clientY) => {
+      mouse.targetX = clientX;
+      mouse.targetY = clientY;
+    };
+
+    window.addEventListener('mousemove', e => {
+      updatePointer(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('touchstart', e => {
+      if (e.touches && e.touches.length > 0) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', e => {
+      if (e.touches && e.touches.length > 0) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    const resetPointer = () => {
+      mouse.targetX = null;
+      mouse.targetY = null;
+      mouse.x = null;
+      mouse.y = null;
+    };
+
+    window.addEventListener('mouseleave', resetPointer);
+    window.addEventListener('touchend', resetPointer);
+    window.addEventListener('touchcancel', resetPointer);
+
+
+    
+    // Mobile Touch Repulsion Events
+    const updateTouch = e => {
+      if (e.touches && e.touches.length > 0) {
+        mouse.targetX = e.touches[0].clientX + window.scrollX;
+        mouse.targetY = e.touches[0].clientY + window.scrollY;
+      }
+    };
+    window.addEventListener('touchstart', updateTouch, { passive: true });
+    window.addEventListener('touchmove', updateTouch, { passive: true });
+    window.addEventListener('touchend', () => {
+      mouse.targetX = null;
+      mouse.targetY = null;
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    
+
+    
+
+    // Glasscard spotlight effects
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--card-mouse-x', `${x}px`);
+        card.style.setProperty('--card-mouse-y', `${y}px`);
+      });
+    });
+
+    /* --------------------------------------------------------------------------
+       2. SCROLL REVEAL ENGINE (INTERSECTION OBSERVER)
+       -------------------------------------------------------------------------- */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    
+    document.querySelectorAll('.scroll-reveal').forEach(el => io.observe(el));
+
+    /* --------------------------------------------------------------------------
+       3. INTERACTIVE LOG LOOP FOR FLAGSHIP WORKSPACE
+       -------------------------------------------------------------------------- */
+    const consoleLogs = [
+      "[DAEMON] Monitoring active slots: OK",
+      "[SYS] Memory usage stable: 42.5MB",
+      "[SYNC] Recalculating schedule metrics...",
+      "[METRIC] Computed schedule coverage: 100% (No gaps)",
+      "[OK] 17 active local session states secured",
+      "[SYS] Temp iCal buffer purged successfully",
+      "[DAEMON] Querying local SQLite: OK (Took 0.2ms)",
+      "[SEC] Auto-timeout verified: Session valid",
+      "[AUDIT] Code integrity checks: Grade A (PASS)",
+      "[SYNC] Outlook-iCal sync loop executed",
+      "[METRIC] Saved administrator time this week: 5.8 hours"
+    ];
+    
+    const consoleEl = document.getElementById('workforceLog');
+    
+    setInterval(() => {
+      if (consoleEl) {
+        const randomLog = consoleLogs[Math.floor(Math.random() * consoleLogs.length)];
+        const logSpan = document.createElement('span');
+        
+        if (randomLog.includes('[OK]')) logSpan.className = 'c-ok';
+        else if (randomLog.includes('[SEC]') || randomLog.includes('[METRIC]')) logSpan.className = 'c-accent';
+        else if (randomLog.includes('[SYNC]')) logSpan.className = 'c-action';
+        else logSpan.className = 'c-system';
+        
+        logSpan.textContent = randomLog;
+        consoleEl.appendChild(logSpan);
+        
+        // Remove oldest to avoid bloating
+        if (consoleEl.children.length > 12) {
+          consoleEl.removeChild(consoleEl.firstChild);
+        }
+        
+        // Auto-scroll
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      }
+    }, 4000);
+
+    /* --------------------------------------------------------------------------
+       4. INTERACTIVE THESIS ACCORDION NAVIGATION
+       -------------------------------------------------------------------------- */
+    const thesisTexts = [
+      "Sie scheitert daran, dass zwischen den Schichten — strategisch, organisatorisch, räumlich — <span class='mark'>niemand beide Sprachen fließend spricht</span>.<br><br>Ich spreche beide. Seit zwanzig Jahren.",
+      "Der Schwerpunkt liegt in der <strong>Brückenbildung</strong>. Klassische IT-Berater kennen die Theorie. Die Fläche kennt die Praxis. Ich kenne beides: Die IT-Infrastruktur im Hintergrund <em>und</em> die operative Schicht um 6 Uhr morgens.",
+      "Das belegt ein produktives Tool im echten Einsatz, hervorragende Change-Dialoge in SuccessFactors — und die offizielle Präsentation meines Workforce-Planers vor dem <span class='mark'>Unternehmens-Führungskreis</span>."
+    ];
+    
+    const thesisBodyEl = document.querySelector('.thesis-body');
+    const thesisNavs = [
+      document.getElementById('th-nav-1'),
+      document.getElementById('th-nav-2'),
+      document.getElementById('th-nav-3')
+    ];
+    
+    thesisNavs.forEach((nav, idx) => {
+      if (nav) {
+        nav.style.cursor = 'pointer';
+        nav.addEventListener('click', () => {
+          thesisNavs.forEach(n => n.classList.remove('active'));
+          nav.classList.add('active');
+          thesisBodyEl.style.opacity = 0;
+          
+          setTimeout(() => {
+            thesisBodyEl.innerHTML = `<p>${thesisTexts[idx]}</p>`;
+            thesisBodyEl.style.opacity = 1;
+            thesisBodyEl.style.transition = 'opacity 0.4s ease';
+          }, 200);
+        });
+      }
+    });
+
+  </script>
+</body>
+</html>
