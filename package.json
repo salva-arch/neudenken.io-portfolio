@@ -1,0 +1,8 @@
+{
+  "name": "neudenken-io-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd neue-sites && npm install && npm run build"
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "cd neue-sites && npm install && npm run build",
+  "outputDirectory": "neue-sites/dist",
   "cleanUrls": true,
   "rewrites": [
     {
