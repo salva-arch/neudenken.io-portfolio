@@ -1,0 +1,67 @@
+/* ==========================================================
+   chapter.css — Section/Chapter Scaffold
+   Shared between index.html (80px padding) and karriere (120px)
+   Use --chapter-padding custom property for page-specific override
+   ========================================================== */
+
+.chapter {
+  padding: var(--chapter-padding, 80px) 0;
+  border-bottom: 1px solid var(--border-glow);
+  position: relative;
+}
+
+.section-head {
+  margin-bottom: 48px;
+}
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent-sienna);
+  margin-bottom: 24px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1.5px solid var(--accent-sienna);
+}
+
+.section-num strong {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--ink-secondary);
+  text-transform: none;
+  letter-spacing: 0.005em;
+  margin-top: 4px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--accent-sienna);
+  font-weight: 400;
+}
+
+.chapter-intro {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+  max-width: 800px;
+  margin-bottom: 40px;
+}
+
+.chapter-intro strong {
+  color: var(--ink-primary);
+}

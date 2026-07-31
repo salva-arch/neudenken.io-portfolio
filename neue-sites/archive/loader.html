@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>neudenken.io — Thinking Loader</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS (matching neudenken.io)
+       ========================================================================== */
+    :root {
+      --bg-dark: 41 23% 92%;
+      --bg-card: 42 29% 87%;
+      --text-primary: 30 8% 9%;
+      --text-dim: 39 6% 45%;
+      --accent-cyan: 15 60% 43%;       /* #B04D2C Sienna */
+      --accent-cyan-rgb: 176, 77, 44;
+      --accent-purple: 17 66% 29%;     /* #7A3519 Deep Rust */
+      --accent-purple-rgb: 122, 53, 25;
+      --accent-orange: 28 56% 50%;     /* #C87A38 Ochre */
+      --accent-orange-rgb: 200, 122, 56;
+      --border-glow: 30 8% 9% / 8%;
+
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: hsl(var(--bg-dark));
+      font-family: var(--font-sans);
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       FULL-PAGE LOADER CONTAINER
+       ========================================================================== */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      background: hsl(var(--bg-dark));
+    }
+
+    /* Subtle radial glow behind the brain */
+    .loader-overlay::before {
+      content: '';
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(var(--accent-cyan-rgb), 0.06) 0%,
+        rgba(var(--accent-cyan-rgb), 0.02) 40%,
+        transparent 70%
+      );
+      animation: glowPulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      pointer-events: none;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { transform: scale(0.85); opacity: 0.5; }
+      50%      { transform: scale(1.15); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       BRAIN CONSTELLATION SVG — THE STAR OF THE SHOW
+       ========================================================================== */
+    .brain-loader-svg {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* --- CONNECTION LINES: Data Flow Shimmer --- */
+    .brain-loader-svg .conn {
+      stroke: hsl(var(--text-primary));
+      stroke-width: 2.8;
+      stroke-linecap: round;
+      opacity: 0.18;
+      transition: opacity 0.6s ease;
+    }
+
+    /* Animated "data flow" lines — overlay on top of dim base lines */
+    .brain-loader-svg .flow {
+      stroke-width: 2.8;
+      stroke-linecap: round;
+      fill: none;
+      /* Each line gets a gradient-like effect via stroke-dasharray + dashoffset animation */
+      stroke-dasharray: 12 80;
+      opacity: 0.85;
+    }
+
+    /* Staggered flow animation for each connection line */
+    .flow-1  { stroke: hsl(var(--accent-cyan)); animation: dataFlow 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.0s; stroke-dasharray: 10 60; }
+    .flow-2  { stroke: hsl(var(--accent-orange)); animation: dataFlow 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.3s; stroke-dasharray: 8 55; }
+    .flow-3  { stroke: hsl(var(--accent-purple)); animation: dataFlow 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.6s; stroke-dasharray: 12 50; }
+    .flow-4  { stroke: hsl(var(--accent-cyan)); animation: dataFlow 3.0s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.15s; stroke-dasharray: 9 65; }
+    .flow-5  { stroke: hsl(var(--accent-orange)); animation: dataFlow 2.9s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.45s; stroke-dasharray: 11 58; }
+    .flow-6  { stroke: hsl(var(--accent-purple)); animation: dataFlow 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.7s; stroke-dasharray: 7 62; }
+    .flow-7  { stroke: hsl(var(--accent-cyan)); animation: dataFlow 2.7s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.2s; stroke-dasharray: 13 55; }
+    .flow-8  { stroke: hsl(var(--accent-orange)); animation: dataFlow 3.1s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.55s; stroke-dasharray: 10 50; }
+    .flow-9  { stroke: hsl(var(--accent-purple)); animation: dataFlow 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.8s; stroke-dasharray: 8 60; }
+    .flow-10 { stroke: hsl(var(--accent-cyan)); animation: dataFlow 3.3s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.35s; stroke-dasharray: 11 52; }
+    .flow-11 { stroke: hsl(var(--accent-orange)); animation: dataFlow 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.65s; stroke-dasharray: 9 58; }
+    .flow-c1 { stroke: hsl(var(--accent-cyan)); animation: dataFlow 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.1s; stroke-dasharray: 14 70; }
+    .flow-c2 { stroke: hsl(var(--accent-purple)); animation: dataFlow 3.0s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.5s; stroke-dasharray: 12 65; }
+
+    @keyframes dataFlow {
+      0%   { stroke-dashoffset: 80; opacity: 0; }
+      15%  { opacity: 0.9; }
+      85%  { opacity: 0.9; }
+      100% { stroke-dashoffset: -80; opacity: 0; }
+    }
+
+    /* --- CONSTELLATION NODES: Organic Breathing Pulse --- */
+    .brain-loader-svg .node {
+      fill: hsl(var(--text-primary));
+      opacity: 0.25;
+    }
+
+    .brain-loader-svg .node-pulse {
+      opacity: 0;
+    }
+
+    /* Each node gets staggered breathing */
+    .np-1  { fill: hsl(var(--accent-cyan)); animation: nodeBreathe 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.0s; }
+    .np-2  { fill: hsl(var(--accent-orange)); animation: nodeBreathe 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.4s; }
+    .np-3  { fill: hsl(var(--accent-cyan)); animation: nodeBreathe 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.8s; }
+    .np-4  { fill: hsl(var(--accent-purple)); animation: nodeBreathe 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.2s; }
+    .np-5  { fill: hsl(var(--accent-orange)); animation: nodeBreathe 2.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.6s; }
+    .np-6  { fill: hsl(var(--accent-cyan)); animation: nodeBreathe 3.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.0s; }
+    .np-7  { fill: hsl(var(--accent-purple)); animation: nodeBreathe 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.3s; }
+    .np-8  { fill: hsl(var(--accent-orange)); animation: nodeBreathe 3.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.7s; }
+    .np-9  { fill: hsl(var(--accent-cyan)); animation: nodeBreathe 2.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.1s; }
+    .np-10 { fill: hsl(var(--accent-purple)); animation: nodeBreathe 3.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.5s; }
+    .np-11 { fill: hsl(var(--accent-cyan)); animation: nodeBreathe 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.9s; }
+    .np-12 { fill: hsl(var(--accent-orange)); animation: nodeBreathe 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.3s; }
+
+    @keyframes nodeBreathe {
+      0%, 100% {
+        opacity: 0.15;
+        r: inherit;
+        filter: drop-shadow(0 0 0px transparent);
+      }
+      50% {
+        opacity: 0.95;
+        filter: drop-shadow(0 0 6px currentColor);
+      }
+    }
+
+    /* Additional outer glow ring per node */
+    .brain-loader-svg .node-ring {
+      fill: none;
+      stroke-width: 1.2;
+      opacity: 0;
+    }
+    .nr-1  { stroke: hsl(var(--accent-cyan)); animation: ringExpand 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.0s; }
+    .nr-2  { stroke: hsl(var(--accent-orange)); animation: ringExpand 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.4s; }
+    .nr-3  { stroke: hsl(var(--accent-cyan)); animation: ringExpand 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.8s; }
+    .nr-4  { stroke: hsl(var(--accent-purple)); animation: ringExpand 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.2s; }
+    .nr-5  { stroke: hsl(var(--accent-orange)); animation: ringExpand 2.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.6s; }
+    .nr-6  { stroke: hsl(var(--accent-cyan)); animation: ringExpand 3.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.0s; }
+    .nr-7  { stroke: hsl(var(--accent-purple)); animation: ringExpand 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.3s; }
+    .nr-8  { stroke: hsl(var(--accent-orange)); animation: ringExpand 3.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.7s; }
+    .nr-9  { stroke: hsl(var(--accent-cyan)); animation: ringExpand 2.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.1s; }
+    .nr-10 { stroke: hsl(var(--accent-purple)); animation: ringExpand 3.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.5s; }
+    .nr-11 { stroke: hsl(var(--accent-cyan)); animation: ringExpand 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.9s; }
+    .nr-12 { stroke: hsl(var(--accent-orange)); animation: ringExpand 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.3s; }
+
+    @keyframes ringExpand {
+      0%, 100% { r: 5.5; opacity: 0; stroke-width: 1.5; }
+      40%      { opacity: 0.4; }
+      80%      { r: 10; opacity: 0; stroke-width: 0.3; }
+    }
+
+    /* Whole brain gentle breathe */
+    .brain-loader-svg {
+      animation: brainBreathe 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes brainBreathe {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.04); }
+    }
+
+    /* ==========================================================================
+       SHIMMER TEXT: "neudenken.io"
+       ========================================================================== */
+    .loader-brand {
+      margin-top: 28px;
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: hsl(var(--text-primary));
+      position: relative;
+      z-index: 2;
+    }
+
+    .loader-brand .shimmer-text {
+      background: linear-gradient(
+        105deg,
+        hsl(var(--text-primary)) 0%,
+        hsl(var(--text-primary)) 35%,
+        hsl(var(--accent-cyan)) 50%,
+        hsl(var(--text-primary)) 65%,
+        hsl(var(--text-primary)) 100%
+      );
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .loader-brand em {
+      font-style: normal;
+      background: linear-gradient(
+        105deg,
+        hsl(var(--accent-cyan)) 0%,
+        hsl(var(--accent-cyan)) 35%,
+        hsl(var(--accent-orange)) 50%,
+        hsl(var(--accent-cyan)) 65%,
+        hsl(var(--accent-cyan)) 100%
+      );
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.15s;
+    }
+
+    @keyframes shimmerSlide {
+      0%   { background-position: 100% 50%; }
+      100% { background-position: -100% 50%; }
+    }
+
+    /* ==========================================================================
+       STATUS LINE: "Denke nach..." with pulse dots
+       ========================================================================== */
+    .loader-status {
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: hsl(var(--text-dim));
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .loader-status .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: hsl(var(--accent-cyan));
+      display: inline-block;
+    }
+
+    .loader-status .dot:nth-child(1) { animation: dotPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0s; }
+    .loader-status .dot:nth-child(2) { animation: dotPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.2s; }
+    .loader-status .dot:nth-child(3) { animation: dotPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.4s; }
+
+    @keyframes dotPulse {
+      0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.3;
+      }
+      40% {
+        transform: scale(1.3);
+        opacity: 1;
+        box-shadow: 0 0 8px rgba(var(--accent-cyan-rgb), 0.5);
+      }
+    }
+
+    /* ==========================================================================
+       PROGRESS BAR (optional subtle accent)
+       ========================================================================== */
+    .loader-progress {
+      margin-top: 24px;
+      width: 160px;
+      height: 2px;
+      background: hsl(var(--border-glow));
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+    }
+
+    .loader-progress-bar {
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, hsl(var(--accent-cyan)), hsl(var(--accent-orange)));
+      border-radius: 2px;
+      animation: progressSweep 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes progressSweep {
+      0%   { transform: translateX(-120%); }
+      100% { transform: translateX(380%); }
+    }
+
+    /* ==========================================================================
+       DEMO PAGE: Side-by-side showcase of variants
+       ========================================================================== */
+    .demo-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      padding: 60px 20px;
+      background: hsl(var(--bg-dark));
+    }
+
+    .demo-page .variant-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--text-dim));
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       VARIANT B: Dark Terminal Loader (for dark panels)
+       ========================================================================== */
+    .loader-overlay.dark {
+      background: #1A1816;
+    }
+
+    .loader-overlay.dark::before {
+      background: radial-gradient(
+        circle,
+        rgba(var(--accent-cyan-rgb), 0.10) 0%,
+        rgba(var(--accent-cyan-rgb), 0.03) 40%,
+        transparent 70%
+      );
+    }
+
+    .loader-overlay.dark .conn {
+      stroke: #4A4741;
+    }
+
+    .loader-overlay.dark .node {
+      fill: #4A4741;
+    }
+
+    .loader-overlay.dark .loader-brand .shimmer-text {
+      background: linear-gradient(
+        105deg,
+        #F2EEE5 0%,
+        #F2EEE5 35%,
+        hsl(var(--accent-cyan)) 50%,
+        #F2EEE5 65%,
+        #F2EEE5 100%
+      );
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .loader-overlay.dark .loader-brand em {
+      background: linear-gradient(
+        105deg,
+        #D66D48 0%,
+        #D66D48 35%,
+        #C87A38 50%,
+        #D66D48 65%,
+        #D66D48 100%
+      );
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.15s;
+    }
+
+    .loader-overlay.dark .loader-status {
+      color: #7A756C;
+    }
+
+    .loader-overlay.dark .loader-progress {
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ==========================================================================
+       INLINE COMPACT VARIANT (for use inside a card/section)
+       ========================================================================== */
+    .loader-inline {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: hsl(var(--bg-card) / 65%);
+      border: 1px solid hsl(var(--border-glow));
+    }
+
+    .loader-inline .brain-loader-svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .loader-inline .loader-status {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================================
+       VARIANT A: Full-Page Warm Paper Loader
+       ===================================================================== -->
+  <div class="loader-overlay" id="loaderLight">
+
+    <!-- The Brain Constellation -->
+    <svg class="brain-loader-svg" viewBox="0 0 100 100" fill="none">
+      <!-- BASE CONNECTIONS (dim, static skeleton) -->
+      <line class="conn" x1="46" y1="10" x2="23.6" y2="19.6"/>
+      <line class="conn" x1="46" y1="10" x2="46.4" y2="41"/>
+      <line class="conn" x1="23.6" y1="19.6" x2="9.8" y2="41.2"/>
+      <line class="conn" x1="71.4" y1="19.6" x2="90.4" y2="37"/>
+      <line class="conn" x1="71.4" y1="19.6" x2="61.9" y2="41.4"/>
+      <line class="conn" x1="90.4" y1="37" x2="89.8" y2="60.8"/>
+      <line class="conn" x1="46.4" y1="41" x2="22" y2="59"/>
+      <line class="conn" x1="9.8" y1="41.2" x2="22" y2="59"/>
+      <line class="conn" x1="61.9" y1="41.4" x2="89.8" y2="60.8"/>
+      <line class="conn" x1="49" y1="64.4" x2="69.4" y2="69.9"/>
+      <line class="conn" x1="49" y1="64.4" x2="61.8" y2="89.7"/>
+      <path class="conn" d="M46,10 Q59,10 71.4,19.6" fill="none"/>
+      <path class="conn" d="M89.8,60.8 Q95,72 69.4,69.9" fill="none"/>
+
+      <!-- ANIMATED DATA FLOW LINES (shimmer overlay) -->
+      <line class="flow flow-1"  x1="46" y1="10" x2="23.6" y2="19.6"/>
+      <line class="flow flow-2"  x1="46" y1="10" x2="46.4" y2="41"/>
+      <line class="flow flow-3"  x1="23.6" y1="19.6" x2="9.8" y2="41.2"/>
+      <line class="flow flow-4"  x1="71.4" y1="19.6" x2="90.4" y2="37"/>
+      <line class="flow flow-5"  x1="71.4" y1="19.6" x2="61.9" y2="41.4"/>
+      <line class="flow flow-6"  x1="90.4" y1="37" x2="89.8" y2="60.8"/>
+      <line class="flow flow-7"  x1="46.4" y1="41" x2="22" y2="59"/>
+      <line class="flow flow-8"  x1="9.8" y1="41.2" x2="22" y2="59"/>
+      <line class="flow flow-9"  x1="61.9" y1="41.4" x2="89.8" y2="60.8"/>
+      <line class="flow flow-10" x1="49" y1="64.4" x2="69.4" y2="69.9"/>
+      <line class="flow flow-11" x1="49" y1="64.4" x2="61.8" y2="89.7"/>
+      <path class="flow flow-c1" d="M46,10 Q59,10 71.4,19.6" fill="none"/>
+      <path class="flow flow-c2" d="M89.8,60.8 Q95,72 69.4,69.9" fill="none"/>
+
+      <!-- BASE NODES (dim, static) -->
+      <circle class="node" cx="46"   cy="10"   r="5.5"/>
+      <circle class="node" cx="23.6" cy="19.6" r="5.5"/>
+      <circle class="node" cx="71.4" cy="19.6" r="5.5"/>
+      <circle class="node" cx="90.4" cy="37"   r="5.5"/>
+      <circle class="node" cx="46.4" cy="41"   r="5"/>
+      <circle class="node" cx="9.8"  cy="41.2" r="5.5"/>
+      <circle class="node" cx="61.9" cy="41.4" r="5"/>
+      <circle class="node" cx="22"   cy="59"   r="5.5"/>
+      <circle class="node" cx="89.8" cy="60.8" r="5.5"/>
+      <circle class="node" cx="49"   cy="64.4" r="5.5"/>
+      <circle class="node" cx="69.4" cy="69.9" r="5"/>
+      <circle class="node" cx="61.8" cy="89.7" r="4.5"/>
+
+      <!-- ANIMATED PULSE NODES (colored breathing overlay) -->
+      <circle class="node-pulse np-1"  cx="46"   cy="10"   r="5.5"/>
+      <circle class="node-pulse np-2"  cx="23.6" cy="19.6" r="5.5"/>
+      <circle class="node-pulse np-3"  cx="71.4" cy="19.6" r="5.5"/>
+      <circle class="node-pulse np-4"  cx="90.4" cy="37"   r="5.5"/>
+      <circle class="node-pulse np-5"  cx="46.4" cy="41"   r="5"/>
+      <circle class="node-pulse np-6"  cx="9.8"  cy="41.2" r="5.5"/>
+      <circle class="node-pulse np-7"  cx="61.9" cy="41.4" r="5"/>
+      <circle class="node-pulse np-8"  cx="22"   cy="59"   r="5.5"/>
+      <circle class="node-pulse np-9"  cx="89.8" cy="60.8" r="5.5"/>
+      <circle class="node-pulse np-10" cx="49"   cy="64.4" r="5.5"/>
+      <circle class="node-pulse np-11" cx="69.4" cy="69.9" r="5"/>
+      <circle class="node-pulse np-12" cx="61.8" cy="89.7" r="4.5"/>
+
+      <!-- EXPANDING RINGS (sonar/ripple effect) -->
+      <circle class="node-ring nr-1"  cx="46"   cy="10"   r="5.5"/>
+      <circle class="node-ring nr-2"  cx="23.6" cy="19.6" r="5.5"/>
+      <circle class="node-ring nr-3"  cx="71.4" cy="19.6" r="5.5"/>
+      <circle class="node-ring nr-4"  cx="90.4" cy="37"   r="5.5"/>
+      <circle class="node-ring nr-5"  cx="46.4" cy="41"   r="5"/>
+      <circle class="node-ring nr-6"  cx="9.8"  cy="41.2" r="5.5"/>
+      <circle class="node-ring nr-7"  cx="61.9" cy="41.4" r="5"/>
+      <circle class="node-ring nr-8"  cx="22"   cy="59"   r="5.5"/>
+      <circle class="node-ring nr-9"  cx="89.8" cy="60.8" r="5.5"/>
+      <circle class="node-ring nr-10" cx="49"   cy="64.4" r="5.5"/>
+      <circle class="node-ring nr-11" cx="69.4" cy="69.9" r="5"/>
+      <circle class="node-ring nr-12" cx="61.8" cy="89.7" r="4.5"/>
+    </svg>
+
+    <!-- Brand Name with Shimmer -->
+    <div class="loader-brand">
+      <span class="shimmer-text">neudenken</span><em>.io</em>
+    </div>
+
+    <!-- Status Line with Pulsing Dots -->
+    <div class="loader-status">
+      <span>Denke nach</span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <!-- Subtle Progress Sweep -->
+    <div class="loader-progress">
+      <div class="loader-progress-bar"></div>
+    </div>
+  </div>
+
+</body>
+</html>

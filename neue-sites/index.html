@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>neudenken.io — KI-Werkzeuge für Handwerk & Ausbildungsbetriebe</title>
+  <meta name="description" content="TÜV-zertifizierter AI Automation Manager. Maßgeschneiderte KI-Werkzeuge für Handwerk, Dienstleistung und Ausbildungsbetriebe — 5–8 Stunden pro Woche zurückgewinnen.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       CORPORATE DESIGN MANUAL v3.0 — DESIGN TOKENS
+       ========================================================================== */
+    :root {
+      /* Surfaces (HSL ohne hsl() Wrapper) */
+      --bg-paper: 41 23% 92%;         /* #EFECE6 - Grundfläche */
+      --bg-panel: 42 29% 87%;         /* #E7E2D4 - Panels & Karten */
+      --bg-inverse: 30 13% 11%;       /* #201C18 - Dark Panels & Konsolen */
+
+      /* Ink / Text */
+      --text-primary: 30 8% 9%;       /* #191715 - Headlines & Kanten */
+      --text-secondary: 40 6% 27%;    /* #494641 - Fließtext */
+      --text-muted: 39 6% 38%;        /* #67635B - Labels & Quellen */
+
+      /* Inverse / Terminal Text */
+      --inverse-text-primary: #F2EEE5;
+      --inverse-text-secondary: #CBD5E1;
+      --inverse-text-muted: #9A958C;
+
+      /* Accents (Role-based) */
+      --accent-primary: 15 60% 40%;     /* #A34729 - Primärakzent Sienna */
+      --accent-secondary: 17 66% 29%;   /* #7B3519 - Sekundärakzent Rost */
+      --accent-live: 127 26% 33%;       /* #3E6A43 - Live-Status Moos */
+      --accent-warn: 28 62% 36%;        /* #955823 - Warnung Ocker */
+
+      /* RGB Tokens */
+      --ink-rgb: 25, 23, 21;
+      --accent-primary-rgb: 163, 71, 41;
+      --accent-secondary-rgb: 123, 53, 25;
+      --accent-live-rgb: 62, 106, 67;
+      --accent-warn-rgb: 149, 88, 35;
+
+      /* Borders */
+      --border-hairline: 30 8% 9% / 8%;
+      --border-hairline-active: 15 60% 40% / 35%;
+      --border-structural: 30 8% 9% / 15%;
+
+      /* Fonts */
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+      /* Transitions & Easing */
+      --transition-smooth: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+      --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+      /* Radii */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-pill: 100px;
+    }
+
+    /* Reset & Base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scroll-behavior: smooth;
+      background-color: hsl(var(--bg-paper));
+      color: hsl(var(--text-primary));
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body {
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+      background-color: hsl(var(--bg-paper));
+    }
+
+    /* 5.1 Papierkorn */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+      opacity: 0.75;
+    }
+
+    /* 5.2 Glow Engine */
+    .glow-engine {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+    .glow-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.06;
+      mix-blend-mode: multiply;
+    }
+    .blob-primary {
+      top: -10%; left: 15%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, hsl(var(--accent-primary)) 0%, transparent 70%);
+      animation: float-blob-1 30s infinite alternate ease-in-out;
+    }
+    .blob-secondary {
+      bottom: -10%; right: 10%; width: 60vw; height: 60vw;
+      background: radial-gradient(circle, hsl(var(--accent-secondary)) 0%, transparent 70%);
+      animation: float-blob-2 35s infinite alternate ease-in-out;
+    }
+    @keyframes float-blob-1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(8%, 12%) scale(1.15); } }
+    @keyframes float-blob-2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-12%, -8%) scale(0.9); } }
+
+    /* 5.3 Gitternetz mit Spotlight-Maske */
+    .grid-backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      background-image:
+        linear-gradient(rgba(var(--ink-rgb), 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--ink-rgb), 0.015) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle 800px at var(--mouse-x, 50%) var(--mouse-y, 400px), black 30%, transparent 90%);
+    }
+
+    /* 5.4 Partikelfeld */
+    .antigravity-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 5.5 Textselektion */
+    ::selection {
+      background: rgba(var(--accent-primary-rgb), 0.15);
+      color: hsl(var(--text-primary));
+    }
+
+    /* Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* 8.1 Navbar (Pill) */
+    .header-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: var(--transition-smooth);
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: hsl(var(--bg-panel) / 80%);
+      backdrop-filter: blur(20px) saturate(120%);
+      -webkit-backdrop-filter: blur(20px) saturate(120%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-pill);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-symbol {
+      width: 28px;
+      height: 28px;
+      border: 2px solid hsl(var(--accent-primary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+      color: hsl(var(--accent-primary));
+    }
+    .logo-text {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.02em;
+      color: hsl(var(--text-primary));
+    }
+    .logo-text em {
+      font-style: italic;
+      color: hsl(var(--accent-primary));
+      font-weight: 500;
+    }
+    .nav-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-secondary));
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: hsl(var(--accent-live));
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(var(--accent-live-rgb), 0.6);
+      animation: pulse-active 2s infinite ease-in-out;
+    }
+    @keyframes pulse-active {
+      0% { opacity: 0.3; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0.3; transform: scale(0.9); }
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: hsl(var(--text-secondary));
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: var(--transition-smooth);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+    }
+    .nav-link:hover {
+      color: hsl(var(--text-primary));
+      background: rgba(var(--ink-rgb), 0.04);
+    }
+    .nav-link.accented {
+      color: hsl(var(--accent-primary));
+      border: 1px dashed hsl(var(--accent-primary) / 30%);
+    }
+    .nav-link.accented:hover {
+      background: hsl(var(--accent-primary) / 5%);
+      border-color: hsl(var(--accent-primary));
+    }
+
+    /* 4.2 Vertikaler Rhythmus & Hero */
+    .hero {
+      padding: 100px 0 80px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 7fr 5fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 48px;
+      height: 1px;
+      background-color: hsl(var(--accent-primary));
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(52px, 7.5vw, 110px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      margin-bottom: 36px;
+      color: hsl(var(--text-primary));
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: hsl(var(--accent-primary));
+    }
+    .hero-subtitle {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: hsl(var(--text-secondary));
+      margin-bottom: 36px;
+      max-width: 580px;
+    }
+    .hero-subtitle em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: hsl(var(--text-primary));
+    }
+
+    /* 8.3 Kennzahlen-Grid */
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1.5px solid hsl(var(--text-primary));
+      border-left: 1px solid hsl(var(--border-hairline));
+      margin-top: 40px;
+    }
+    .data-cell {
+      padding: 32px 24px;
+      border-right: 1px solid hsl(var(--border-hairline));
+      border-bottom: 1px solid hsl(var(--border-hairline));
+      background: hsl(var(--bg-paper) / 50%);
+      transition: var(--transition-smooth);
+    }
+    .data-cell:hover {
+      background: hsl(var(--bg-panel) / 45%);
+    }
+    .data-cell .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 16px;
+    }
+    .data-cell .value {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(54px, 7vw, 92px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      color: hsl(var(--text-primary));
+      margin-bottom: 12px;
+      display: flex;
+      align-items: baseline;
+    }
+    .data-cell .value .unit {
+      font-size: 0.35em;
+      color: hsl(var(--accent-primary));
+      margin-left: 6px;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .data-cell .desc {
+      font-size: 14.5px;
+      color: hsl(var(--text-secondary));
+      line-height: 1.55;
+    }
+    .data-cell .source {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-muted));
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px dashed hsl(var(--border-hairline));
+    }
+
+    /* 8.5 Terminal-Konsole / Hero Preview */
+    .hero-badge-card {
+      padding: 32px;
+      background: hsl(var(--bg-panel) / 75%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-xl);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pf-flagship-console {
+      background: hsl(var(--bg-panel) / 60%);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.8;
+      color: var(--inverse-text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      height: 240px;
+      overflow-y: auto;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .c-ok { color: #81C784; }
+    .c-accent { color: #FFB74D; }
+    .c-action { color: #64B5F6; }
+    .c-system { color: hsl(var(--text-muted)); }
+
+    /* 8.2 Section-Head & Chapter */
+    section.chapter {
+      padding: 120px 0;
+      border-bottom: 1px solid hsl(var(--border-hairline));
+      position: relative;
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 60px;
+      margin-bottom: 80px;
+      align-items: start;
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-primary));
+      padding-top: 14px;
+      border-top: 2px solid hsl(var(--accent-primary));
+      text-transform: uppercase;
+      line-height: 1.8;
+    }
+    .section-num strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 14px;
+      color: hsl(var(--text-secondary));
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 4px;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(38px, 5.5vw, 76px);
+      line-height: 0.98;
+      letter-spacing: -0.035em;
+      color: hsl(var(--text-primary));
+    }
+    .section-title em {
+      font-style: italic;
+      color: hsl(var(--accent-primary));
+      font-weight: 400;
+    }
+
+    /* 8.6 Portfolio / Tools Grid */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    /* 6. Glasmorphismus & 8.6 Portfolio-Karte */
+    .glass-card {
+      background: hsl(var(--bg-panel) / 65%);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      transition: var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .glass-card:hover {
+      transform: translateY(-2px);
+      border-color: hsl(var(--border-hairline-active));
+      box-shadow: 0 12px 30px rgba(var(--ink-rgb), 0.04);
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(800px circle at var(--card-mouse-x, 0px) var(--card-mouse-y, 0px), rgba(var(--accent-primary-rgb), 0.03), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .glass-card:hover::before { opacity: 1; }
+
+    .pf-head {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .glass-card h4 {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: clamp(22px, 2.4vw, 32px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: hsl(var(--text-primary));
+    }
+    .glass-card h4 em {
+      font-style: italic;
+      color: hsl(var(--accent-primary));
+      font-weight: 400;
+    }
+    .glass-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: hsl(var(--text-secondary));
+      margin-bottom: 16px;
+    }
+    .glass-card p strong {
+      color: hsl(var(--text-primary));
+      font-weight: 600;
+    }
+
+    /* 8.7 Stack Badge */
+    .pf-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid hsl(var(--border-hairline));
+    }
+    .stack-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-muted));
+      background: rgba(var(--ink-rgb), 0.03);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+    }
+    .stack-badge.accented {
+      color: hsl(var(--accent-primary));
+      border: 1px dashed hsl(var(--accent-primary) / 20%);
+      background: hsl(var(--accent-primary) / 2%);
+    }
+
+    /* 8.13 Buttons & Links */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+    .btn-primary {
+      background-color: hsl(var(--accent-primary));
+      color: hsl(var(--text-primary));
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: hsl(var(--accent-secondary));
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid hsl(var(--text-primary));
+      color: hsl(var(--text-primary));
+    }
+    .btn-secondary:hover {
+      background: rgba(var(--ink-rgb), 0.05);
+    }
+
+    /* Contact Section */
+    .contact {
+      padding: 140px 0 100px;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+    .contact-left .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: hsl(var(--accent-primary));
+      margin-bottom: 16px;
+    }
+    .contact-left h2 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(52px, 8vw, 110px);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+    .contact-left h2 em {
+      font-style: italic;
+      color: hsl(var(--accent-primary));
+    }
+    .contact-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: center;
+    }
+    .line-row {
+      font-family: var(--font-serif);
+      font-size: clamp(19px, 2.2vw, 24px);
+      line-height: 1.6;
+      color: hsl(var(--text-secondary));
+    }
+    .line-row a {
+      color: hsl(var(--accent-primary));
+      text-decoration: none;
+      border-bottom: 1.5px solid hsl(var(--accent-primary));
+      padding-bottom: 2px;
+      transition: var(--transition-smooth);
+    }
+    .line-row a:hover {
+      color: hsl(var(--accent-secondary));
+      border-color: hsl(var(--accent-secondary));
+    }
+
+    /* 8.14 Footer */
+    .footer {
+      border-top: 1px solid hsl(var(--border-structural));
+      padding: 36px 0;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: hsl(var(--text-muted));
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    /* 7. Scroll Reveal */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 9. Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .hero-grid, .section-head, .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .section-head { margin-bottom: 40px; }
+      .data-grid { grid-template-columns: repeat(2, 1fr); }
+      section.chapter { padding: 80px 0; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-radius: 24px;
+        gap: 12px;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        overflow-x: auto;
+      }
+      .nav-link { font-size: 11px; padding: 6px 8px; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .pf-flagship-console { font-size: 10.5px; height: 200px; }
+      .glow-blob { display: none; }
+    }
+    @media (max-width: 580px) {
+      .data-grid { grid-template-columns: 1fr; }
+      .nav-status { display: none; }
+    }
+
+    /* 9. Reduced Motion Block */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .scroll-reveal { opacity: 1 !important; transform: none !important; }
+      .glow-engine, .antigravity-canvas { display: none !important; }
+      .glass-card:hover { transform: none !important; }
+    }
+
+    /* Focus Visibility */
+    :focus-visible {
+      outline: 2px solid hsl(var(--accent-primary));
+      outline-offset: 3px;
+    }
+  
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+    }
+    .tool-logo {
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tool-item:hover .tool-logo {
+      transform: translateY(-2px) scale(1.1);
+    }
+
+  
+    /* TOOLBOX NO OVERFLOW & PERFECT LAYOUT */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+      gap: 16px !important;
+    }
+    .tool-item {
+      background: hsl(var(--bg-panel) / 60%);
+      border: 1px solid hsl(var(--border-hairline));
+      border-radius: var(--radius-md);
+      padding: 12px 14px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      color: inherit;
+      min-width: 0 !important;
+      overflow: hidden !important;
+    }
+    .tool-item:hover {
+      border-color: hsl(var(--border-hairline-active));
+      transform: translateY(-2px);
+      background: hsl(var(--bg-panel));
+    }
+    .tool-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .tool-logo {
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .tool-item:hover .tool-logo {
+      transform: translateY(-2px) scale(1.1);
+    }
+    .tool-name {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 13.5px !important;
+      color: hsl(var(--text-primary));
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tool-category {
+      font-family: var(--font-mono);
+      font-size: 9px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.06em !important;
+      color: hsl(var(--text-muted));
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+  
+    /* PERFECT PITCH-BLACK TECH TERMINAL CONSOLE */
+    .pf-flagship-console, .demo-output-col, .terminal-box {
+      background: #141210 !important;
+      color: #CBD5E1 !important;
+      border-radius: 8px !important;
+      padding: 24px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 11.5px !important;
+      line-height: 1.8 !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7) !important;
+    }
+    .pf-flagship-console span, .demo-output-col span {
+      display: block;
+    }
+    .c-system { color: #64748B !important; }
+    .c-ok { color: #81C784 !important; font-weight: 600 !important; }
+    .c-accent { color: #FFB74D !important; }
+    .c-action { color: #4FC3F7 !important; font-weight: 600 !important; }
+    .c-sec { color: #F59E0B !important; font-weight: 600 !important; }
+    .c-metric { color: #FFB74D !important; }
+
+
+    /* WARM PAPER DEMO OUTPUT BOX FOR HUB & LANDING PAGE */
+    .demo-output-col {
+      background: hsl(var(--bg-panel) / 60%) !important;
+      color: hsl(var(--text-primary)) !important;
+      border: 1px solid hsl(var(--border-hairline)) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 20px 24px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 13px !important;
+      line-height: 1.6 !important;
+      box-shadow: none !important;
+    }
+
+</style>
+</head>
+<body>
+
+  <!-- 5. HINTERGRUND-ENGINES -->
+  <canvas class="antigravity-canvas" id="antigravityCanvas"></canvas>
+
+  <div class="glow-engine">
+    <div class="glow-blob blob-primary"></div>
+    <div class="glow-blob blob-secondary"></div>
+  </div>
+
+  <div class="grid-backdrop"></div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+
+    <!-- 8.1 NAVBAR -->
+    <div class="header-wrap">
+      <header class="navbar">
+        <a href="https://neudenken.io" class="nav-left">
+          <div class="logo-symbol">N</div>
+          <span class="logo-text">neudenken<em>.io</em></span>
+        </a>
+        
+        <div class="nav-status">
+          <span class="status-dot"></span>
+          <span>KI-Werkzeuge &middot; Live</span>
+        </div>
+
+        <nav class="nav-links">
+          <a href="#loesungen" class="nav-link">Lösungen</a>
+          <a href="#kpi-demo" class="nav-link">Live-Demo</a>
+          <a href="#ausbildung" class="nav-link">Ausbildung</a>
+          <a href="https://salva.neudenken.io" class="nav-link">Profil</a>
+          <a href="#kontakt" class="nav-link accented">Erstgespräch</a>
+        </nav>
+      </header>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <div class="hero-eyebrow">TÜV-GEPRÜFTER AI AUTOMATION MANAGER &middot; BADEN-WÜRTTEMBERG</div>
+          <h1>Die Stunde, die ihr abends am Küchentisch verliert. <em class="accent">Holt sie euch zurück.</em></h1>
+          <div class="hero-subtitle">
+            Ihr habt euch selbstständig gemacht, um <em>frei</em> zu sein. Stattdessen sitzt ihr um halb zehn abends noch an Rechnungen, WhatsApp-Antworten und Arbeitsnachweisen. <strong>Das war nicht der Deal.</strong>
+          </div>
+          
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <a href="#kontakt" class="btn btn-primary">Erstgespräch vereinbaren &rarr;</a>
+            <a href="#kpi-demo" class="btn btn-secondary">Live-Demo ausprobieren</a>
+          </div>
+
+          <!-- 8.3 KENNZAHLEN GRID -->
+          <div class="data-grid scroll-reveal">
+            <div class="data-cell">
+              <div class="tag">FREIZEIT</div>
+              <div class="value">5–8<span class="unit">h/Wo</span></div>
+              <div class="desc">Zurückgewonnene Lebenszeit pro Betrieb durch automatisierte Abläufe.</div>
+              <div class="source">Audit &middot; Praxisdaten</div>
+            </div>
+            <div class="data-cell">
+              <div class="tag">TEMPO</div>
+              <div class="value">48<span class="unit">h</span></div>
+              <div class="desc">Bis zum ersten voll funktionsfähigen KI-Werkzeug in Ihrem Alltag.</div>
+              <div class="source">SLA &middot; Garantie</div>
+            </div>
+            <div class="data-cell">
+              <div class="tag">QUALITÄT</div>
+              <div class="value">4<span class="unit">Zert</span></div>
+              <div class="desc">TÜV, AWS, Google AI &amp; Anthropic zertifiziertes Know-how.</div>
+              <div class="source">TÜV, AWS, Google &amp; Anthropic &middot; 2026</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- HERO RIGHT: LIVE TERMINAL DEMO -->
+        <div class="hero-right scroll-reveal" id="kpi-demo">
+          <div class="hero-badge-card">
+            <div class="pf-head">
+              <span>DEMO // Workforce-Management</span>
+              <span class="pf-status-badge live">Live im Betrieb</span>
+            </div>
+            <h4>Workforce-Management &middot; <em>KPI-Dashboard</em></h4>
+            <p>Echte Schicht- und Urlaubsplanung für KMU & Handwerk ohne Cloud-Zwang.</p>
+
+            <div class="pf-flagship-console" id="liveDaemonConsole">
+              <span class="c-system">[DAEMON] Starting neudenken.io AI Automation Engine...</span>
+              <span class="c-ok">[OK] Local SQLite Database loaded (0.2ms)</span>
+              <span class="c-action">[SYNC] Outlook-iCal shift sync active: 100% coverage</span>
+              <span class="c-accent">[METRIC] Saved administrator time this week: 6.4 hours</span>
+              <span class="c-ok">[SEC] CSRF validation & Session timeout active</span>
+            </div>
+
+            <div class="pf-stack">
+              <span class="stack-badge accented">TÜV-GEPRÜFT</span>
+              <span class="stack-badge">CSRF-Hardened</span>
+              <span class="stack-badge">iCal Sync</span>
+              <span class="stack-badge accented">100% Cloud-Independent</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- KAPITEL 01: LÖSUNGEN -->
+    <section class="chapter" id="loesungen">
+      <div class="section-head scroll-reveal">
+        <div class="section-num">01 — Lösungen<strong>Praxis-Tools</strong></div>
+        <h2 class="section-title">Echte KI-Werkzeuge für <em>Handwerk &amp; KMU</em>.</h2>
+      </div>
+
+            <div class="portfolio-grid">
+        
+        <!-- PROJEKT 01: FLAGSHIP CASE -->
+        <div class="glass-card pf-card span-12 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 01 // Flagship Software</span>
+              <span class="pf-status-badge live">Live im Betrieb</span>
+            </div>
+            
+            <div class="pf-flagship-wrapper">
+              <div>
+                <h4>Workforce-Planer <em>v7.9.4</em></h4>
+                <div class="pf-body-content">
+                  <p>
+                    Ein vollfunktionales, datenbankgestütztes Schicht- und Urlaubsplanungstool für ein Team mit 17 Mitarbeitenden. Beseitigt manuellen Excel-Frust und automatisiert die Schichtplanung.
+                  </p>
+                  <p>
+                    <strong>Security &amp; Qualität:</strong> Multi-LLM-Workflow (Entwicklung in Gemini, Security- &amp; Code-Review in Claude). CSRF-Schutz, Session-Management mit Timeout, server-seitige Validierung, iCal-Schnittstelle.
+                  </p>
+                  <p>
+                    <strong>Der Durchbruch:</strong> Das Tool stieg vom lokalen Experiment zum Vorzeigeprojekt auf und wurde offiziell zur Demonstration bei der Unternehmenszentrale eingeladen.
+                  </p>
+                </div>
+              </div>
+              
+              <!-- Dynamic Log Terminal -->
+              <div class="pf-flagship-console" id="workforceLog">
+                <span class="c-system">[DAEMON] Starting Workforce-Planer Engine v7.9.4...</span>
+                <span class="c-ok">[OK] DB Connection pool initialized (local sqlite)</span>
+                <span class="c-system">[DAEMON] 17 active local user profiles mapped.</span>
+                <span class="c-ok">[SEC] CSRF validation active. Tokens-per-request verified.</span>
+                <span class="c-action">[SYNC] Auto iCal export buffer: OK</span>
+                <span class="c-system">[METRIC] Current active session timeout: 15 minutes.</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="pf-stack">
+            <span class="stack-badge accented">PHP / SQL</span>
+            <span class="stack-badge">Multi-LLM Workflow</span>
+            <span class="stack-badge">CSRF-Hardened</span>
+            <span class="stack-badge accented">100% Cloud-Independent</span>
+            <span class="stack-badge">iCal Sync</span>
+            <span class="stack-badge">v7.9.4</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 02: BERICHTSHEFT-ANALYZER -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 02 // EdTech &amp; AI Audit</span>
+              <span class="pf-status-badge live font-mono">Aktiv</span>
+            </div>
+            <h4>Berichtsheft-<em>Analyzer</em></h4>
+            <div class="pf-body-content">
+              <p>
+                Intelligentes Tool zur automatisierten Auswertung und Qualitätsprüfung digitaler Ausbildungsnachweise. Nutzt OCR-Parsing und LLM-gestützte Abgleiche gegen Ausbildungsrahmenpläne zur Entlastung von Ausbildern und Prüfungsausschüssen.
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge accented">Python / LLM</span>
+            <span class="stack-badge">OCR Parsing</span>
+            <span class="stack-badge">Automated Audit</span>
+            <span class="stack-badge">EdTech</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 03: DELIVERY DASHBOARD V4 -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 03 // Analytics</span>
+              <span class="pf-status-badge live font-mono">Operativ</span>
+            </div>
+            <h4>Delivery Dashboard <em>V4</em></h4>
+            <div class="pf-body-content">
+              <p>
+                Gehärtetes, lokales Analyse-Dashboard mit PDF-Parsing (PDF.js) und intelligentem Datenimport. Bewusst so konzipiert, dass es ohne Cloud-Zwang läuft — ideal für restriktive IT-Richtlinien deutscher Großkonzerne. Drag-and-Drop-Datenpflege, localStorage-Persistenz und reaktive Diagramme (Chart.js).
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge accented">HTML5 / JS</span>
+            <span class="stack-badge">PDF.js</span>
+            <span class="stack-badge">Chart.js</span>
+            <span class="stack-badge">Zero-Cloud Option</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 04: YOUTUBE TO OBSIDIAN -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 04 // Productivity</span>
+              <span class="pf-status-badge">Aktiv</span>
+            </div>
+            <h4>YouTube → <em>Obsidian</em></h4>
+            <div class="pf-body-content">
+              <p>
+                Eine native Browser-Erweiterung, die YouTube-Videos auf Knopfdruck präzise auf Deutsch zusammenfasst und das strukturierte Ergebnis über ein API-Interface direkt in das persönliche Obsidian-Vault schreibt.
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge">Chrome Ext</span>
+            <span class="stack-badge accented">Obsidian API</span>
+            <span class="stack-badge">LLM Parser</span>
+          </div>
+        </div>
+
+        <!-- PROJEKT 05: DRIVE PARA SORTER -->
+        <div class="glass-card pf-card span-6 scroll-reveal">
+          <div>
+            <div class="pf-head">
+              <span>PROJEKT 05 // Automation</span>
+              <span class="pf-status-badge">Aktiv</span>
+            </div>
+            <h4>Drive <em>PARA</em> Sorter</h4>
+            <div class="pf-body-content">
+              <p>
+                Google Apps Script-Automatisierung mit Claude Haiku im Hintergrund. Analysiert eintreffende Dokumente in der Google Drive-Inbox in Echtzeit und sortiert sie präzise nach dem bekannten PARA-Strukturprinzip.
+              </p>
+            </div>
+          </div>
+          <div class="pf-stack">
+            <span class="stack-badge">Apps Script</span>
+            <span class="stack-badge accented">Claude API</span>
+            <span class="stack-badge">PARA Pattern</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact scroll-reveal" id="kontakt">
+      <div class="contact-grid">
+        <div class="contact-left">
+          <div class="kicker">Ein Gespräch, kein Fragebogen</div>
+          <h2>Reden wir.<br><em class="accent">Ernsthaft.</em></h2>
+        </div>
+
+        <div class="contact-lines">
+          <div class="line-row">E-Mail &middot; <a href="mailto:salva@neudenken.io">salva@neudenken.io</a></div>
+          <div class="line-row">LinkedIn &middot; <a href="https://www.linkedin.com/in/salvatore-docimo-15bb47200" target="_blank">linkedin.com/in/salvatore-docimo</a></div>
+          <div class="line-row">Region &middot; Bisingen, Baden-Württemberg</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8.14 FOOTER -->
+    <footer class="footer">
+      <div>&copy; 2026 neudenken.io &middot; Salvatore Docimo &middot; Alle Rechte vorbehalten</div>
+      <div>KI-Werkzeuge &middot; CD Manual v3.0 &middot; Bisingen</div>
+    </footer>
+
+  </div>
+
+  <!-- INTERACTIVE ENGINES SCRIPT -->
+  <script>
+    // 5.4 PARTICLE ENGINE & TOUCH REPULSION
+    const canvas = document.getElementById('antigravityCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    let mouse = {
+      x: null,
+      y: null,
+      targetX: null,
+      targetY: null,
+      radius: window.matchMedia('(pointer: coarse)').matches ? 190 : 150
+    };
+
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.8;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 30) + 12;
+        this.speedX = (Math.random() * 0.2) - 0.1;
+        this.speedY = (Math.random() * 0.1) - 0.05;
+        this.opacity = Math.random() * 0.4 + 0.25;
+      }
+      draw() {
+        ctx.fillStyle = `rgba(163, 71, 41, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+      update() {
+        this.baseX += this.speedX;
+        this.baseY += this.speedY;
+
+        if (this.baseX < 0) this.baseX = canvas.width;
+        if (this.baseX > canvas.width) this.baseX = 0;
+        if (this.baseY < 0) this.baseY = canvas.height;
+        if (this.baseY > canvas.height) this.baseY = 0;
+
+        if (mouse.x !== null && mouse.y !== null) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          let forceDirectionX = dx / distance;
+          let forceDirectionY = dy / distance;
+          let maxDistance = mouse.radius;
+          let force = (maxDistance - distance) / maxDistance;
+          let directionX = forceDirectionX * force * this.density;
+          let directionY = forceDirectionY * force * this.density;
+
+          if (distance < mouse.radius) {
+            this.x -= directionX;
+            this.y -= directionY;
+            this.opacity = Math.min(0.8, this.opacity + 0.02);
+          } else {
+            if (this.x !== this.baseX) {
+              let dxBase = this.x - this.baseX;
+              this.x -= dxBase / 20;
+            }
+            if (this.y !== this.baseY) {
+              let dyBase = this.y - this.baseY;
+              this.y -= dyBase / 20;
+            }
+            if (this.opacity > 0.3) {
+              this.opacity -= 0.005;
+            }
+          }
+        } else {
+          if (this.x !== this.baseX) {
+            let dxBase = this.x - this.baseX;
+            this.x -= dxBase / 20;
+          }
+          if (this.y !== this.baseY) {
+            let dyBase = this.y - this.baseY;
+            this.y -= dyBase / 20;
+          }
+        }
+      }
+    }
+
+    function createParticles() {
+      particles = [];
+      const quantity = Math.floor((canvas.width * canvas.height) / 18000);
+      for (let i = 0; i < quantity; i++) {
+        particles.push(new Particle());
+      }
+    }
+    createParticles();
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (mouse.targetX !== null && mouse.targetY !== null) {
+        if (mouse.x === null) {
+          mouse.x = mouse.targetX;
+          mouse.y = mouse.targetY;
+        } else {
+          mouse.x += (mouse.targetX - mouse.x) * 0.12;
+          mouse.y += (mouse.targetY - mouse.y) * 0.12;
+        }
+        document.documentElement.style.setProperty('--mouse-x', mouse.x + 'px');
+        document.documentElement.style.setProperty('--mouse-y', mouse.y + 'px');
+      }
+
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    const updatePointer = (clientX, clientY) => {
+      mouse.targetX = clientX;
+      mouse.targetY = clientY;
+    };
+
+    window.addEventListener('mousemove', e => {
+      updatePointer(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('touchstart', e => {
+      if (e.touches && e.touches.length > 0) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', e => {
+      if (e.touches && e.touches.length > 0) {
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    const resetPointer = () => {
+      mouse.targetX = null;
+      mouse.targetY = null;
+      mouse.x = null;
+      mouse.y = null;
+    };
+
+    window.addEventListener('mouseleave', resetPointer);
+    window.addEventListener('touchend', resetPointer);
+    window.addEventListener('touchcancel', resetPointer);
+
+    // Glasscard spotlight
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--card-mouse-x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--card-mouse-y', `${e.clientY - rect.top}px`);
+      });
+    });
+
+    // 7. Scroll Reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.scroll-reveal').forEach(el => io.observe(el));
+
+    // 8.5 Console Loop
+    const consoleLogs = [
+      "[DAEMON] Monitoring active slots: OK",
+      "[SYS] Memory usage stable: 42.5MB",
+      "[SYNC] Recalculating schedule metrics...",
+      "[METRIC] Computed schedule coverage: 100%",
+      "[OK] 17 active local session states secured",
+      "[SYS] Temp iCal buffer purged successfully",
+      "[DAEMON] Querying local SQLite: OK (Took 0.2ms)",
+      "[SEC] Auto-timeout verified: Session valid",
+      "[AUDIT] Code integrity checks: Grade A (PASS)",
+      "[SYNC] Outlook-iCal sync loop executed",
+      "[METRIC] Saved administrator time this week: 6.4 hours"
+    ];
+    const consoleEl = document.getElementById('liveDaemonConsole');
+    if (consoleEl) {
+      setInterval(() => {
+        const randomLog = consoleLogs[Math.floor(Math.random() * consoleLogs.length)];
+        const logSpan = document.createElement('span');
+        if (randomLog.includes('[OK]')) logSpan.className = 'c-ok';
+        else if (randomLog.includes('[SEC]') || randomLog.includes('[METRIC]')) logSpan.className = 'c-accent';
+        else if (randomLog.includes('[SYNC]')) logSpan.className = 'c-action';
+        else logSpan.className = 'c-system';
+        logSpan.textContent = randomLog;
+        consoleEl.appendChild(logSpan);
+        if (consoleEl.children.length > 12) consoleEl.removeChild(consoleEl.firstChild);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      }, 4000);
+    }
+  </script>
+</body>
+</html>

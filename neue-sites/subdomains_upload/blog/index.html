@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salva — Persönlicher Hub &amp; Blog</title>
+  <meta name="description" content="Der persönliche Hub von Salvatore Docimo. Gedanken über Operations, pragmatisches AI-Engineering und die Digitalisierung von KMU.">
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon-DYNlClVx.svg">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+
+  <!-- SEO -->
+  <link rel="canonical" href="https://neudenken.io/blog">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Salva — Hub & Blog">
+  <meta property="og:description" content="Gedanken über Operations, pragmatisches AI-Engineering und die Digitalisierung von KMU.">
+  <meta property="og:url" content="https://neudenken.io/blog">
+  <meta property="og:image" content="https://neudenken.io/og-image-blog.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Salva — Hub & Blog">
+  <meta name="twitter:description" content="Gedanken über Operations, AI-Engineering und KMU-Digitalisierung.">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Salvas Hub & Blog",
+    "description": "Gedanken über Operations, AI-Engineering und KMU-Digitalisierung",
+    "url": "https://neudenken.io/blog",
+    "publisher": {
+      "@type": "Person",
+      "name": "Salvatore Docimo"
+    }
+  }
+  </script>
+
+  <!-- Vite Entry Point -->
+  <script type="module" crossorigin src="./assets/blog-BpwuZpZm.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="stylesheet" crossorigin href="./assets/blog-CeOMYRhX.css">
+</head>
+
+
+<body>
+
+  <!-- BACKGROUND ENGINES -->
+  <canvas class="antigravity-canvas" id="antigravityCanvas"></canvas>
+  <div class="glow-engine">
+    <div class="glow-blob blob-purple"></div>
+    <div class="glow-blob blob-cyan"></div>
+  </div>
+  <div class="grid-backdrop"></div>
+
+  <!-- CONTAINER -->
+  <div class="container">
+
+    <!-- HEADER / NAVIGATION -->
+    <div class="header-wrap">
+      <header class="navbar">
+        <a href="#" class="nav-left" onclick="showHub(); return false;">
+          <div class="logo-symbol">S</div>
+          <span class="logo-text">Salva<em>.io</em></span>
+        </a>
+        <nav class="nav-links">
+          <a href="./index.html" class="nav-link">Beratung</a>
+          <a href="./karriere.html" class="nav-link">Karriere</a>
+          <a href="mailto:salva@neudenken.io" class="nav-link accented">Kontakt</a>
+        </nav>
+      </header>
+    </div>
+
+    <!-- MAIN INTERACTIVE HUB (DEFAULT VIEW) -->
+    <div id="hub-main-view">
+      
+      <!-- HERO -->
+      <section class="hub-hero">
+        <div class="hub-portrait-wrap">SD</div>
+        <h1>Hi, ich bin <em>Salva</em>.</h1>
+        <p>
+          Ich bin Operations-Führungskraft, Software-Builder und Brückenbauer. Ich befreie Betriebe von administrativer Last und baue pragmatische KI-Lösungen, die im <strong>Alltag wirklich funktionieren</strong>.
+        </p>
+      </section>
+
+      <!-- 3-WAY NAVIGATION -->
+      <section class="hub-nav-grid">
+        <!-- Route 1: Business -->
+        <a href="./index.html" class="glass-card hub-nav-card">
+          <div class="card-head">
+            <span>Facet_01 // B2B</span>
+            <span>beratung &amp; tools</span>
+          </div>
+          <div>
+            <h3>KMU <em>Beratung</em></h3>
+            <p>Echte KI-Werkzeuge für Handwerk, Dienstleister und Ausbildungsbetriebe. Gewinne 5–8 Stunden pro Woche zurück.</p>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <!-- Route 2: Career -->
+        <a href="./karriere.html" class="glass-card hub-nav-card">
+          <div class="card-head">
+            <span>Facet_02 // Corporate</span>
+            <span>karriere-portfolio</span>
+          </div>
+          <div>
+            <h3>Mein <em>Profil</em></h3>
+            <p>20 Jahre operative Führung trifft auf tiefes Software- &amp; AI-Engineering. Das Portfolio für Konzerne und Headhunter.</p>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <!-- Route 3: Blog Scroll -->
+        <a href="#blog" class="glass-card hub-nav-card">
+          <div class="card-head">
+            <span>Facet_03 // Thoughts</span>
+            <span>essay-sammlung</span>
+          </div>
+          <div>
+            <h3>Gedanken &amp; <em>Blog</em></h3>
+            <p>Mein Denken über KMU-Digitalisierung, die Fusion aus Operations und Code sowie pragmatische KI-Workflows.</p>
+          </div>
+          <span class="card-arrow">↓</span>
+        </a>
+      </section>
+
+      <!-- BLOG LIST SECTION -->
+      <section class="blog-section" id="blog">
+        <div class="blog-header">
+          <h2 class="blog-section-title">Neueste <em>Gedanken</em></h2>
+          <span class="blog-count" id="blog-count-label">3 Artikel</span>
+        </div>
+        
+        <div class="blog-list" id="blog-list-container">
+          <!-- Rendered dynamically by JS Engine -->
+        </div>
+      </section>
+
+    </div>
+
+    <!-- BLOG READING VIEW (HIDDEN BY DEFAULT) -->
+    <div class="reader-view" id="blog-reader-view">
+      <button class="reader-back-btn" onclick="showHub()">
+        <span>←</span> <span>Zurück zur Übersicht</span>
+      </button>
+      
+      <article>
+        <header class="reader-header">
+          <div class="reader-meta">
+            <span id="reader-date">20. Mai 2026</span>
+            <span>&middot;</span>
+            <span id="reader-read-time">5 Min Lesezeit</span>
+          </div>
+          <h1 class="reader-title" id="reader-title">Titel</h1>
+        </header>
+        
+        <div class="reader-body" id="reader-content">
+          <!-- Populated by JS Engine -->
+        </div>
+        
+        <footer class="reader-footer">
+          <span class="share-lbl">Gedanken teilen unerwünscht. Taten bevorzugt.</span>
+          <button class="reader-back-btn" onclick="showHub()" style="margin-bottom:0;">
+            <span>Zurück zur Übersicht</span> <span>→</span>
+          </button>
+        </footer>
+      </article>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div>&copy; 2026 Salvatore Docimo &middot; Hub &amp; Blog</div>
+      <div>v1.2 &middot; Designed in Baden-Württemberg</div>
+    </footer>
+
+  </div>
+
+  <!-- INTERACTIVE LOGIC & BLOG ENGINE -->
+  </body>
+</html>

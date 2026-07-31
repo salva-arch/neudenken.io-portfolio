@@ -1,0 +1,40 @@
+/* ==========================================================
+   buttons.css — Unified Button System
+   ========================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent-sienna);
+  border: 1px solid var(--accent-sienna);
+  color: var(--surface-paper);
+}
+
+.btn-primary:hover {
+  background: var(--accent-rust);
+  border-color: var(--accent-rust);
+  box-shadow: 0 4px 20px rgba(var(--accent-sienna-rgb), 0.2);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border-glow);
+  color: var(--ink-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(231, 225, 211, 0.5);
+  border-color: var(--ink-primary);
+}

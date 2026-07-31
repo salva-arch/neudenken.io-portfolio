@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>neudenken.io — Thinking Loader</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Vite Entry Point -->
+  <link rel="stylesheet" href="./src/styles/entry-loader.css">
+  <script type="module" src="./src/entry/loader.js"></script>
+</head>
+
+
+<body>
+
+  <!-- =====================================================================
+       VARIANT A: Full-Page Warm Paper Loader
+       ===================================================================== -->
+  <div class="loader-overlay" id="loaderLight">
+
+    <!-- The Brain Constellation -->
+    <svg class="brain-loader-svg" viewBox="0 0 100 100" fill="none">
+      <!-- BASE CONNECTIONS (dim, static skeleton) -->
+      <line class="conn" x1="46" y1="10" x2="23.6" y2="19.6"/>
+      <line class="conn" x1="46" y1="10" x2="46.4" y2="41"/>
+      <line class="conn" x1="23.6" y1="19.6" x2="9.8" y2="41.2"/>
+      <line class="conn" x1="71.4" y1="19.6" x2="90.4" y2="37"/>
+      <line class="conn" x1="71.4" y1="19.6" x2="61.9" y2="41.4"/>
+      <line class="conn" x1="90.4" y1="37" x2="89.8" y2="60.8"/>
+      <line class="conn" x1="46.4" y1="41" x2="22" y2="59"/>
+      <line class="conn" x1="9.8" y1="41.2" x2="22" y2="59"/>
+      <line class="conn" x1="61.9" y1="41.4" x2="89.8" y2="60.8"/>
+      <line class="conn" x1="49" y1="64.4" x2="69.4" y2="69.9"/>
+      <line class="conn" x1="49" y1="64.4" x2="61.8" y2="89.7"/>
+      <path class="conn" d="M46,10 Q59,10 71.4,19.6" fill="none"/>
+      <path class="conn" d="M89.8,60.8 Q95,72 69.4,69.9" fill="none"/>
+
+      <!-- ANIMATED DATA FLOW LINES (shimmer overlay) -->
+      <line class="flow flow-1"  x1="46" y1="10" x2="23.6" y2="19.6"/>
+      <line class="flow flow-2"  x1="46" y1="10" x2="46.4" y2="41"/>
+      <line class="flow flow-3"  x1="23.6" y1="19.6" x2="9.8" y2="41.2"/>
+      <line class="flow flow-4"  x1="71.4" y1="19.6" x2="90.4" y2="37"/>
+      <line class="flow flow-5"  x1="71.4" y1="19.6" x2="61.9" y2="41.4"/>
+      <line class="flow flow-6"  x1="90.4" y1="37" x2="89.8" y2="60.8"/>
+      <line class="flow flow-7"  x1="46.4" y1="41" x2="22" y2="59"/>
+      <line class="flow flow-8"  x1="9.8" y1="41.2" x2="22" y2="59"/>
+      <line class="flow flow-9"  x1="61.9" y1="41.4" x2="89.8" y2="60.8"/>
+      <line class="flow flow-10" x1="49" y1="64.4" x2="69.4" y2="69.9"/>
+      <line class="flow flow-11" x1="49" y1="64.4" x2="61.8" y2="89.7"/>
+      <path class="flow flow-c1" d="M46,10 Q59,10 71.4,19.6" fill="none"/>
+      <path class="flow flow-c2" d="M89.8,60.8 Q95,72 69.4,69.9" fill="none"/>
+
+      <!-- BASE NODES (dim, static) -->
+      <circle class="node" cx="46"   cy="10"   r="5.5"/>
+      <circle class="node" cx="23.6" cy="19.6" r="5.5"/>
+      <circle class="node" cx="71.4" cy="19.6" r="5.5"/>
+      <circle class="node" cx="90.4" cy="37"   r="5.5"/>
+      <circle class="node" cx="46.4" cy="41"   r="5"/>
+      <circle class="node" cx="9.8"  cy="41.2" r="5.5"/>
+      <circle class="node" cx="61.9" cy="41.4" r="5"/>
+      <circle class="node" cx="22"   cy="59"   r="5.5"/>
+      <circle class="node" cx="89.8" cy="60.8" r="5.5"/>
+      <circle class="node" cx="49"   cy="64.4" r="5.5"/>
+      <circle class="node" cx="69.4" cy="69.9" r="5"/>
+      <circle class="node" cx="61.8" cy="89.7" r="4.5"/>
+
+      <!-- ANIMATED PULSE NODES (colored breathing overlay) -->
+      <circle class="node-pulse np-1"  cx="46"   cy="10"   r="5.5"/>
+      <circle class="node-pulse np-2"  cx="23.6" cy="19.6" r="5.5"/>
+      <circle class="node-pulse np-3"  cx="71.4" cy="19.6" r="5.5"/>
+      <circle class="node-pulse np-4"  cx="90.4" cy="37"   r="5.5"/>
+      <circle class="node-pulse np-5"  cx="46.4" cy="41"   r="5"/>
+      <circle class="node-pulse np-6"  cx="9.8"  cy="41.2" r="5.5"/>
+      <circle class="node-pulse np-7"  cx="61.9" cy="41.4" r="5"/>
+      <circle class="node-pulse np-8"  cx="22"   cy="59"   r="5.5"/>
+      <circle class="node-pulse np-9"  cx="89.8" cy="60.8" r="5.5"/>
+      <circle class="node-pulse np-10" cx="49"   cy="64.4" r="5.5"/>
+      <circle class="node-pulse np-11" cx="69.4" cy="69.9" r="5"/>
+      <circle class="node-pulse np-12" cx="61.8" cy="89.7" r="4.5"/>
+
+      <!-- EXPANDING RINGS (sonar/ripple effect) -->
+      <circle class="node-ring nr-1"  cx="46"   cy="10"   r="5.5"/>
+      <circle class="node-ring nr-2"  cx="23.6" cy="19.6" r="5.5"/>
+      <circle class="node-ring nr-3"  cx="71.4" cy="19.6" r="5.5"/>
+      <circle class="node-ring nr-4"  cx="90.4" cy="37"   r="5.5"/>
+      <circle class="node-ring nr-5"  cx="46.4" cy="41"   r="5"/>
+      <circle class="node-ring nr-6"  cx="9.8"  cy="41.2" r="5.5"/>
+      <circle class="node-ring nr-7"  cx="61.9" cy="41.4" r="5"/>
+      <circle class="node-ring nr-8"  cx="22"   cy="59"   r="5.5"/>
+      <circle class="node-ring nr-9"  cx="89.8" cy="60.8" r="5.5"/>
+      <circle class="node-ring nr-10" cx="49"   cy="64.4" r="5.5"/>
+      <circle class="node-ring nr-11" cx="69.4" cy="69.9" r="5"/>
+      <circle class="node-ring nr-12" cx="61.8" cy="89.7" r="4.5"/>
+    </svg>
+
+    <!-- Brand Name with Shimmer -->
+    <div class="loader-brand">
+      <span class="shimmer-text">neudenken</span><em>.io</em>
+    </div>
+
+    <!-- Status Line with Pulsing Dots -->
+    <div class="loader-status">
+      <span>Denke nach</span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <!-- Subtle Progress Sweep -->
+    <div class="loader-progress">
+      <div class="loader-progress-bar"></div>
+    </div>
+  </div>
+
+</body>
+</html>

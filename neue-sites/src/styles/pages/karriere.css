@@ -1,0 +1,665 @@
+/* ==========================================================
+   pages/karriere.css — Styles unique to the Karriere page
+   ========================================================== */
+
+:root {
+  --chapter-padding: 120px;
+}
+
+/* ==========================================================================
+   CHAPTER SCAFFOLD OVERRIDES FOR VISUAL PARITY
+   ========================================================================== */
+.section-head {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 60px;
+  margin-bottom: 80px;
+  align-items: start;
+}
+
+.section-title {
+  font-size: clamp(38px, 5.5vw, 76px);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+.hero {
+  padding: 100px 0 80px;
+  position: relative;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 60px;
+  align-items: center;
+}
+.hero-left {
+  position: relative;
+}
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent-sienna);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 48px;
+  height: 1px;
+  background-color: var(--accent-sienna);
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(52px, 7.5vw, 110px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  margin-bottom: 36px;
+  color: var(--ink-primary);
+}
+.hero h1 .line {
+  display: block;
+}
+.hero h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent-sienna);
+}
+.hero h1 .dot {
+  color: var(--accent-sienna);
+  font-style: normal;
+}
+.hero-manifesto {
+  max-width: 680px;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: var(--ink-secondary);
+  padding-left: 32px;
+  border-left: 2px solid var(--accent-sienna);
+}
+.hero-manifesto strong {
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+.hero-manifesto em {
+  font-style: italic;
+  color: var(--accent-rust);
+  font-weight: 500;
+}
+
+/* Hero Right Candidate badge */
+.hero-badge-card {
+  padding: 32px;
+  background: rgba(231, 225, 211, 0.75);
+  border: 1px solid var(--border-glow);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(26, 24, 22, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.badge-header {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-sienna);
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border-glow);
+  display: flex;
+  justify-content: space-between;
+}
+.badge-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.badge-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+.badge-val {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--ink-primary);
+}
+.badge-val em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent-sienna);
+}
+.badge-status-box {
+  margin-top: 10px;
+  padding: 12px 16px;
+  background: rgba(78, 122, 83, 0.08);
+  border: 1px solid rgba(78, 122, 83, 0.15);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--accent-moss);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.badge-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-moss);
+  animation: pulse-active 1.5s infinite;
+}
+
+@keyframes pulse-active {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.92); }
+}
+
+/* ==========================================================================
+   KAPITEL 01: DIE ZAHLEN (EVIDENCE)
+   ========================================================================== */
+.data-intro {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(20px, 2.4vw, 27px);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--ink-secondary);
+  max-width: 880px;
+  margin-bottom: 60px;
+}
+.data-intro strong {
+  color: var(--ink-primary);
+  font-weight: 500;
+  font-style: italic;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1.5px solid var(--ink-primary);
+  border-left: 1px solid var(--border-glow);
+}
+.data-cell {
+  padding: 40px 32px;
+  border-right: 1px solid var(--border-glow);
+  border-bottom: 1px solid var(--border-glow);
+  background: rgba(242, 238, 229, 0.5);
+  transition: var(--transition-smooth);
+  position: relative;
+}
+.data-cell:hover {
+  background: rgba(231, 225, 211, 0.45);
+}
+.data-cell .tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-sienna);
+  margin-bottom: 24px;
+}
+.data-cell .value {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(54px, 7vw, 92px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  color: var(--ink-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: baseline;
+}
+.data-cell .value .unit {
+  font-size: 0.35em;
+  color: var(--accent-sienna);
+  margin-left: 6px;
+  font-style: italic;
+  font-weight: 400;
+}
+.data-cell .value .plus {
+  color: var(--accent-sienna);
+  font-style: italic;
+  font-weight: 400;
+  margin-right: -4px;
+}
+.data-cell .desc {
+  font-size: 14.5px;
+  color: var(--ink-secondary);
+  line-height: 1.55;
+}
+.data-cell .desc em {
+  font-style: italic;
+  font-family: var(--font-display);
+  color: var(--ink-primary);
+}
+.data-cell .source {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-glow);
+}
+
+/* ==========================================================================
+   KAPITEL 02: DIE THESE (THE CASE)
+   ========================================================================== */
+.thesis-grid {
+  display: grid;
+  grid-template-columns: 3.5fr 8.5fr;
+  gap: 60px;
+  align-items: start;
+}
+.thesis-sidebar {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-dim);
+  line-height: 2.2;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-glow);
+}
+.thesis-sidebar span {
+  display: block;
+  padding-left: 14px;
+  border-left: 1px solid var(--border-glow);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+.thesis-sidebar span.active {
+  color: var(--ink-primary);
+  border-left: 2px solid var(--accent-sienna);
+}
+.thesis-body p {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(20px, 2.3vw, 28px);
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  margin-bottom: 28px;
+  color: var(--ink-secondary);
+}
+.thesis-body p strong {
+  color: var(--ink-primary);
+  font-weight: 600;
+}
+.thesis-body .pull {
+  font-weight: 500;
+  font-style: italic;
+  color: var(--accent-rust);
+  font-size: 1.08em;
+}
+.thesis-body .mark {
+  background: linear-gradient(180deg, transparent 65%, rgba(176, 77, 44, 0.15) 65%);
+  padding: 0 4px;
+}
+.thesis-body .crossed {
+  text-decoration: line-through;
+  text-decoration-color: var(--accent-sienna);
+  text-decoration-thickness: 2px;
+  color: var(--ink-dim);
+}
+
+/* ==========================================================================
+   KAPITEL 03: WERDEGANG (JOURNEY)
+   ========================================================================== */
+.journey-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--ink-primary);
+  background: rgba(242, 238, 229, 0.5);
+}
+.journey-side {
+  padding: 48px 40px;
+  position: relative;
+}
+.journey-side:first-child {
+  border-right: 1.5px solid var(--ink-primary);
+  background: rgba(231, 225, 211, 0.40);
+}
+.journey-side h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-sienna);
+  margin-bottom: 32px;
+}
+.journey-side h4 .arrow {
+  float: right;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-dim);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.journey-side h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(26px, 3.2vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+  color: var(--ink-primary);
+}
+.journey-side h3 em {
+  font-style: italic;
+  color: var(--accent-sienna);
+  font-weight: 400;
+}
+.journey-side p {
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink-secondary);
+  margin-bottom: 16px;
+}
+.journey-side p strong {
+  color: var(--ink-primary);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   KAPITEL 05: DENKBELEGE (THINKING EVIDENCE)
+   ========================================================================== */
+.thinking-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.think-item {
+  display: grid;
+  grid-template-columns: 80px 3.5fr 8.5fr;
+  gap: 40px;
+  padding: 40px 0;
+  border-top: 1px solid var(--border-glow);
+  align-items: start;
+  transition: var(--transition-smooth);
+}
+.think-item:last-child {
+  border-bottom: 1px solid var(--border-glow);
+}
+.think-item:hover {
+  padding-left: 16px;
+}
+.think-item .num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent-sienna);
+  letter-spacing: 0.12em;
+  padding-top: 6px;
+}
+.think-item h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(22px, 2.5vw, 30px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--ink-primary);
+}
+.think-item h3 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink-dim);
+  display: block;
+  font-size: 0.55em;
+  margin-top: 6px;
+  letter-spacing: 0;
+}
+.think-item .evidence {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--ink-secondary);
+}
+.think-item .evidence strong {
+  color: var(--ink-primary);
+  font-weight: 600;
+}
+.think-item .evidence em {
+  font-style: italic;
+  font-family: var(--font-display);
+}
+.think-item .citation {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-sienna);
+  padding: 3px 8px;
+  border: 1px dashed rgba(176, 77, 44, 0.4);
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: 2px;
+  background: rgba(176, 77, 44, 0.02);
+}
+
+/* ==========================================================================
+   KAPITEL 06: WER ICH NICHT BIN (ABGRENZUNG)
+   ========================================================================== */
+.negative-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: rgba(26, 24, 22, 0.15);
+  border: 1px solid rgba(26, 24, 22, 0.15);
+}
+.neg-cell {
+  background: var(--surface-paper);
+  padding: 44px 32px;
+  transition: var(--transition-smooth);
+}
+.neg-cell:hover {
+  background: rgba(231, 225, 211, 0.3);
+}
+.neg-cell .cross-sign {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 44px;
+  color: var(--accent-sienna);
+  line-height: 1;
+  margin-bottom: 20px;
+  display: block;
+}
+.neg-cell h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  color: var(--ink-primary);
+}
+.neg-cell p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+}
+
+/* ==========================================================================
+   KAPITEL 07: DER PLAN (KONKRETION)
+   ========================================================================== */
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+}
+.plan-col h5 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent-sienna);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid var(--accent-sienna);
+}
+.plan-col ul.roles {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.plan-col ul.roles li {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.2vw, 36px);
+  font-weight: 300;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-glow);
+  color: var(--ink-primary);
+}
+.plan-col ul.roles li em {
+  font-style: italic;
+  color: var(--accent-sienna);
+  font-weight: 400;
+}
+.plan-col ul.roles li:last-child {
+  border-bottom: none;
+}
+
+.plan-col p {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(18px, 2.2vw, 22px);
+  line-height: 1.5;
+  color: var(--ink-secondary);
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+.plan-col p strong {
+  color: var(--ink-primary);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.companies-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+.company-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  background: var(--surface-paper);
+  border: 1px solid var(--ink-primary);
+  color: var(--ink-primary);
+  border-radius: 4px;
+  transition: var(--transition-smooth);
+}
+.company-tag:hover {
+  background: var(--ink-primary);
+  color: var(--surface-paper);
+}
+
+/* ==========================================================================
+   CONTACT & TELEMETRY
+   ========================================================================== */
+.contact {
+  padding: 140px 0 100px;
+  position: relative;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: flex-end;
+}
+.contact-left h2 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(52px, 8vw, 110px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink-primary);
+}
+.contact-left h2 em {
+  font-style: italic;
+  color: var(--accent-sienna);
+  font-weight: 400;
+}
+.contact-left .kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent-sienna);
+  margin-bottom: 36px;
+}
+
+.contact-lines {
+  font-family: var(--font-display);
+  font-size: clamp(19px, 2.2vw, 24px);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  color: var(--ink-secondary);
+}
+.contact-lines a {
+  display: inline-block;
+  color: var(--accent-sienna);
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--accent-sienna);
+  padding-bottom: 2px;
+  transition: var(--transition-smooth);
+}
+.contact-lines a:hover {
+  color: var(--accent-rust);
+  border-color: var(--accent-rust);
+}
+.contact-lines .line-row {
+  margin-bottom: 16px;
+}
+.contact-lines .meta {
+  font-size: 13.5px;
+  color: var(--ink-dim);
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-glow);
+}
+
+/* ==========================================================================
+   RESPONSIVE ADAPTATIONS
+   ========================================================================== */
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .data-grid { grid-template-columns: repeat(2, 1fr); }
+  .thesis-grid { grid-template-columns: 1fr; gap: 32px; }
+  .thesis-sidebar { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 0; border-top: none; }
+  .thesis-sidebar span { padding: 4px 12px; border-left: 2px solid var(--border-glow); }
+  .journey-grid { grid-template-columns: 1fr; }
+  .journey-side:first-child { border-right: none; border-bottom: 1.5px solid var(--ink-primary); }
+  .think-item { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
+  .negative-grid { grid-template-columns: 1fr; }
+  .plan-grid { grid-template-columns: 1fr; gap: 40px; }
+  .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  section.chapter { padding: 80px 0; }
+}
+
+@media (max-width: 640px) {
+  .data-grid { grid-template-columns: 1fr; }
+}

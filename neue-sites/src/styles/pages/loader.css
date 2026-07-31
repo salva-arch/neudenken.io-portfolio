@@ -1,0 +1,396 @@
+/* ==========================================================
+   pages/loader.css — Styles unique to the Loader page
+   ========================================================== */
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   FULL-PAGE LOADER CONTAINER
+   ========================================================================== */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  background: var(--surface-paper);
+}
+
+/* Subtle radial glow behind the brain */
+.loader-overlay::before {
+  content: '';
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--accent-sienna-rgb), 0.06) 0%,
+    rgba(var(--accent-sienna-rgb), 0.02) 40%,
+    transparent 70%
+  );
+  animation: glowPulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.5; }
+  50%      { transform: scale(1.15); opacity: 1; }
+}
+
+/* ==========================================================================
+   BRAIN CONSTELLATION SVG — THE STAR OF THE SHOW
+   ========================================================================== */
+.brain-loader-svg {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  z-index: 2;
+}
+
+/* --- CONNECTION LINES: Data Flow Shimmer --- */
+.brain-loader-svg .conn {
+  stroke: var(--ink-primary);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  opacity: 0.18;
+  transition: opacity 0.6s ease;
+}
+
+/* Animated "data flow" lines — overlay on top of dim base lines */
+.brain-loader-svg .flow {
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  fill: none;
+  /* Each line gets a gradient-like effect via stroke-dasharray + dashoffset animation */
+  stroke-dasharray: 12 80;
+  opacity: 0.85;
+}
+
+/* Staggered flow animation for each connection line */
+.flow-1  { stroke: var(--accent-sienna); animation: dataFlow 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.0s; stroke-dasharray: 10 60; }
+.flow-2  { stroke: var(--accent-copper); animation: dataFlow 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.3s; stroke-dasharray: 8 55; }
+.flow-3  { stroke: var(--accent-rust); animation: dataFlow 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.6s; stroke-dasharray: 12 50; }
+.flow-4  { stroke: var(--accent-sienna); animation: dataFlow 3.0s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.15s; stroke-dasharray: 9 65; }
+.flow-5  { stroke: var(--accent-copper); animation: dataFlow 2.9s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.45s; stroke-dasharray: 11 58; }
+.flow-6  { stroke: var(--accent-rust); animation: dataFlow 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.7s; stroke-dasharray: 7 62; }
+.flow-7  { stroke: var(--accent-sienna); animation: dataFlow 2.7s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.2s; stroke-dasharray: 13 55; }
+.flow-8  { stroke: var(--accent-copper); animation: dataFlow 3.1s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.55s; stroke-dasharray: 10 50; }
+.flow-9  { stroke: var(--accent-rust); animation: dataFlow 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.8s; stroke-dasharray: 8 60; }
+.flow-10 { stroke: var(--accent-sienna); animation: dataFlow 3.3s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.35s; stroke-dasharray: 11 52; }
+.flow-11 { stroke: var(--accent-copper); animation: dataFlow 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.65s; stroke-dasharray: 9 58; }
+.flow-c1 { stroke: var(--accent-sienna); animation: dataFlow 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.1s; stroke-dasharray: 14 70; }
+.flow-c2 { stroke: var(--accent-rust); animation: dataFlow 3.0s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.5s; stroke-dasharray: 12 65; }
+
+@keyframes dataFlow {
+  0%   { stroke-dashoffset: 80; opacity: 0; }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.9; }
+  100% { stroke-dashoffset: -80; opacity: 0; }
+}
+
+/* --- CONSTELLATION NODES: Organic Breathing Pulse --- */
+.brain-loader-svg .node {
+  fill: var(--ink-primary);
+  opacity: 0.25;
+}
+
+.brain-loader-svg .node-pulse {
+  opacity: 0;
+}
+
+/* Each node gets staggered breathing */
+.np-1  { fill: var(--accent-sienna); animation: nodeBreathe 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.0s; }
+.np-2  { fill: var(--accent-copper); animation: nodeBreathe 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.4s; }
+.np-3  { fill: var(--accent-sienna); animation: nodeBreathe 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.8s; }
+.np-4  { fill: var(--accent-rust); animation: nodeBreathe 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.2s; }
+.np-5  { fill: var(--accent-copper); animation: nodeBreathe 2.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.6s; }
+.np-6  { fill: var(--accent-sienna); animation: nodeBreathe 3.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.0s; }
+.np-7  { fill: var(--accent-rust); animation: nodeBreathe 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.3s; }
+.np-8  { fill: var(--accent-copper); animation: nodeBreathe 3.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.7s; }
+.np-9  { fill: var(--accent-sienna); animation: nodeBreathe 2.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.1s; }
+.np-10 { fill: var(--accent-rust); animation: nodeBreathe 3.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.5s; }
+.np-11 { fill: var(--accent-sienna); animation: nodeBreathe 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.9s; }
+.np-12 { fill: var(--accent-copper); animation: nodeBreathe 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.3s; }
+
+@keyframes nodeBreathe {
+  0%, 100% {
+    opacity: 0.15;
+    r: inherit;
+    filter: drop-shadow(0 0 0px transparent);
+  }
+  50% {
+    opacity: 0.95;
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+}
+
+/* Additional outer glow ring per node */
+.brain-loader-svg .node-ring {
+  fill: none;
+  stroke-width: 1.2;
+  opacity: 0;
+}
+.nr-1  { stroke: var(--accent-sienna); animation: ringExpand 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.0s; }
+.nr-2  { stroke: var(--accent-copper); animation: ringExpand 3.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.4s; }
+.nr-3  { stroke: var(--accent-sienna); animation: ringExpand 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.8s; }
+.nr-4  { stroke: var(--accent-rust); animation: ringExpand 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.2s; }
+.nr-5  { stroke: var(--accent-copper); animation: ringExpand 2.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.6s; }
+.nr-6  { stroke: var(--accent-sienna); animation: ringExpand 3.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.0s; }
+.nr-7  { stroke: var(--accent-rust); animation: ringExpand 3.0s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.3s; }
+.nr-8  { stroke: var(--accent-copper); animation: ringExpand 3.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.7s; }
+.nr-9  { stroke: var(--accent-sienna); animation: ringExpand 2.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.1s; }
+.nr-10 { stroke: var(--accent-rust); animation: ringExpand 3.1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.5s; }
+.nr-11 { stroke: var(--accent-sienna); animation: ringExpand 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 0.9s; }
+.nr-12 { stroke: var(--accent-copper); animation: ringExpand 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite 1.3s; }
+
+@keyframes ringExpand {
+  0%, 100% { r: 5.5; opacity: 0; stroke-width: 1.5; }
+  40%      { opacity: 0.4; }
+  80%      { r: 10; opacity: 0; stroke-width: 0.3; }
+}
+
+/* Whole brain gentle breathe */
+.brain-loader-svg {
+  animation: brainBreathe 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes brainBreathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+
+/* ==========================================================================
+   SHIMMER TEXT: "neudenken.io"
+   ========================================================================== */
+.loader-brand {
+  margin-top: 28px;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-primary);
+  position: relative;
+  z-index: 2;
+}
+
+.loader-brand .shimmer-text {
+  background: linear-gradient(
+    105deg,
+    var(--ink-primary) 0%,
+    var(--ink-primary) 35%,
+    var(--accent-sienna) 50%,
+    var(--ink-primary) 65%,
+    var(--ink-primary) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.loader-brand em {
+  font-style: normal;
+  background: linear-gradient(
+    105deg,
+    var(--accent-sienna) 0%,
+    var(--accent-sienna) 35%,
+    var(--accent-copper) 50%,
+    var(--accent-sienna) 65%,
+    var(--accent-sienna) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.15s;
+}
+
+@keyframes shimmerSlide {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: -100% 50%; }
+}
+
+/* ==========================================================================
+   STATUS LINE: "Denke nach..." with pulse dots
+   ========================================================================== */
+.loader-status {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  position: relative;
+}
+
+.loader-status .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-sienna);
+  display: inline-block;
+}
+
+.loader-status .dot:nth-child(1) { animation: dotPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0s; }
+.loader-status .dot:nth-child(2) { animation: dotPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.2s; }
+.loader-status .dot:nth-child(3) { animation: dotPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.4s; }
+
+@keyframes dotPulse {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+  40% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(var(--accent-sienna-rgb), 0.5);
+  }
+}
+
+/* ==========================================================================
+   PROGRESS BAR (optional subtle accent)
+   ========================================================================== */
+.loader-progress {
+  margin-top: 24px;
+  width: 160px;
+  height: 2px;
+  background: var(--border-glow);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.loader-progress-bar {
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-sienna), var(--accent-copper));
+  border-radius: 2px;
+  animation: progressSweep 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes progressSweep {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(380%); }
+}
+
+/* ==========================================================================
+   DEMO PAGE: Side-by-side showcase of variants
+   ========================================================================== */
+.demo-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 60px 20px;
+  background: var(--surface-paper);
+}
+
+.demo-page .variant-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ink-dim);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   VARIANT B: Dark Terminal Loader (for dark panels)
+   ========================================================================== */
+.loader-overlay.dark {
+  background: var(--surface-terminal);
+}
+
+.loader-overlay.dark::before {
+  background: radial-gradient(
+    circle,
+    rgba(var(--accent-sienna-rgb), 0.10) 0%,
+    rgba(var(--accent-sienna-rgb), 0.03) 40%,
+    transparent 70%
+  );
+}
+
+.loader-overlay.dark .conn {
+  stroke: var(--ink-secondary);
+}
+
+.loader-overlay.dark .node {
+  fill: var(--ink-secondary);
+}
+
+.loader-overlay.dark .loader-brand .shimmer-text {
+  background: linear-gradient(
+    105deg,
+    var(--term-ink-primary) 0%,
+    var(--term-ink-primary) 35%,
+    var(--accent-sienna) 50%,
+    var(--term-ink-primary) 65%,
+    var(--term-ink-primary) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.loader-overlay.dark .loader-brand em {
+  background: linear-gradient(
+    105deg,
+    #D66D48 0%,
+    #D66D48 35%,
+    var(--accent-copper) 50%,
+    #D66D48 65%,
+    #D66D48 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerSlide 3s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.15s;
+}
+
+.loader-overlay.dark .loader-status {
+  color: var(--term-ink-dim);
+}
+
+.loader-overlay.dark .loader-progress {
+  background: rgba(255,255,255,0.06);
+}
+
+/* ==========================================================================
+   INLINE COMPACT VARIANT (for use inside a card/section)
+   ========================================================================== */
+.loader-inline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: rgba(231, 225, 211, 0.65);
+  border: 1px solid var(--border-glow);
+}
+
+.loader-inline .brain-loader-svg {
+  width: 32px;
+  height: 32px;
+}
+
+.loader-inline .loader-status {
+  margin-top: 0;
+}

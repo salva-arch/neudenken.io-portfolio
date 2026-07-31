@@ -1,0 +1,159 @@
+/* ==========================================================
+   portfolio.css — Portfolio Grid & Cards
+   Shared between index and karriere pages
+   ========================================================== */
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.pf-card {
+  padding: 36px 32px;
+  background: rgba(231, 225, 211, 0.5);
+  border: 1px solid var(--border-glow);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.pf-card.span-12 {
+  grid-column: span 2;
+  background: rgba(231, 225, 211, 0.6);
+  border: 2px solid var(--ink-primary);
+}
+
+.pf-card.span-8 { grid-column: span 2; }
+.pf-card.span-6 { grid-column: span 1; }
+.pf-card.span-4 { grid-column: span 1; }
+
+.pf-head {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-sienna);
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pf-status-badge {
+  color: var(--ink-dim);
+  font-weight: 600;
+}
+
+.pf-status-badge.live {
+  color: var(--accent-moss);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pf-status-badge.live::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent-moss);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-active 1.5s infinite;
+}
+
+.pf-card h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: var(--ink-primary);
+}
+
+.pf-card h4 em {
+  font-style: italic;
+  color: var(--accent-sienna);
+  font-weight: 400;
+}
+
+.pf-flagship-wrapper {
+  display: grid;
+  grid-template-columns: 5.5fr 6.5fr;
+  gap: 40px;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+.pf-body-content p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+  margin-bottom: 14px;
+}
+
+.pf-body-content p strong {
+  color: var(--ink-primary);
+  font-weight: 600;
+}
+
+/* Flagship console */
+.pf-flagship-console {
+  background: var(--surface-terminal);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--term-ink-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  height: 230px;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.pf-flagship-console span {
+  display: block;
+}
+
+.c-system { color: var(--term-ink-dim); }
+.c-ok     { color: #81C784; }
+.c-accent { color: #FFB74D; }
+.c-action { color: #64B5F6; }
+
+.pf-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-glow);
+}
+
+.stack-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  background: rgba(26, 24, 22, 0.03);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.stack-badge.accented {
+  color: var(--accent-sienna);
+  border: 1px dashed rgba(176, 77, 44, 0.2);
+  background: rgba(176, 77, 44, 0.02);
+}
+
+@media (max-width: 960px) {
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .pf-card.span-12, .pf-card.span-8,
+  .pf-card.span-6, .pf-card.span-4 { grid-column: span 1; }
+  .pf-flagship-wrapper { grid-template-columns: 1fr; gap: 24px; }
+}

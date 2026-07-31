@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <style>
+    .constellation-line {
+      stroke: #B04D2C;
+      stroke-width: 4.5;
+      stroke-linecap: round;
+      opacity: 0.9;
+    }
+    .constellation-node {
+      fill: #B04D2C;
+    }
+    @media (prefers-color-scheme: dark) {
+      .constellation-line {
+        stroke: #D66D48; /* slightly lighter warm sienna for dark browser tab backgrounds */
+      }
+      .constellation-node {
+        fill: #D66D48;
+      }
+    }
+  </style>
+  <line class="constellation-line" x1="46" y1="10" x2="23.6" y2="19.6"/>
+  <line class="constellation-line" x1="46" y1="10" x2="46.4" y2="41"/>
+  <line class="constellation-line" x1="23.6" y1="19.6" x2="9.8" y2="41.2"/>
+  <line class="constellation-line" x1="71.4" y1="19.6" x2="90.4" y2="37"/>
+  <line class="constellation-line" x1="71.4" y1="19.6" x2="61.9" y2="41.4"/>
+  <line class="constellation-line" x1="90.4" y1="37" x2="89.8" y2="60.8"/>
+  <line class="constellation-line" x1="46.4" y1="41" x2="22" y2="59"/>
+  <line class="constellation-line" x1="9.8" y1="41.2" x2="22" y2="59"/>
+  <line class="constellation-line" x1="61.9" y1="41.4" x2="89.8" y2="60.8"/>
+  <line class="constellation-line" x1="49" y1="64.4" x2="69.4" y2="69.9"/>
+  <line class="constellation-line" x1="49" y1="64.4" x2="61.8" y2="89.7"/>
+  <path class="constellation-line" d="M46,10 Q59,10 71.4,19.6" fill="none"/>
+  <path class="constellation-line" d="M89.8,60.8 Q95,72 69.4,69.9" fill="none"/>
+  <circle class="constellation-node" cx="46" cy="10" r="7.5"/>
+  <circle class="constellation-node" cx="23.6" cy="19.6" r="7.5"/>
+  <circle class="constellation-node" cx="71.4" cy="19.6" r="7.5"/>
+  <circle class="constellation-node" cx="90.4" cy="37" r="7.5"/>
+  <circle class="constellation-node" cx="46.4" cy="41" r="7"/>
+  <circle class="constellation-node" cx="9.8" cy="41.2" r="7.5"/>
+  <circle class="constellation-node" cx="61.9" cy="41.4" r="7"/>
+  <circle class="constellation-node" cx="22" cy="59" r="7.5"/>
+  <circle class="constellation-node" cx="89.8" cy="60.8" r="7.5"/>
+  <circle class="constellation-node" cx="49" cy="64.4" r="7.5"/>
+  <circle class="constellation-node" cx="69.4" cy="69.9" r="7"/>
+  <circle class="constellation-node" cx="61.8" cy="89.7" r="6.5"/>
+</svg>

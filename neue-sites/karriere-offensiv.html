@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salva — Operator. Builder. Übersetzer.</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500;1,9..144,700&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F1ECE2;
+    --paper-deep: #E3DCC9;
+    --paper-warm: #ECE5D4;
+    --ink: #151310;
+    --ink-soft: #403C34;
+    --ink-faint: #766F61;
+    --accent: #B23F1B;
+    --accent-deep: #7A2810;
+    --accent-bright: #D35427;
+    --rule: #15131026;
+    --rule-strong: #15131059;
+    --data: #2C3A2F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Geist', -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.55;
+    font-size: 16.5px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+      radial-gradient(at 20% 10%, #E8DFC866 0, transparent 55%),
+      radial-gradient(at 90% 75%, #E3D6B466 0, transparent 60%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+  }
+
+  .container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ——— TOP BAR ——— */
+  .topbar {
+    border-bottom: 1px solid var(--rule-strong);
+    padding: 22px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+  .topbar .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--ink);
+  }
+  .topbar .status {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+  .topbar .dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 9px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ——— HERO ——— */
+  .hero {
+    padding: 100px 0 120px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .hero-label::before {
+    content: '';
+    width: 48px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 10vw, 160px);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+    margin-bottom: 56px;
+    font-variation-settings: "opsz" 144;
+  }
+  .hero h1 .line { display: block; }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .hero h1 .dot {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  .hero .manifesto {
+    max-width: 860px;
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    padding-left: 40px;
+    border-left: 1px solid var(--accent);
+  }
+  .hero .manifesto em {
+    font-style: italic;
+    color: var(--accent-deep);
+    font-weight: 500;
+  }
+  .hero .manifesto strong {
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  .hero-badge {
+    position: absolute;
+    top: 100px;
+    right: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    text-align: right;
+    line-height: 1.7;
+    padding-right: 4px;
+    border-right: 2px solid var(--accent);
+    padding: 8px 16px 8px 0;
+  }
+  .hero-badge strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink);
+    letter-spacing: 0;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 900px) {
+    .hero-badge { display: none; }
+    .hero { padding: 70px 0 90px; }
+    .hero .manifesto { padding-left: 20px; }
+  }
+
+  /* ——— SECTION SCAFFOLD ——— */
+  section.chapter {
+    padding: 120px 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 60px;
+    margin-bottom: 80px;
+    align-items: start;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    padding-top: 14px;
+    border-top: 2px solid var(--accent);
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+  .section-num strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 4px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(44px, 6vw, 82px);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+  }
+  .section-title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  @media (max-width: 900px) {
+    .section-head { grid-template-columns: 1fr; gap: 24px; margin-bottom: 56px; }
+    section.chapter { padding: 72px 0; }
+  }
+
+  /* ——— DIE ZAHLEN (01) ——— */
+  .data-intro {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.6vw, 28px);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: var(--ink-soft);
+    max-width: 860px;
+    margin-bottom: 64px;
+  }
+  .data-intro strong {
+    color: var(--ink);
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 2px solid var(--ink);
+  }
+  .data-cell {
+    padding: 40px 32px 36px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    position: relative;
+    transition: background 0.4s ease;
+  }
+  .data-cell:hover { background: var(--paper-warm); }
+  .data-cell:nth-child(3n) { border-right: none; }
+
+  .data-cell .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .data-cell .value {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(54px, 7.5vw, 100px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin-bottom: 16px;
+    font-variation-settings: "opsz" 144;
+    display: flex;
+    align-items: baseline;
+  }
+  .data-cell .value .unit {
+    font-size: 0.35em;
+    color: var(--accent);
+    margin-left: 8px;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .data-cell .value .plus {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .data-cell .desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .data-cell .desc em {
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+    color: var(--ink);
+  }
+  .data-cell .source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule-strong);
+  }
+
+  @media (max-width: 900px) { .data-grid { grid-template-columns: repeat(2, 1fr); } .data-cell:nth-child(3n) { border-right: 1px solid var(--rule); } .data-cell:nth-child(2n) { border-right: none; }}
+  @media (max-width: 560px) { .data-grid { grid-template-columns: 1fr; } .data-cell { border-right: none !important; }}
+
+  /* ——— DIE THESE (02) ——— */
+  .thesis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .thesis .sidebar {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    line-height: 2.2;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+  .thesis .sidebar span {
+    display: block;
+    padding-left: 14px;
+    border-left: 1px solid var(--rule);
+    transition: all 0.3s;
+  }
+  .thesis .sidebar span.on {
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+  }
+
+  .thesis .body p {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(22px, 2.5vw, 30px);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    margin-bottom: 30px;
+    color: var(--ink);
+  }
+  .thesis .body p:last-child { margin-bottom: 0; }
+  .thesis .body .pull {
+    font-weight: 500;
+    font-style: italic;
+    color: var(--accent-deep);
+    font-size: 1.08em;
+  }
+  .thesis .body .mark {
+    background: linear-gradient(180deg, transparent 62%, #B23F1B33 62%);
+    padding: 0 3px;
+  }
+  .thesis .body .crossed {
+    text-decoration: line-through;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 1.5px;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 900px) {
+    .thesis { grid-template-columns: 1fr; gap: 32px; }
+    .thesis .sidebar { display: flex; flex-wrap: wrap; gap: 10px; padding-top: 0; border-top: none; }
+    .thesis .sidebar span { padding: 4px 10px; border-left: 2px solid var(--rule); }
+  }
+
+  /* ——— OPERATOR → BUILDER (03) ——— */
+  .journey {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--rule-strong);
+    background: var(--paper);
+  }
+  .journey-side {
+    padding: 48px 40px;
+    position: relative;
+  }
+  .journey-side:first-child {
+    border-right: 1px solid var(--rule-strong);
+    background: var(--paper-warm);
+  }
+  .journey-side h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+  .journey-side h4 .arrow {
+    float: right;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-faint);
+    letter-spacing: 0;
+  }
+  .journey-side h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .journey-side h3 em { font-style: italic; color: var(--accent); }
+  .journey-side p {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .journey-side p strong { color: var(--ink); font-weight: 500; }
+
+  @media (max-width: 900px) {
+    .journey { grid-template-columns: 1fr; }
+    .journey-side:first-child { border-right: none; border-bottom: 1px solid var(--rule-strong); }
+  }
+
+  /* ——— PORTFOLIO (04) ——— */
+  .portfolio {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+  }
+  .pf {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    padding: 32px 28px 28px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.2,0.7,0.2,1);
+  }
+  .pf:hover {
+    background: var(--paper-deep);
+    transform: translateY(-2px);
+    border-color: var(--rule-strong);
+  }
+  .pf.hero-proj {
+    grid-column: span 12;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    padding: 48px 40px;
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 40px;
+  }
+  .pf.hero-proj::before {
+    content: 'Flagship';
+    position: absolute;
+    top: -1px; left: -1px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 8px 16px;
+  }
+  .pf .head {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .pf .head .state {
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+  .pf .head .state.live { color: var(--accent-bright); }
+  .pf .head .state.live::before {
+    content: '●';
+    margin-right: 4px;
+    animation: pulse 2s infinite;
+  }
+  .pf h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(22px, 2.3vw, 28px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .pf.hero-proj h4 {
+    font-size: clamp(30px, 3.6vw, 44px);
+    margin-bottom: 20px;
+  }
+  .pf h4 em { font-style: italic; color: var(--accent); }
+  .pf .body p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .pf.hero-proj .body p { font-size: 16px; margin-bottom: 16px; }
+  .pf .body p strong { color: var(--ink); font-weight: 500; }
+  .pf .stack {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    padding-top: 16px;
+    margin-top: 8px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+  .pf .stack span { color: var(--ink-faint); }
+  .pf .stack .sep { color: var(--rule-strong); }
+
+  .pf.w6 { grid-column: span 6; }
+  .pf.w4 { grid-column: span 4; }
+  .pf.w8 { grid-column: span 8; }
+
+  @media (max-width: 900px) {
+    .pf.w6, .pf.w4, .pf.w8, .pf.hero-proj { grid-column: span 12; }
+    .pf.hero-proj { grid-template-columns: 1fr; }
+  }
+
+  /* ——— DURCHDRUNGEN (05) ——— */
+  .thinking {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .think-item {
+    display: grid;
+    grid-template-columns: 60px 1fr 2fr;
+    gap: 40px;
+    padding: 36px 0;
+    border-top: 1px solid var(--rule);
+    align-items: start;
+  }
+  .think-item:last-child { border-bottom: 1px solid var(--rule); }
+  .think-item .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    padding-top: 6px;
+  }
+  .think-item h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(22px, 2.3vw, 28px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .think-item h3 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-faint);
+    display: block;
+    font-size: 0.55em;
+    margin-top: 6px;
+    letter-spacing: 0;
+  }
+  .think-item .evidence {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .think-item .evidence strong { color: var(--ink); font-weight: 500; }
+  .think-item .evidence em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+  .think-item .citation {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    padding: 3px 8px;
+    border: 1px solid var(--accent);
+    margin-left: 6px;
+    vertical-align: 1px;
+  }
+
+  @media (max-width: 900px) {
+    .think-item { grid-template-columns: 1fr; gap: 10px; padding: 28px 0; }
+  }
+
+  /* ——— WER ICH NICHT BIN (06) ——— */
+  .negative {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--rule-strong);
+    border: 1px solid var(--rule-strong);
+  }
+  .neg {
+    background: var(--paper);
+    padding: 36px 28px;
+  }
+  .neg .x {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 40px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 18px;
+    display: block;
+  }
+  .neg h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 21px;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+  .neg p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 900px) { .negative { grid-template-columns: 1fr; } }
+
+  /* ——— DER PLAN (07) ——— */
+  .plan {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+  }
+  .plan-col h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .plan-col ul { list-style: none; }
+  .plan-col ul.roles li {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(26px, 3.2vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .plan-col ul.roles li em { font-style: italic; color: var(--accent); }
+  .plan-col ul.roles li:last-child { border-bottom: none; }
+  .plan-col p {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+  .plan-col p strong { color: var(--ink); font-weight: 500; font-style: italic; }
+  .companies-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+  }
+  .companies-row span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 9px 15px;
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    transition: all 0.3s;
+  }
+  .companies-row span:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  @media (max-width: 900px) { .plan { grid-template-columns: 1fr; gap: 48px; } }
+
+  /* ——— KONTAKT ——— */
+  .contact {
+    padding: 140px 0 120px;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .contact h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 9vw, 140px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+  }
+  .contact h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .contact .small-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 36px;
+  }
+  .contact-lines {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(19px, 2vw, 24px);
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+  }
+  .contact-lines a {
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 2px;
+    transition: all 0.3s;
+  }
+  .contact-lines a:hover {
+    color: var(--accent-deep);
+    border-color: var(--accent-deep);
+  }
+  .contact-lines .line {
+    margin-bottom: 12px;
+  }
+  .contact-lines .meta {
+    font-size: 14px;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+  footer {
+    border-top: 1px solid var(--rule-strong);
+    padding: 28px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.2,0.7,0.2,1) forwards; }
+  .reveal.d1 { animation-delay: 0.15s; }
+  .reveal.d2 { animation-delay: 0.3s; }
+  .reveal.d3 { animation-delay: 0.45s; }
+
+  .scroll-reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.9s cubic-bezier(0.2,0.7,0.2,1), transform 0.9s cubic-bezier(0.2,0.7,0.2,1); }
+  .scroll-reveal.on { opacity: 1; transform: translateY(0); }
+
+  ::selection { background: var(--accent); color: var(--paper); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">Salva <em>— Karriereportfolio</em></div>
+    <div class="status"><span><span class="dot"></span>aktiv sondierend</span></div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <strong>Kandidatenprofil 04/2026</strong>
+      Version „The Case"<br>
+      Baden-Württemberg, <span style="color:var(--accent);">verfügbar ab 07/2026</span>
+    </div>
+
+    <div class="hero-label reveal">Ein Kandidat mit Fußabdruck</div>
+
+    <h1 class="reveal d1">
+      <span class="line">Operator<span class="dot">.</span></span>
+      <span class="line"><em>Builder</em><span class="dot">.</span></span>
+      <span class="line">Übersetzer<span class="dot">.</span></span>
+    </h1>
+
+    <div class="manifesto reveal d2">
+      Digitalisierung scheitert selten an der Technologie. Sie scheitert daran, dass zwischen Vorstand und Verkaufsfläche, zwischen Product Backlog und Schicht um 6 Uhr morgens, <strong>niemand beide Sprachen fließend spricht</strong>. <em>Ich spreche beide &mdash; seit zwanzig Jahren. Und ich habe in den letzten zwei das dritte gelernt: bauen.</em>
+    </div>
+  </section>
+
+
+  <!-- 01 — DIE ZAHLEN -->
+  <section class="chapter" id="data">
+    <div class="section-head scroll-reveal">
+      <div class="section-num">01 — Die Zahlen<strong>Evidence-Layer</strong></div>
+      <h2 class="section-title">Was ich <em>tatsächlich</em> weiß.</h2>
+    </div>
+
+    <p class="data-intro scroll-reveal">
+      Diese Zahlen stehen in keinem Lebenslauf, weil sie in keinem Buch stehen. Sie sind das Ergebnis von <strong>zwanzig Jahren operativer Arbeit plus zwei Jahren analytischer Auseinandersetzung</strong> mit den strukturellen Veränderungen meiner Branche.
+    </p>
+
+    <div class="data-grid scroll-reveal">
+      <div class="data-cell">
+        <div class="tag">Führungstenure</div>
+        <div class="value">20<span class="unit">J</span></div>
+        <div class="desc">Retail Operations bei <em>ALDI SÜD</em> &mdash; durchgängig mit Ergebnis- und Personalverantwortung.</div>
+        <div class="source">Primary Source</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">Direktes Team</div>
+        <div class="value">17</div>
+        <div class="desc">Mitarbeiter:innen in der Filiale <em>BJ82</em> Rottenburg a.&thinsp;N. Schichtsteuerung, HR-Ownership, Coaching.</div>
+        <div class="source">Store of Record</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">Span-of-Control Shift</div>
+        <div class="value"><span class="plus">+</span>60<span class="unit">%</span></div>
+        <div class="desc">RVL-Führungsspanne in nur <em>18 Monaten</em>. Aus 5 Filialen pro RVL wurden 8. Acht RVL-Stellen verschwanden.</div>
+        <div class="source">Eigene Analyse 2026</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">FM-Konsolidierung</div>
+        <div class="value">25,2<span class="unit">%</span></div>
+        <div class="desc">Gesellschaftsweit FM-geführte Filialen (13 FMs / 103 Filialen). Ziel: <em>30%</em>. Drei FL-Stellen fallen in Kürze.</div>
+        <div class="source">Eigene Analyse 2026</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">Jahresdialog 2025/26</div>
+        <div class="value">4×</div>
+        <div class="desc"><em>„Übertroffen"</em> in digitalisierungs- &amp; change-relevanten Kompetenzen. Mitarbeiterbefragung 86&ndash;90&#8201;%.</div>
+        <div class="source">SAP SuccessFactors</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">ATOSS-Expertise</div>
+        <div class="value">11<span class="unit">J</span></div>
+        <div class="desc"><em>Produktive</em> Workforce-Management-Expertise &mdash; weder Schulung noch Pilotprojekt. Differenzierungsmerkmal.</div>
+        <div class="source">ALDI SÜD</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">Eigene Tools live</div>
+        <div class="value">1</div>
+        <div class="desc">Voll deploytes, produktives Produkt mit <em>17 echten Nutzern</em>. v2.4.0. Security-Audit bestanden.</div>
+        <div class="source">Urlaubsplaner</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">Zertifizierungen</div>
+        <div class="value">3<span class="unit">+</span></div>
+        <div class="desc">TÜV AI Automation Manager &middot; AWS Cloud Practitioner &middot; IBM Product Owner <em>(läuft)</em>.</div>
+        <div class="source">Drittanbieter</div>
+      </div>
+      <div class="data-cell">
+        <div class="tag">KI-Overlap eigene Rolle</div>
+        <div class="value">~50<span class="unit">%</span></div>
+        <div class="desc">der <em>37 FL-Aufgaben</em> bereits durch Claude unterstützbar oder automatisierbar &mdash; ich kenne mein Disruptionsrisiko.</div>
+        <div class="source">Eigene Analyse 2026</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 02 — DIE THESE -->
+  <section class="chapter">
+    <div class="section-head scroll-reveal">
+      <div class="section-num">02 — Die These<strong>Positionierung</strong></div>
+      <h2 class="section-title">Digitalisierung scheitert selten an der <em>Technologie</em>.</h2>
+    </div>
+
+    <div class="thesis scroll-reveal">
+      <div class="sidebar">
+        <span class="on">Positionierung</span>
+        <span>Kontext</span>
+        <span>Beleg</span>
+      </div>
+      <div class="body">
+        <p>
+          Sie scheitert daran, dass zwischen den Schichten &mdash; strategisch, organisatorisch, räumlich &mdash; <span class="mark">niemand beide Sprachen fließend spricht</span>.
+        </p>
+        <p class="pull">
+          Ich spreche beide. Seit zwanzig Jahren.
+        </p>
+        <p>
+          Was mich qualifiziert, ist nicht allein die Tenure. Es ist die <em>Kombination</em>: zwei Jahrzehnte auf der Fläche mit voller operativer Verantwortung, <strong>und</strong> die konsequente, mehrjährige Aneignung digitaler, produktbezogener und KI-bezogener Kompetenzen. Nicht als Fluchtbewegung, sondern als <em>strategischer Ausbau</em>.
+        </p>
+        <p>
+          Ich bin nicht der Tech-Quereinsteiger, der sich nach einem Bootcamp für produktreif hält. Und ich bin nicht der <span class="crossed">Filialleiter, der in der Filiale bleiben wird</span>. Ich bin der seltene Hybrid: jemand, der mit Entwicklern, Product Ownern, Change Managern und Betriebsräten im selben Satz sprechen kann &mdash; weil er weiß, <em>warum</em> gut gedachte Systeme in der Schicht um 6 Uhr morgens nicht angenommen werden.
+        </p>
+        <p>
+          Das ist keine Behauptung. Das ist belegt durch ein produktiv betriebenes Tool, durch eine eigenständige Strukturanalyse meines Unternehmens, durch vier <em>„Übertroffen"</em>-Bewertungen in Digitalisierungs- und Change-Kompetenzen &mdash; und durch die Tatsache, dass mein Verkaufsleiter meinen Urlaubsplaner zum Pitch bei der Zentrale eingeladen hat. Das ist <span class="mark">der HR-Filter &uuml;bersprungen</span>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 03 — OPERATOR → BUILDER -->
+  <section class="chapter">
+    <div class="section-head scroll-reveal">
+      <div class="section-num">03 — Werdegang<strong>Narrativ</strong></div>
+      <h2 class="section-title">Vom Operator zum <em>Builder</em>.</h2>
+    </div>
+
+    <div class="journey scroll-reveal">
+      <div class="journey-side">
+        <h4>Phase 1 — Operator <span class="arrow">2005 →</span></h4>
+        <h3>Zwanzig Jahre <em>echte</em> Verantwortung.</h3>
+        <p>
+          Von der ersten Führungsrolle bis zum heutigen Filialleiter: durchgängig <strong>Ergebnis-, Personal- und Prozessverantwortung</strong>. Keine reine Berater-Karriere, keine Stabsrolle, kein „leading from slides". Umsatz, Mitarbeitende, Schichtplan, Wareneingang, Kundenbeschwerde um 07:15.
+        </p>
+        <p>
+          Elf Jahre produktive ATOSS-Expertise &mdash; nicht als Anwender auf Schulbank, sondern als jemand, der Workforce-Planung für 17 Menschen <em>jede Woche</em> macht. Dieses Handwerk ist in der Produkt- und Transformationswelt extrem knapp und wird regelmäßig unterschätzt.
+        </p>
+      </div>
+      <div class="journey-side">
+        <h4>Phase 2 — Builder <span class="arrow">2024 →</span></h4>
+        <h3>Zwei Jahre strategische <em>Aneignung</em>.</h3>
+        <p>
+          <strong>TÜV AI Automation Manager. AWS Cloud Practitioner. IBM Product Owner in Ausbildung.</strong> Anthropic Academy. ~10 eigenständige Software-Projekte, davon eines voll produktiv mit echten Nutzern, eines als Corporate-IT-kompatibles Dashboard, mehrere Browser-Erweiterungen, eine spanischsprachige Demo-App.
+        </p>
+        <p>
+          Das ist nicht die Bastelstube eines frustrierten Angestellten. Das ist ein systematischer, dokumentierter, über zwei Jahre konsequent verfolgter <em>Kompetenzausbau mit Ziel</em>. Die Elternzeit Mitte 2026 ist strategisch als Transit-Fenster geplant.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 04 — PORTFOLIO -->
+  <section class="chapter">
+    <div class="section-head scroll-reveal">
+      <div class="section-num">04 — Portfolio<strong>Nicht Absicht. Auslieferung.</strong></div>
+      <h2 class="section-title">Was ich tatsächlich <em>gebaut</em> habe.</h2>
+    </div>
+
+    <div class="portfolio">
+      <article class="pf hero-proj scroll-reveal">
+        <div>
+          <div class="head"><span>01 &middot; Flagship Case</span><span class="state live">Live in Produktion</span></div>
+          <h4><em>Urlaubsplaner</em> — vom Excel-Frust zum Produkt.</h4>
+          <div class="stack">
+            <span>PHP / WordPress</span><span class="sep">&middot;</span>
+            <span>Custom DB</span><span class="sep">&middot;</span>
+            <span>CSRF / Session Hardening</span><span class="sep">&middot;</span>
+            <span>v2.4.0</span><span class="sep">&middot;</span>
+            <span>17 Nutzer</span>
+          </div>
+        </div>
+        <div class="body">
+          <p>
+            Eigenständiges Planungstool, das den vollen Produktzyklus durchlaufen hat: <strong>Konzept → Prototyp → Multi-LLM-Security-Review → Deployment → reale Nutzung → Iteration</strong>. Aktuell im produktiven Einsatz mit 17 Endanwendern.
+          </p>
+          <p>
+            Bewusst mit <em>Multi-LLM-Workflow</em> gebaut: Entwicklung in Gemini, unabhängige Security- und Code-Reviews in Claude (Schulnote 2+). CSRF-Schutz, Session-Management mit Timeout, Race-Condition-Locking, server-seitige Validierung. Das ist kein Prototyp. Das ist ein Produkt.
+          </p>
+          <p>
+            <strong>Entscheidend: Mein Verkaufsleiter hat dieses Tool zum Pitch bei der ALDI SÜD Zentrale eingeladen.</strong> Damit wird der Urlaubsplaner zum strategischen Vehikel &mdash; nicht nur Portfolio-Stück, sondern Karriere-Türöffner.
+          </p>
+        </div>
+      </article>
+
+      <article class="pf w8 scroll-reveal">
+        <div class="head"><span>02 &middot; Internal Tool</span><span class="state live">Operativ</span></div>
+        <h4>BJ82 Delivery Dashboard <em>V4</em></h4>
+        <div class="body">
+          <p>
+            Gehärtetes Dashboard mit PDF-Parsing (PDF.js) und ordnerbasiertem Datenimport. Bewusst so gebaut, dass es auf <strong>Corporate-IT-Infrastruktur</strong> lauffähig ist &mdash; kein Cloud-Zwang, keine Policy-Reibung, keine IT-Abstimmung. Drag-and-Drop-UI, localStorage-Persistenz, Chart.js-Visualisierung. Eine pragmatische Lösung, die sich an der Realität deutscher Corporate-IT orientiert.
+          </p>
+        </div>
+        <div class="stack">
+          <span>HTML / JS</span><span class="sep">&middot;</span>
+          <span>PDF.js</span><span class="sep">&middot;</span>
+          <span>Chart.js</span><span class="sep">&middot;</span>
+          <span>localStorage</span><span class="sep">&middot;</span>
+          <span>Corporate-IT-Hardened</span>
+        </div>
+      </article>
+
+      <article class="pf w4 scroll-reveal">
+        <div class="head"><span>03 &middot; Demo / SMB</span><span class="state">Portfolio</span></div>
+        <h4>Asistente de <em>Oficios</em></h4>
+        <div class="body">
+          <p>
+            React-Anwendung für selbstständige Handwerker: Foto &rarr; Diagnose, Voice &rarr; Kostenvoranschlag. Spanischsprachig. Gebaut für ein Familienmitglied &mdash; zugleich als SMB-Produkt-Prototyp.
+          </p>
+        </div>
+        <div class="stack"><span>React</span><span class="sep">&middot;</span><span>Vision</span><span class="sep">&middot;</span><span>Voice</span></div>
+      </article>
+
+      <article class="pf w4 scroll-reveal">
+        <div class="head"><span>04 &middot; Extension</span><span class="state">Genutzt</span></div>
+        <h4>YouTube → <em>Obsidian</em></h4>
+        <div class="body">
+          <p>
+            Chrome-Extension, die YouTube-Videos auf Knopfdruck auf Deutsch zusammenfasst und direkt ins persönliche Obsidian-Vault schreibt. Auto-Trigger bei Navigation.
+          </p>
+        </div>
+        <div class="stack"><span>Chrome Ext</span><span class="sep">&middot;</span><span>Obsidian API</span></div>
+      </article>
+
+      <article class="pf w4 scroll-reveal">
+        <div class="head"><span>05 &middot; Automation</span><span class="state">Genutzt</span></div>
+        <h4>Drive <em>PARA</em> Sorter</h4>
+        <div class="body">
+          <p>
+            Google Apps Script mit Claude Haiku im Hintergrund: Inbox-Dokumente werden auf Knopfdruck nach PARA-Methode sortiert. Eigene Produktivitäts-Infrastruktur.
+          </p>
+        </div>
+        <div class="stack"><span>Apps Script</span><span class="sep">&middot;</span><span>Claude API</span></div>
+      </article>
+
+      <article class="pf w4 scroll-reveal">
+        <div class="head"><span>06 &middot; Personal OS</span><span class="state live">In Betrieb</span></div>
+        <h4>Life &amp; Career <em>Cockpit</em></h4>
+        <div class="body">
+          <p>
+            Multi-Track-Dashboard als React-Anwendung. Status-Tracking über elf Tools, drei berufliche Tracks, fünf private Projekte. Kein Hobby &mdash; ein <em>Operating System fürs eigene Leben</em>.
+          </p>
+        </div>
+        <div class="stack"><span>React</span><span class="sep">&middot;</span><span>PARA</span><span class="sep">&middot;</span><span>MCP</span></div>
+      </article>
+    </div>
+  </section>
+
+
+  <!-- 05 — WAS ICH DURCHDRUNGEN HABE -->
+  <section class="chapter">
+    <div class="section-head scroll-reveal">
+      <div class="section-num">05 — Denkbelege<strong>Beweismaterial</strong></div>
+      <h2 class="section-title">Was ich bereits <em>durchdrungen</em> habe.</h2>
+    </div>
+
+    <div class="thinking">
+
+      <div class="think-item scroll-reveal">
+        <div class="num">01</div>
+        <h3>Strukturanalyse meines eigenen Unternehmens<em>Eigenrecherche &middot; 2026</em></h3>
+        <div class="evidence">
+          Ich habe die <strong>dreistufige CX-Entscheider-Architektur</strong> meines Arbeitgebers &mdash; Holding, Dienstleistungs-SE, Regionalgesellschaften &mdash; namentlich analysiert. Ich kenne die <em>&bdquo;sieben Managing Directors"</em>, die relevanten Group Directors und die Positionierung des National-Store-Operations-Teams. Ich weiß, wer welchen Scope hat und wer an wen berichtet. <span class="citation">25+ Entscheider gemappt</span>
+        </div>
+      </div>
+
+      <div class="think-item scroll-reveal">
+        <div class="num">02</div>
+        <h3>Rationalisierungs-Forecast der eigenen Rolle<em>Quantitative Analyse</em></h3>
+        <div class="evidence">
+          Die Filialleiter-Rolle ist am verwundbarsten gegenüber <strong>SB-Kassen, RFID und algorithmischem Scheduling</strong>. Der Filialmanager ist die Übergangslösung, der Regionalverkaufsleiter wird nicht ersetzt, sondern bekommt massiv erweiterten Span-of-Control. Ich positioniere mich bewusst <em>vor</em> der Welle &mdash; nicht gegen sie. <span class="citation">Rollenanalyse FL/FM/RVL</span>
+        </div>
+      </div>
+
+      <div class="think-item scroll-reveal">
+        <div class="num">03</div>
+        <h3>Meta-Analyse KI-Overlap mit eigenen Aufgaben<em>Selbstauditierung</em></h3>
+        <div class="evidence">
+          Ich habe meine <strong>37 dokumentierten FL-Aufgaben</strong> gegen die Fähigkeiten aktueller Sprachmodelle gemappt. Ergebnis: Etwa 50% sind heute bereits durch KI unterstützbar oder automatisierbar. Wer diese Rechnung für die eigene Position nicht macht, wird von ihr überrascht. Ich war nicht überrascht. <span class="citation">Overlap ~50%</span>
+        </div>
+      </div>
+
+      <div class="think-item scroll-reveal">
+        <div class="num">04</div>
+        <h3>Argumentation aus dem eigenen Regelwerk heraus<em>AMS-Analyse</em></h3>
+        <div class="evidence">
+          Ich habe das unternehmensinterne Arbeitsmanagementsystem <em>gegen seine eigene strukturkonservative Auslegung</em> gelesen. Kapitel 4 (&bdquo;Halten heißt entwickeln"), Kapitel 5.2 (&bdquo;Wir gehen den richtigen Weg"), Kapitel 6.2.9 (strukturelle Lücken zwischen NSO und Filialebene). <strong>Transformations-Denken statt Opposition.</strong> <span class="citation">4 Schlüsselpassagen</span>
+        </div>
+      </div>
+
+      <div class="think-item scroll-reveal">
+        <div class="num">05</div>
+        <h3>Counter-Kommentar im Jahresdialog<em>Dokumentierte Widerspruchsfähigkeit</em></h3>
+        <div class="evidence">
+          Vier <em>„Übertroffen"</em>-Bewertungen, eine 2 in Kommunikation mit unsauberer Faktenlage. Ich habe einen <strong>sachlichen, dokumentierten Gegenkommentar in SAP SuccessFactors hinterlegt</strong>. Nicht konfrontativ. Nicht passiv. Führungsverhalten in Reinform.
+        </div>
+      </div>
+
+      <div class="think-item scroll-reveal">
+        <div class="num">06</div>
+        <h3>Rollen-Design statt Bewerbungs-Antrag<em>Stellenbeschreibung selbst entworfen</em></h3>
+        <div class="evidence">
+          Für meinen internen Pitch habe ich eine <strong>vollständige Stellenbeschreibung &bdquo;Product Owner Filialdigitalisierung"</strong> inklusive organisatorischer Einordnung, Scope, Verantwortungsbereiche, KPI-Definition und drei Übergangsszenarien entworfen. Nicht um die Rolle vorzulegen &mdash; sondern um die Rahmung der Rolle zu kontrollieren, falls sie verlangt wird.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 06 — WER ICH NICHT BIN -->
+  <section class="chapter">
+    <div class="section-head scroll-reveal">
+      <div class="section-num">06 — Abgrenzung<strong>Ehrlichkeit</strong></div>
+      <h2 class="section-title">Wer ich <em>nicht</em> bin.</h2>
+    </div>
+
+    <div class="negative scroll-reveal">
+      <div class="neg">
+        <span class="x">—</span>
+        <h4>Der Quereinsteiger nach dem Bootcamp.</h4>
+        <p>Ich tue nicht so, als hätte ich zehn Jahre Scrum gemacht. Ich habe zehn Jahre Schichtplanung gemacht. Das ist für die richtige Rolle wertvoller.</p>
+      </div>
+      <div class="neg">
+        <span class="x">—</span>
+        <h4>Der reine Theoretiker.</h4>
+        <p>Ich bin kein Berater, der auf Slides <em>transformiert</em>. Wenn ich sage, Dashboards funktionieren auf Corporate-IT-Infrastruktur, habe ich einen gebaut.</p>
+      </div>
+      <div class="neg">
+        <span class="x">—</span>
+        <h4>Der Filialleiter, der bleibt.</h4>
+        <p>Ich pitche keine Nebenrolle, kein &bdquo;Mach's nebenbei", kein &bdquo;ich bin flexibel". Ich habe zwei Jahre Vorbereitungsarbeit geleistet, um eine neue Position zu verdienen.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 07 — DER PLAN -->
+  <section class="chapter">
+    <div class="section-head scroll-reveal">
+      <div class="section-num">07 — Der Plan<strong>Konkretion</strong></div>
+      <h2 class="section-title">Drei Rollen, eine <em>Region</em>, ein Zeitfenster.</h2>
+    </div>
+
+    <div class="plan scroll-reveal">
+      <div class="plan-col">
+        <h5>Rollen im Fokus</h5>
+        <ul class="roles">
+          <li><em>—</em> Product Owner</li>
+          <li><em>—</em> Change Manager</li>
+          <li><em>—</em> Digital Transformation Lead</li>
+        </ul>
+      </div>
+      <div class="plan-col">
+        <h5>Kontext &amp; Kandidaten-Unternehmen</h5>
+        <p>
+          Industrieller Mittelstand und Großkonzern in <strong>Baden-Württemberg</strong>. Dort, wo deutsche Ingenieursexzellenz auf Digitalisierungsdruck trifft &mdash; und die Übersetzung zur Fläche zu oft fehlt.
+        </p>
+        <p>
+          Starttermin: <strong>ab Mitte 2026</strong>, strategisch abgestimmt mit einer Familien-Transition-Phase. Erste Sondierungsgespräche ausdrücklich willkommen, bevor ich schreibe.
+        </p>
+        <div class="companies-row">
+          <span>Bosch</span>
+          <span>Porsche</span>
+          <span>ZF Friedrichshafen</span>
+          <span>Mercedes-Benz</span>
+          <span>TRUMPF</span>
+          <span>Festo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- KONTAKT -->
+  <section class="contact scroll-reveal">
+    <div class="contact-grid">
+      <div>
+        <div class="small-label">Ein Gespräch, kein Fragebogen.</div>
+        <h2>Reden wir.<br><em>Ernsthaft.</em></h2>
+      </div>
+      <div class="contact-lines">
+        <div class="line">E-Mail &middot; <a href="mailto:kontakt@beispiel.de">kontakt@beispiel.de</a></div>
+        <div class="line">LinkedIn &middot; <a href="#">linkedin.com/in/salva</a></div>
+        <div class="line">Region &middot; Bisingen, Baden-Württemberg</div>
+        <div class="meta">Verfügbar ab Mitte 2026 &middot; Stand 04/2026</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>&copy; 2026 Salva &middot; Alle Rechte vorbehalten</div>
+    <div>Version „The Case" &middot; 04/2026 &middot; Designed in Bisingen</div>
+  </footer>
+
+</div>
+
+<script>
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('on');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.scroll-reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+/* ==========================================================
+   footer.css — Footer variants
+   .footer = simple (karriere/blog)
+   .footer-full = full grid (index)
+   ========================================================== */
+
+/* Simple footer (karriere + blog) */
+.footer {
+  border-top: 1px solid rgba(26, 24, 22, 0.15);
+  padding: 36px 0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Full footer (index) */
+.footer-full {
+  border-top: 1px solid var(--border-glow);
+  padding: 60px 0 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.f-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  color: var(--ink-primary);
+}
+
+.f-brand em {
+  font-style: normal;
+  color: var(--accent-sienna);
+}
+
+.f-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+  max-width: 320px;
+}
+
+.f-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.f-links h5 {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent-sienna);
+  margin-bottom: 8px;
+}
+
+.f-link {
+  color: var(--ink-secondary);
+  text-decoration: none;
+  font-size: 13px;
+  transition: var(--transition-smooth);
+}
+
+.f-link:hover {
+  color: var(--ink-primary);
+}
+
+.f-bot {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border-glow);
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.f-bot a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.f-bot a:hover {
+  color: var(--accent-sienna);
+}
+
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}

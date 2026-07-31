@@ -1,0 +1,64 @@
+/* ==========================================================
+   tokens.css — Design Tokens for neudenken.io
+   Single source of truth for all colors, fonts, spacing.
+   ========================================================== */
+
+:root {
+  /* ── Surfaces ──────────────────────────────────────────── */
+  --surface-paper:      #F2EEE5;
+  --surface-card:       #E7E1D3;
+  --surface-terminal:   #221E1A;
+
+  /* ── Ink ───────────────────────────────────────────────── */
+  --ink-primary:        #1A1816;
+  --ink-secondary:      #4A4741;
+  --ink-dim:            #7A756C;
+
+  /* ── Terminal Ink ──────────────────────────────────────── */
+  --term-ink-primary:   #F2EEE5;
+  --term-ink-secondary: #CBD5E1;
+  --term-ink-dim:       #7A756C;
+
+  /* ── Accent: Sienna (was --accent-cyan!) ───────────────── */
+  --accent-sienna:      #B04D2C;
+  --accent-sienna-rgb:  176, 77, 44;
+
+  /* ── Accent: Rust (was --accent-purple!) ───────────────── */
+  --accent-rust:        #7A3519;
+  --accent-rust-rgb:    122, 53, 25;
+
+  /* ── Accent: Moss ──────────────────────────────────────── */
+  --accent-moss:        #4E7A53;
+  --accent-moss-rgb:    78, 122, 83;
+
+  /* ── Accent: Copper (was --accent-orange) ──────────────── */
+  --accent-copper:      #C87A38;
+  --accent-copper-rgb:  200, 122, 56;
+
+  /* ── Borders & Glows ───────────────────────────────────── */
+  --border-glow:        rgba(26, 24, 22, 0.08);
+  --border-glow-active: rgba(176, 77, 44, 0.35);
+
+  /* ── Typography ────────────────────────────────────────── */
+  --font-display:  'Fraunces', Georgia, serif;
+  --font-heading:  'Syne', sans-serif;
+  --font-body:     'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono:     'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* ── Spacing ───────────────────────────────────────────── */
+  --space-xs:  0.25rem;
+  --space-sm:  0.5rem;
+  --space-md:  1rem;
+  --space-lg:  2rem;
+  --space-xl:  4rem;
+  --space-2xl: 8rem;
+
+  /* ── Radii ─────────────────────────────────────────────── */
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-pill:  100px;
+
+  /* ── Transitions ───────────────────────────────────────── */
+  --transition-smooth: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}

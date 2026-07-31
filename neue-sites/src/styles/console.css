@@ -1,0 +1,38 @@
+/* ==========================================================
+   console.css — Terminal/Console Chrome Styling
+   ========================================================== */
+
+.console-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.console-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot-node {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.dot-node:nth-child(1) { background: #FF5F57; }
+.dot-node:nth-child(2) { background: #FEBC2E; }
+.dot-node:nth-child(3) { background: #28C840; }
+
+.console-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--term-ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-left: auto;
+}

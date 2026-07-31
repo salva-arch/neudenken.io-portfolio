@@ -1,0 +1,73 @@
+/* ==========================================================
+   background.css — Zero-Gravity Background Engine
+   Canvas, Glow Blobs, Grid Backdrop
+   ========================================================== */
+
+.antigravity-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glow-engine {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.blob-purple {
+  top: -10%;
+  left: 15%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, var(--accent-sienna) 0%, transparent 70%);
+  animation: float-blob-1 30s infinite alternate ease-in-out;
+}
+
+.blob-cyan {
+  bottom: -10%;
+  right: 10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, var(--accent-rust) 0%, transparent 70%);
+  animation: float-blob-2 35s infinite alternate ease-in-out;
+}
+
+@keyframes float-blob-1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(8%, 12%) scale(1.15); }
+}
+
+@keyframes float-blob-2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-12%, -8%) scale(0.9); }
+}
+
+/* Infinite tech Grid backdrop */
+.grid-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background-image:
+    linear-gradient(rgba(26, 24, 22, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 24, 22, 0.015) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center;
+  mask-image: radial-gradient(circle 800px at var(--mouse-x, 50%) var(--mouse-y, 400px), black 30%, transparent 90%);
+  -webkit-mask-image: radial-gradient(circle 800px at var(--mouse-x, 50%) var(--mouse-y, 400px), black 30%, transparent 90%);
+}
