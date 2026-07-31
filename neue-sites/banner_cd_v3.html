@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>neudenken.io — Corporate Design v3.0 Banner (1584x396)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* CD v3.0 Core Design Tokens */
+      --bg-paper: #F4F1EA;
+      --bg-panel: #E7E2D4;
+      --bg-card: rgba(231, 226, 212, 0.7);
+      --text-primary: #191715;
+      --text-secondary: #5C5852;
+      --text-dim: #8A857C;
+      --accent-sienna: #A34729;
+      --accent-sienna-light: #C85A32;
+      --border-hairline: rgba(25, 23, 21, 0.12);
+      --font-serif: 'Fraunces', serif;
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    /* Dark Mode Theme Tokens */
+    [data-theme="dark"] {
+      --bg-paper: #141210;
+      --bg-panel: #1D1A17;
+      --bg-card: rgba(29, 26, 23, 0.75);
+      --text-primary: #F4F1EA;
+      --text-secondary: #B5AFA6;
+      --text-dim: #7A746B;
+      --accent-sienna: #D46A48;
+      --accent-sienna-light: #E07D5C;
+      --border-hairline: rgba(244, 241, 234, 0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #0A0908;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .btn-toggle {
+      background: #1D1A17;
+      color: #F4F1EA;
+      border: 1px solid rgba(244, 241, 234, 0.2);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-toggle:hover {
+      background: #A34729;
+      border-color: #A34729;
+    }
+
+    /* BANNER CONTAINER 1584 x 396 (Exact LinkedIn Banner Standard) */
+    .banner-stage {
+      width: 1584px;
+      height: 396px;
+      position: relative;
+      background: var(--bg-paper);
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      transition: background 0.4s ease;
+    }
+
+    /* Subtle Grid Background */
+    .banner-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(var(--border-hairline) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-hairline) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: 0.6;
+    }
+
+    /* Ambient Warm Glow */
+    .banner-glow {
+      position: absolute;
+      right: -100px;
+      top: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(163, 71, 41, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* LEFT SECTION: Definition of Done Checklist */
+    .section-dod {
+      position: absolute;
+      left: 72px;
+      top: 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .dod-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .dod-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1.5px solid var(--accent-sienna);
+      background: rgba(163, 71, 41, 0.08);
+      color: var(--accent-sienna);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dod-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border-hairline);
+    }
+
+    /* MIDDLE SECTION: Kanban Board Mockup */
+    .section-kanban {
+      position: absolute;
+      left: 410px;
+      top: 54px;
+      display: flex;
+      gap: 20px;
+    }
+    .kanban-col {
+      width: 124px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .kanban-header {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .kanban-card {
+      height: 34px;
+      border-radius: 7px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hairline);
+      backdrop-filter: blur(4px);
+    }
+    .kanban-card.active {
+      background: rgba(163, 71, 41, 0.12);
+      border-color: var(--accent-sienna);
+    }
+
+    /* TIMELINE: Jetzt / Als Nächstes / Später */
+    .section-timeline {
+      position: absolute;
+      left: 410px;
+      bottom: 56px;
+      width: 630px;
+    }
+    .timeline-track {
+      position: relative;
+      height: 2px;
+      background: var(--border-hairline);
+      margin-bottom: 14px;
+    }
+    .t-node {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+    .t-node.active {
+      left: 0%;
+      width: 16px;
+      height: 16px;
+      background: var(--accent-sienna);
+      box-shadow: 0 0 12px rgba(163, 71, 41, 0.4);
+    }
+    .t-node.next {
+      left: 50%;
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--text-dim);
+      background: var(--bg-paper);
+    }
+    .t-node.later {
+      left: 100%;
+      width: 12px;
+      height: 12px;
+      border: 2px solid var(--text-dim);
+      background: var(--bg-paper);
+    }
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .t-label-active { color: var(--accent-sienna); }
+    .t-label-muted { color: var(--text-dim); }
+
+    /* RIGHT SECTION: Main Claim & Positionierung */
+    .section-claim {
+      position: absolute;
+      right: 76px;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .claim-kicker {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      color: var(--accent-sienna);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .claim-headline {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+    .claim-headline em {
+      font-style: italic;
+      color: var(--accent-sienna);
+      font-weight: 500;
+    }
+    .claim-rule {
+      width: 110px;
+      height: 3px;
+      background: var(--accent-sienna);
+      margin: 18px 0 14px 0;
+      border-radius: 2px;
+    }
+    .claim-sub {
+      font-size: 15.5px;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+    }
+    .claim-sub strong {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <button class="btn-toggle" onclick="toggleTheme()">Theme wechseln (Paper Light / Warm Dark)</button>
+  </div>
+
+  <!-- BANNER CONTAINER (1584px x 396px) -->
+  <div class="banner-stage" id="bannerStage" data-theme="light">
+    
+    <!-- Background Grid & Glow -->
+    <div class="banner-grid"></div>
+    <div class="banner-glow"></div>
+
+    <!-- LEFT: Definition of Done Checklist -->
+    <div class="section-dod">
+      <div class="dod-item">
+        <div class="dod-check">&#10003;</div>
+        <div class="dod-bar" style="width: 135px;"></div>
+      </div>
+      <div class="dod-item">
+        <div class="dod-check">&#10003;</div>
+        <div class="dod-bar" style="width: 105px;"></div>
+      </div>
+      <div class="dod-item">
+        <div class="dod-check">&#10003;</div>
+        <div class="dod-bar" style="width: 120px;"></div>
+      </div>
+    </div>
+
+    <!-- MIDDLE: Kanban Board Mockup -->
+    <div class="section-kanban">
+      <div class="kanban-col">
+        <div class="kanban-header">Backlog</div>
+        <div class="kanban-card"></div>
+        <div class="kanban-card active"></div>
+        <div class="kanban-card"></div>
+      </div>
+      <div class="kanban-col" style="margin-top: 14px;">
+        <div class="kanban-header">In Arbeit</div>
+        <div class="kanban-card"></div>
+        <div class="kanban-card"></div>
+      </div>
+      <div class="kanban-col" style="margin-top: 7px;">
+        <div class="kanban-header">Review</div>
+        <div class="kanban-card active"></div>
+        <div class="kanban-card"></div>
+      </div>
+      <div class="kanban-col" style="margin-top: 20px;">
+        <div class="kanban-header">Fertig</div>
+        <div class="kanban-card"></div>
+      </div>
+    </div>
+
+    <!-- MIDDLE-BOTTOM: Timeline -->
+    <div class="section-timeline">
+      <div class="timeline-track">
+        <div class="t-node active"></div>
+        <div class="t-node next"></div>
+        <div class="t-node later"></div>
+      </div>
+      <div class="timeline-labels">
+        <span class="t-label-active">Jetzt</span>
+        <span class="t-label-muted">Als Nächstes</span>
+        <span class="t-label-muted">Später</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Claim & Positioning -->
+    <div class="section-claim">
+      <div class="claim-kicker">Discovery &middot; Backlog &middot; Delivery</div>
+      <div class="claim-headline">
+        Operator. <em>Builder.</em><br>Übersetzer.
+      </div>
+      <div class="claim-rule"></div>
+      <div class="claim-sub">
+        <strong>Product Ownership</strong> aus der Praxis
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const stage = document.getElementById('bannerStage');
+      const current = stage.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      stage.setAttribute('data-theme', next);
+    }
+  </script>
+</body>
+</html>

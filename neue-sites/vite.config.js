@@ -18,6 +18,7 @@ export default defineConfig({
         salva: resolve(__dirname, 'salva.html'),
         karriere: resolve(__dirname, 'karriere.html'),
         loader: resolve(__dirname, 'loader.html'),
+        banner: resolve(__dirname, 'banner_cd_v3.html'),
       },
     },
   },
