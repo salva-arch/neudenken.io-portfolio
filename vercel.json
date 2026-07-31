@@ -1,0 +1,32 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "salva.neudenken.io" }],
+      "destination": "/index_blog.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "salvatore.neudenken.io" }],
+      "destination": "/salvatore.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "ki.neudenken.io" }],
+      "destination": "/neudenken.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "neudenken.io" }],
+      "destination": "/salvatore_hub.html"
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.neudenken.io" }],
+      "destination": "/salvatore_hub.html"
+    }
+  ]
+}
